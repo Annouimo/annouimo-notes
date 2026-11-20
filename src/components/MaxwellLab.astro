@@ -39,7 +39,7 @@ const {kind}=Astro.props;
         <text x="95" y="200" font-size="15" fill="#3869b0">S₁</text>
         <path d="M109 189L142 161" fill="none" stroke="#3869b0"/>
       </g>
-      <g data-s2 hidden>
+      <g data-s2 style="display:none">
         <path d="M145 84 C181 36 231 16 298 17 C351 17 350 74 350 127 C350 180 351 237 298 237 C231 238 181 218 145 170" fill="#21814e" fill-opacity=".09" stroke="#21814e" stroke-width="3" stroke-linejoin="round"/>
         <text x="195" y="248" font-size="15" fill="#21814e">S₂（剖面轮廓）</text>
       </g>
@@ -92,7 +92,7 @@ for(const root of document.querySelectorAll<HTMLElement>('.maxwell-lab')){
  }
  if(root.dataset.kind==='capacitor'){
   root.querySelectorAll<HTMLButtonElement>('[data-surface]').forEach(b=>b.addEventListener('click',()=>{
-   const two=b.dataset.surface==='two';root.querySelector<SVGGElement>('[data-s1]')!.hidden=two;root.querySelector<SVGGElement>('[data-s2]')!.hidden=!two;
+   const two=b.dataset.surface==='two';
    root.querySelector<SVGGElement>('[data-s1]')!.setAttribute('style',two?'display:none':'');
    root.querySelector<SVGGElement>('[data-s2]')!.setAttribute('style',two?'':'display:none');
    root.querySelectorAll<HTMLButtonElement>('[data-surface]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
@@ -105,9 +105,9 @@ for(const root of document.querySelectorAll<HTMLElement>('.maxwell-lab')){
    svg.replaceChildren();
    add(svg,'line',{x1:28,y1:120,x2:502,y2:120,stroke:'var(--border)','stroke-width':1.5});
    add(svg,'text',{x:493,y:141,'font-size':13,fill:'var(--muted)'},'x →');
-   for(const [color,dy,label] of [['var(--curve)',0,'Eᵧ'],['var(--green)',0,'cB_z']] as const){
+   for(const color of ['var(--curve)','var(--green)'] as const){
     const pts=Array.from({length:301},(_,i)=>{const x=30+460*i/300,y=120-75*Math.sin(i/300*4*Math.PI-phase);return (i?'L':'M')+x.toFixed(1)+','+y.toFixed(1)}).join(' ');
-    add(svg,'path',{d:pts,stroke:color,'stroke-width':color==='var(--curve)'?4:2,fill:'none',opacity:color==='var(--curve}'?.8:.9,'stroke-dasharray':color==='var(--green}'?'7 5':''});
+    add(svg,'path',{d:pts,stroke:color,'stroke-width':color==='var(--curve)'?4:2,fill:'none',opacity:color==='var(--curve)'?.8:.9,'stroke-dasharray':color==='var(--green)'?'7 5':''});
    }
    add(svg,'text',{x:34,y:24,'font-size':14,fill:'var(--curve)'},'Eᵧ（实线）');add(svg,'text',{x:145,y:24,'font-size':14,fill:'var(--green)'},'cB_z（虚线）');
    root.querySelector<HTMLElement>('[data-time]')!.textContent=phase.toFixed(2);
