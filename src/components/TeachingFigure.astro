@@ -1,6 +1,6 @@
 ---
 interface Props {
-  kind: 'field' | 'differential' | 'potential' | 'flux' | 'divergence' | 'curl' | 'cancellation' | 'forms' | 'charge'
+  kind: 'field' | 'differential' | 'potential' | 'flux' | 'divergence' | 'curl' | 'cancellation' | 'forms' | 'charge' | 'coupling' | 'wave-shift'
 }
 const { kind } = Astro.props;
 ---
@@ -180,6 +180,43 @@ return <g><circle cx={x} cy={y} r="2" fill="var(--fg)" opacity=".35"/><line x1={
     </svg>
     <figcaption>这里的小盒子与左边大圆是两个单独选取的积分区域；示意图用二维截面展示三维空间中的封闭曲面。穿过小盒子的场线可以是弯曲、发散的，但进入和流出的总通量相等。</figcaption>
   </>}
+  {kind === 'coupling' && <>
+    <div class="figure-top"><h3>两条旋度定律到底在说什么？</h3><span>图 10 · 局部环绕</span></div>
+    <svg viewBox="0 0 600 274" role="img" aria-label="左边向纸面外的磁场正在增强，环绕它的感应电场顺时针；右边向纸面外的电场正在增强，环绕它的磁场逆时针。表明后两条麦克斯韦方程如何互相联系。">
+      <defs><marker id="f-couple-a" markerWidth="9" markerHeight="9" refX="6" refY="3.5" orient="auto"><path d="M0 0L8 3.5L0 7Z" fill="var(--curve)"/></marker><marker id="f-couple-b" markerWidth="9" markerHeight="9" refX="6" refY="3.5" orient="auto"><path d="M0 0L8 3.5L0 7Z" fill="var(--green)"/></marker></defs>
+      <line x1="300" y1="30" x2="300" y2="247" stroke="var(--border)" stroke-width="1.5" stroke-dasharray="5 5"/>
+      <text x="149" y="22" text-anchor="middle" class="figure-title">磁场随时间增强 → 电场环绕</text>
+      <text x="450" y="22" text-anchor="middle" class="figure-title">电场随时间增强 → 磁场环绕</text>
+      {[108,147,186].map(x=><g><circle cx={x} cy="142" r="10" fill="var(--soft)" stroke="var(--curve)" stroke-width="1.5"/><circle cx={x} cy="142" r="3.5" fill="var(--curve)"/></g>)}
+      {[408,447,486].map(x=><g><circle cx={x} cy="142" r="10" fill="var(--soft)" stroke="var(--green)" stroke-width="1.5"/><circle cx={x} cy="142" r="3.5" fill="var(--green)"/></g>)}
+      <path d="M150 74A73 73 0 0 1 221 141" stroke="var(--curve)" stroke-width="3.5" fill="none" marker-end="url(#f-couple-a)"/>
+      <path d="M450 74A73 73 0 0 0 380 141" stroke="var(--green)" stroke-width="3.5" fill="none" marker-end="url(#f-couple-b)"/>
+      <text x="150" y="113" text-anchor="middle" class="legend">B 增强 ⊙</text>
+      <text x="450" y="113" text-anchor="middle" class="legend">E 增强 ⊙</text>
+      <text x="150" y="233" text-anchor="middle" class="legend">顺时针的 E 环量</text>
+      <text x="450" y="233" text-anchor="middle" class="legend">逆时针的 B 环量</text>
+      <text x="300" y="266" text-anchor="middle" class="tick">⊙ 表示指向纸面外；两幅均为垂直于场方向的局部截面</text>
+    </svg>
+    <figcaption>左图对应法拉第定律的负号；右图对应安培–麦克斯韦定律中变化电场项的正号。图只说明局部旋度与时间变化的关系，并非电磁波传播的完整三维过程。</figcaption>
+  </>}
+  {kind === 'wave-shift' && <>
+    <div class="figure-top"><h3>为什么向右平移的波写成 f(x−vt)？</h3><span>图 11 · 波形平移</span></div>
+    <svg viewBox="0 0 600 271" role="img" aria-label="同一条正弦波在两个时刻的图像，第二时刻整条曲线向右移动了vΔt，原波峰与新波峰之间用水平箭头标出距离vΔt。">
+      <defs><marker id="f-shift-arr" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0 0L8 3.5L0 7Z" fill="var(--green)"/></marker></defs>
+      <path d="M30 152H575" stroke="var(--border)" stroke-width="1.6"/>
+      <text x="578" y="171" class="tick">x</text>
+      <path d={Array.from({length:265},(_,j)=>{const x=38+520*j/264, y=152-54*Math.sin((x-38)*2*Math.PI/300);return (j?'L':'M')+x.toFixed(1)+','+y.toFixed(1)}).join(' ')} stroke="var(--curve)" stroke-width="2.7" fill="none"/>
+      <path d={Array.from({length:265},(_,j)=>{const x=38+520*j/264, y=152-54*Math.sin((x-118)*2*Math.PI/300);return (j?'L':'M')+x.toFixed(1)+','+y.toFixed(1)}).join(' ')} stroke="var(--green)" stroke-width="2.7" stroke-dasharray="8 5" fill="none"/>
+      <line x1="113" y1="97" x2="113" y2="45" stroke="var(--muted)" stroke-dasharray="4 4"/>
+      <line x1="193" y1="97" x2="193" y2="45" stroke="var(--muted)" stroke-dasharray="4 4"/>
+      <line x1="113" y1="49" x2="191" y2="49" stroke="var(--green)" stroke-width="2.5" marker-end="url(#f-shift-arr)"/>
+      <text x="152" y="36" text-anchor="middle" class="legend">vΔt</text>
+      <path d="M310 217H332" stroke="var(--curve)" stroke-width="2.7"/><text x="339" y="221" class="legend">t=0：f(x)</text>
+      <path d="M310 244H332" stroke="var(--green)" stroke-width="2.7" stroke-dasharray="6 4"/><text x="339" y="248" class="legend">t=Δt：f(x−vΔt)</text>
+    </svg>
+    <figcaption>蓝色波峰原本在某个位置，时间经过 Δt 后出现在右侧 vΔt 的位置。要在新位置 x 读取旧图像，应当回到旧坐标 x−vΔt，因此新图像是 f(x−vΔt)。</figcaption>
+  </>}
+
 </figure>
 <style>
 .teaching-figure{max-width:760px;padding:15px 18px;margin-top:28px;margin-bottom:29px}
