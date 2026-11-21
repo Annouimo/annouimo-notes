@@ -130,30 +130,38 @@ const curveFieldTips=[{u:-.86,v:-.47},{u:-.35,v:.38},{u:.68,v:-.53},{u:.87,v:.4}
     <figcaption>沿等势线移动电势不变；沿垂直方向变化最快；斜向移动只取位移在梯度方向的投影。静电场与电势梯度相反。</figcaption>
   </>}
   {kind === 'flux' && <>
-    <div class="figure-top"><h3>磁通量为什么需要“有方向的面积”？</h3><span>图 4 · 面片与法向量</span></div>
-    <svg viewBox="0 0 690 359" role="img" aria-label="三维透视的弯曲曲面上划分许多网格面片，蓝色磁场箭头从面片附近穿过，其中一小块绿色面片的法向量与磁场有夹角θ。右侧是独立的图例。">
-<defs><marker id="flux-new-blue" markerWidth="7" markerHeight="7" refX="5.7" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="var(--curve)"/></marker><marker id="flux-new-green" markerWidth="8" markerHeight="8" refX="6.7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="var(--green)"/></marker></defs>
-<text x="16" y="22" class="figure-title">空间中的磁场，穿过一张倾斜曲面</text>
-<path d="M95 228L321 182L419 259L182 306Z" fill="var(--soft)" stroke="var(--border)" stroke-opacity=".5" stroke-width="1.2"/>
-<path d="M83 183Q181 136 314 164Q377 175 406 215L420 246Q324 220 219 266Q128 267 91 242Z" fill="var(--curve)" fill-opacity=".09" stroke="var(--curve)" stroke-opacity=".65" stroke-width="1.9"/>
-<path d="M112 181Q138 210 128 251M171 162Q203 199 186 264M238 155Q260 192 249 253M306 162Q342 193 326 234M370 192Q387 222 388 230" stroke="var(--curve)" stroke-opacity=".27" stroke-width="1.4" fill="none"/>
-<path d="M88 204Q223 162 414 229M90 232Q225 194 418 250" stroke="var(--curve)" stroke-opacity=".27" stroke-width="1.4" fill="none"/>
-{[94,166,238,310,382].flatMap(x=>[123,254].map(y=><line x1={x} y1={y+48} x2={x} y2={y-12} stroke="var(--curve)" stroke-opacity=".37" stroke-width="1.8" marker-end="url(#flux-new-blue)"/>))}
-<path d="M216 189L259 182L287 207L242 219Z" fill="var(--green)" fill-opacity=".32" stroke="var(--green)" stroke-width="2.6"/>
-<circle cx="251" cy="198" r="4" fill="var(--fg)"/>
-<path d="M251 198V91" stroke="var(--curve)" stroke-width="3.3" marker-end="url(#flux-new-blue)"/>
-<path d="M251 198L311 114" stroke="var(--green)" stroke-width="3.8" marker-end="url(#flux-new-green)"/>
-<path d="M251 153Q272 151 277 162" stroke="var(--red)" stroke-width="1.7" fill="none"/>
-<text x="280" y="152" class="figure-point">θ</text>
-<path d="M451 73H476" stroke="var(--curve)" stroke-width="3"/><text x="486" y="78" class="legend">B：磁场方向</text>
-<path d="M451 112H476" stroke="var(--green)" stroke-width="3"/><text x="486" y="117" class="legend">n̂：面片法向</text>
-<path d="M451 154H476" stroke="var(--green)" stroke-width="8" opacity=".3"/><text x="486" y="160" class="legend">选中的小面片</text>
-<text x="451" y="211" class="figure-point">穿透分量</text>
-<text x="451" y="237" class="legend">B cosθ</text>
-<text x="451" y="281" class="tick">面片越倾斜，</text><text x="451" y="300" class="tick">法向投影越小</text>
-<text x="14" y="344" class="tick">其余曲面也可以继续划成小面片；每一片都有自己的面积与法向量。</text>
-</svg>
-    <figcaption>背景箭头代表整个空间中的磁场，绿色只突出其中一小片曲面。面片的大小不足以决定通量，必须指定法向；点积取出磁场沿法向的穿透分量。</figcaption>
+    <div class="figure-top"><h3>曲面上的磁通量：每片有自己的法向</h3><span>磁通量 · 曲面积分</span></div>
+    <svg viewBox="0 0 690 340" role="img" aria-label="左侧曲面和取样网格均由同一参数曲面生成，一处局部小面片高亮，蓝色法向按局部切向量叉积计算。右侧放大该面片的切平面，显示局部磁场和法向。">
+      <defs>
+        <marker id="fc-b-arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="var(--red)"/></marker>
+        <marker id="fc-n-arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="var(--curve)"/></marker>
+      </defs>
+      <text x="18" y="23" class="figure-title">曲面 S：选一小片，再近似成局部平面</text>
+      <path d={curveOutline} fill="var(--green)" fill-opacity=".09" stroke="var(--curve)" stroke-width="2.3"/>
+      {curveGridU.map(d=><path d={d} fill="none" stroke="var(--curve)" stroke-width="1.05" stroke-opacity=".27"/>)}
+      {curveGridV.map(d=><path d={d} fill="none" stroke="var(--curve)" stroke-width="1.05" stroke-opacity=".27"/>)}
+      {curveFieldTips.map(({p,tip})=><path d={pathPoints([p,tip])} fill="none" stroke="var(--red)" stroke-width="2.4" stroke-opacity=".66" marker-end="url(#fc-b-arr)"/>)}
+      <path d={patchPath} fill="var(--green)" fill-opacity=".38" stroke="var(--green)" stroke-width="2.8"/>
+      <path d={pathPoints([curveCenter,curveNtip])} fill="none" stroke="var(--curve)" stroke-width="3.4" marker-end="url(#fc-n-arr)"/>
+      <circle cx={curveCenter.x} cy={curveCenter.y} r="4.5" fill="var(--fg)"/>
+      <text x={curveNtip.x-21} y={curveNtip.y-7} class="figure-point">n̂ᵢ</text>
+      <text x="41" y="238" class="figure-point">S</text>
+      <text x={curveCenter.x+15} y={curveCenter.y+20} class="tick">ΔAᵢ</text>
+      <path d={'M '+(curveCenter.x+17)+' '+(curveCenter.y+4)+' Q 411 80 462 113'} stroke="var(--curve)" stroke-width="1.8" fill="none" stroke-dasharray="5 4"/>
+      <rect x="455" y="44" width="217" height="247" rx="8" fill="var(--soft)" fill-opacity=".23" stroke="var(--border)" stroke-width="1.6"/>
+      <text x="473" y="69" class="figure-point">局部面片放大</text>
+      <path d={pathPoints(zoomCorners,true)} fill="var(--green)" fill-opacity=".19" stroke="var(--green)" stroke-width="2.4"/>
+      <path d={pathPoints([zoomCenter,zoomNtip])} fill="none" stroke="var(--curve)" stroke-width="3.5" marker-end="url(#fc-n-arr)"/>
+      <path d={pathPoints([zoomCenter,zoomP(vAdd(cCenter,vScale(fluxB,55)))])} fill="none" stroke="var(--red)" stroke-width="3.3" marker-end="url(#fc-b-arr)"/>
+      <circle cx={zoomCenter.x} cy={zoomCenter.y} r="3.7" fill="var(--fg)"/>
+      <text x={zoomNtip.x-19} y={zoomNtip.y-7} class="figure-point">n̂ᵢ</text>
+      <text x="615" y="111" class="figure-point">B</text>
+      <text x="555" y="220" class="tick">局部切平面</text>
+      <text x="470" y="254" class="legend">ΔΦᵢ ≈ B(rᵢ) · n̂ᵢ ΔAᵢ</text>
+      <text x="470" y="276" class="tick">每片求出贡献，再累加</text>
+      <text x="18" y="328" class="tick">曲面按参数方程生成，法向由同一处的两根局部切向量叉积求出。</text>
+    </svg>
+    <figcaption>曲面网格代表取样方向。右侧放大的是选中点附近的局部切平面，不代表整张曲面都平坦。每一片的法向和磁场投影可能不同，通量是所有面片带符号贡献的和。</figcaption>
   </>}
   {kind === 'divergence' && <>
     <div class="figure-top"><h3>流进来多少？流出去多少？</h3><span>图 5 · 小盒子的净通量</span></div>
