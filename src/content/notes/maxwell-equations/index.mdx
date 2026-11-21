@@ -146,10 +146,10 @@ $$
 
 但如果你向左走，就会遇到越来越高的电势；向右走，则遇到越来越低的电势。对同样长的位移而言，**垂直穿过等势线，电势变化最快**。
 
-回到公式。沿单位方向向量 $\hat{\mathbf u}$ 走一小段距离 $\mathrm ds$，则 $\mathrm{d}\mathbf r=\hat{\mathbf u}\,\mathrm ds$，于是：
+回到公式。沿单位方向向量 $\hat{\mathbf u}$ 走一小段距离 $\mathrm{d}s$，则 $\mathrm{d}\mathbf r=\hat{\mathbf u}\,\mathrm{d}s$，于是：
 
 $$
-\frac{\mathrm{d}f}{\mathrm ds}
+\frac{\mathrm{d}f}{\mathrm{d}s}
 =\nabla f\cdot\hat{\mathbf u}
 =|\nabla f|\cos\theta.
 $$
@@ -597,23 +597,23 @@ $$
 
 这些操作都有一个特点：**输入是某个次数的形式，得到高一次的形式**。
 
-我们把它们统一称为**外微分**，记作 $\mathrm d$。它并不是把一个楔积号简单地加上去；它要**对系数求导，再按照有向面积、体积的反对称规则整理**。
+我们把它们统一称为**外微分**，记作 $\mathrm{d}$。它并不是把一个楔积号简单地加上去；它要**对系数求导，再按照有向面积、体积的反对称规则整理**。
 
 从0-形式出发，外微分就是刚才认识的全微分：
 
 $$
-\mathrm df=f_x\,\mathrm dx+f_y\,\mathrm dy+f_z\,\mathrm dz.
+\mathrm{d}f=f_x\,\mathrm{d}x+f_y\,\mathrm{d}y+f_z\,\mathrm{d}z.
 $$
 
-对1-形式 $\alpha=P\,\mathrm dx+Q\,\mathrm dy$：
+对1-形式 $\alpha=P\,\mathrm{d}x+Q\,\mathrm{d}y$：
 
 $$
 \begin{aligned}
-\mathrm d\alpha
-&=\mathrm dP\wedge\mathrm dx+\mathrm dQ\wedge\mathrm dy\\
-&=(P_x\,\mathrm dx+P_y\,\mathrm dy)\wedge\mathrm dx\\
-&\quad +(Q_x\,\mathrm dx+Q_y\,\mathrm dy)\wedge\mathrm dy\\
-&=(Q_x-P_y)\,\mathrm dx\wedge\mathrm dy.
+\mathrm{d}\alpha
+&=\mathrm{d}P\wedge\mathrm{d}x+\mathrm{d}Q\wedge\mathrm{d}y\\
+&=(P_x\,\mathrm{d}x+P_y\,\mathrm{d}y)\wedge\mathrm{d}x\\
+&\quad +(Q_x\,\mathrm{d}x+Q_y\,\mathrm{d}y)\wedge\mathrm{d}y\\
+&=(Q_x-P_y)\,\mathrm{d}x\wedge\mathrm{d}y.
 \end{aligned}
 $$
 
@@ -622,16 +622,16 @@ $$
 对前面与矢量场对应的2-形式：
 
 $$
-\beta=P\,\mathrm dy\wedge\mathrm dz
-+Q\,\mathrm dz\wedge\mathrm dx
-+R\,\mathrm dx\wedge\mathrm dy,
+\beta=P\,\mathrm{d}y\wedge\mathrm{d}z
++Q\,\mathrm{d}z\wedge\mathrm{d}x
++R\,\mathrm{d}x\wedge\mathrm{d}y,
 $$
 
 同一套规则会给出
 
 $$
-\mathrm d\beta=(P_x+Q_y+R_z)\,
-\mathrm dx\wedge\mathrm dy\wedge\mathrm dz.
+\mathrm{d}\beta=(P_x+Q_y+R_z)\,
+\mathrm{d}x\wedge\mathrm{d}y\wedge\mathrm{d}z.
 $$
 
 这一次，系数又恰好等于散度。
@@ -640,22 +640,22 @@ $$
 
 $$
 \boxed{
-\text{0-形式}\xrightarrow{\;\mathrm d\;}
-\text{1-形式}\xrightarrow{\;\mathrm d\;}
-\text{2-形式}\xrightarrow{\;\mathrm d\;}
+\text{0-形式}\xrightarrow{\;\mathrm{d}\;}
+\text{1-形式}\xrightarrow{\;\mathrm{d}\;}
+\text{2-形式}\xrightarrow{\;\mathrm{d}\;}
 \text{3-形式}.
 }
 $$
 
-其对应的向量分析语言依次是**梯度、旋度、散度**。严格地说，$\mathrm df$ 本身是1-形式，而梯度是借助内积与它对应的向量；2-形式与旋度向量之间也有类似的对应。这些区别在一般几何空间中十分重要，在这里我们先抓住它们共同的局部测量意义。
+其对应的向量分析语言依次是**梯度、旋度、散度**。严格地说，$\mathrm{d}f$ 本身是1-形式，而梯度是借助内积与它对应的向量；2-形式与旋度向量之间也有类似的对应。这些区别在一般几何空间中十分重要，在这里我们先抓住它们共同的局部测量意义。
 
 现在还有一个意外收获：连续做两次外微分，总是零，
 
 $$
-\boxed{\mathrm d^2=0.}
+\boxed{\mathrm{d}^2=0.}
 $$
 
-例如 $\mathrm d(\mathrm df)=0$，对应 $\nabla\times(\nabla f)=0$；同样 $\nabla\cdot(\nabla\times\mathbf F)=0$。一个原因来自混合偏导数在足够光滑时可以交换，而外积会使相应项互相抵消。
+例如 $\mathrm{d}(\mathrm{d}f)=0$，对应 $\nabla\times(\nabla f)=0$；同样 $\nabla\cdot(\nabla\times\mathbf F)=0$。一个原因来自混合偏导数在足够光滑时可以交换，而外积会使相应项互相抵消。
 
 更深一层地说，**边界的边界为空**：区间的两个端点没有进一步的边界；一片曲面的边界是一条闭合曲线，而闭合曲线本身没有端点。外微分的性质与这种几何事实紧密相连。
 
@@ -664,7 +664,7 @@ $$
 设 $M$ 是一片有方向的曲线、曲面或体积区域，$\partial M$ 是它的有向边界，$\omega$ 是适合放在边界上积分的微分形式。那么：
 
 $$
-\boxed{\int_M\mathrm d\omega=\int_{\partial M}\omega.}
+\boxed{\int_M\mathrm{d}\omega=\int_{\partial M}\omega.}
 $$
 
 这就是**广义斯托克斯定理**。
@@ -680,7 +680,7 @@ $$
 <details>
 <summary>外微分能像不定积分一样“反着做”吗？</summary>
 
-可以尝试寻找一个原形式 $\eta$，使 $\mathrm d\eta=\omega$。但并非所有形式都有原形式。因为 $\mathrm d^2=0$，如果 $\omega$ 有原形式，必有 $\mathrm d\omega=0$；反过来，这个条件在局部通常足够，在带洞的区域上却未必能找到全局原形式。这是后续理解路径无关性和拓扑的入口。
+可以尝试寻找一个原形式 $\eta$，使 $\mathrm{d}\eta=\omega$。但并非所有形式都有原形式。因为 $\mathrm{d}^2=0$，如果 $\omega$ 有原形式，必有 $\mathrm{d}\omega=0$；反过来，这个条件在局部通常足够，在带洞的区域上却未必能找到全局原形式。这是后续理解路径无关性和拓扑的入口。
 
 </details>
 
@@ -699,15 +699,15 @@ $$
 高中学过高斯电场定律：任意封闭曲面的电通量，只取决于曲面包围的**净电荷**：
 
 $$
-\oiint_{\partial V}\mathbf E\cdot\mathrm d\mathbf A
+\oiint_{\partial V}\mathbf E\cdot\mathrm{d}\mathbf A
 =\frac{Q_{\mathrm{enc}}}{\varepsilon_0}.
 $$
 
 现在我们知道散度定理，也知道体积中的电荷可通过电荷密度 $\rho$ 累加：
 
 $$
-\iiint_V(\nabla\cdot\mathbf E)\,\mathrm dV
-=\iiint_V\frac{\rho}{\varepsilon_0}\,\mathrm dV.
+\iiint_V(\nabla\cdot\mathbf E)\,\mathrm{d}V
+=\iiint_V\frac{\rho}{\varepsilon_0}\,\mathrm{d}V.
 $$
 
 既然这个关系对任意足够规则的小体积都成立，就得到局部形式：
@@ -727,7 +727,7 @@ $$
 经典麦克斯韦理论中，没有被确认的磁单极源。因此，任意封闭曲面的总磁通量为零：
 
 $$
-\oiint_{\partial V}\mathbf B\cdot\mathrm d\mathbf A=0.
+\oiint_{\partial V}\mathbf B\cdot\mathrm{d}\mathbf A=0.
 $$
 
 应用散度定理：
@@ -745,9 +745,9 @@ $$
 先考虑固定不动的闭合回路 $C$，在回路上沿规定方向积分电场，得到
 
 $$
-\oint_C\mathbf E\cdot\mathrm d\boldsymbol\ell
-=-\frac{\mathrm d}{\mathrm dt}
-\iint_S\mathbf B\cdot\mathrm d\mathbf A.
+\oint_C\mathbf E\cdot\mathrm{d}\boldsymbol\ell
+=-\frac{\mathrm{d}}{\mathrm{d}t}
+\iint_S\mathbf B\cdot\mathrm{d}\mathbf A.
 $$
 
 为什么这里是**电场的环量**？因为它测量的是沿闭合路径，电场对单位正电荷所能提供的总做功。即使没有导线，变化磁场也能在空间产生这种环绕的电场；导线只是让我们更容易观察到感应电流。
@@ -757,8 +757,8 @@ $$
 现在用斯托克斯定理，把回路边界积分转为曲面内部旋度的积分，再把时间导数移到固定曲面内：
 
 $$
-\iint_S(\nabla\times\mathbf E)\cdot\mathrm d\mathbf A
-=-\iint_S\frac{\partial\mathbf B}{\partial t}\cdot\mathrm d\mathbf A.
+\iint_S(\nabla\times\mathbf E)\cdot\mathrm{d}\mathbf A
+=-\iint_S\frac{\partial\mathbf B}{\partial t}\cdot\mathrm{d}\mathbf A.
 $$
 
 既然对任意足够小的面片也成立，就有
@@ -778,7 +778,7 @@ $$
 高中学过通电导线周围存在磁场。对于稳恒电流，安培环路定律写成
 
 $$
-\oint_C\mathbf B\cdot\mathrm d\boldsymbol\ell
+\oint_C\mathbf B\cdot\mathrm{d}\boldsymbol\ell
 =\mu_0 I_{\mathrm{through}}.
 $$
 
@@ -810,8 +810,8 @@ $$
 
 $$
 \boxed{
-\varepsilon_0\frac{\mathrm d\Phi_E}{\mathrm dt}
-=\frac{\mathrm dQ}{\mathrm dt}=I.
+\varepsilon_0\frac{\mathrm{d}\Phi_E}{\mathrm{d}t}
+=\frac{\mathrm{d}Q}{\mathrm{d}t}=I.
 }
 $$
 
@@ -820,10 +820,10 @@ $$
 完整积分形式是：
 
 $$
-\oint_C\mathbf B\cdot\mathrm d\boldsymbol\ell
+\oint_C\mathbf B\cdot\mathrm{d}\boldsymbol\ell
 =\mu_0\iint_S
 \left(\mathbf J+\varepsilon_0\frac{\partial\mathbf E}{\partial t}\right)
-\cdot\mathrm d\mathbf A.
+\cdot\mathrm{d}\mathbf A.
 $$
 
 用斯托克斯定理得到局部形式：
