@@ -350,7 +350,7 @@ const { kind } = Astro.props;
       <text x="409" y="277" class="figure-point">终点相同，都到 B</text>
       <text x="409" y="299" class="legend">高度变化：4Δx + 2Δy</text>
     </svg>
-    <figcaption>绿色是切平面上的一个平行四边形，虚线只是水平位移的辅助投影。平面上沿同一坐标方向的斜率保持不变，所以两条走法的高度增量相同。此图暂时不讨论真实曲面带来的误差。</figcaption>
+    <figcaption>绿色是切平面上的一个平行四边形，虚线只是水平位移的辅助投影。平面上沿同一坐标方向的斜率保持不变，所以两条走法的高度增量相同。此图只说明方向与线性叠加，不按比例表示各段长度；暂时不讨论真实曲面带来的误差。</figcaption>
   </>}
   {kind === 'differential-error' && <>
     <div class="figure-top"><h3>再把真实曲面放回来：为什么还存在误差？</h3><span>全微分 · 第二步</span></div>
@@ -399,7 +399,7 @@ const { kind } = Astro.props;
       <text x="441" y="115" class="legend">B cosθ</text>
       <text x="441" y="171" class="figure-point">穿过整片的磁通量：</text>
       <text x="441" y="202" class="legend">Φ = B A cosθ</text>
-      <text x="441" y="255" class="tick">平行面片时通量为 0</text>
+      <text x="441" y="255" class="tick">B 平行于面片时通量为 0</text>
     </svg>
     <figcaption>先在一块平面上理解磁通量：必须给面片选法向，沿法向的磁场分量是 B cosθ。等理解这件事之后，再把曲面切成许多局部小面片，每片单独计算。</figcaption>
   </>}
