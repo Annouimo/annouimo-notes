@@ -1,10 +1,10 @@
-# why-notes
+# 讲义原稿与组件
 
-通过设计可探索的数学与物理讲义来学习。
+本仓库保存讲义原稿、可视化组件与教学设计说明，是博客“讲义”栏目的内容源。正式页面由 [Annouimo/annouimo-publishing](https://github.com/Annouimo/annouimo-publishing) 构建并发布。
 
 这个项目探索一套将大语言模型纳入学习过程的方法：围绕一个具体问题，亲自组织解释、推导和可视化，制作一份自己能够对其内容负责的网页讲义。在制作中发现理解的缺口，通过查证、讨论和练习修正，再用独立解释与解题检验学习效果。
 
-目前进入第一篇讲义的制作阶段：**如何理解一致连续**。已实现 Astro + MDX 静态站点、七个函数例子的小框交互，以及数学行为检查。首篇讲义已确认发布。
+当前包含两篇正式讲义：**如何理解一致连续**与**为什么四条方程能够统一电磁学？**。内容使用 Astro + MDX，配合可复用组件、交互和数学行为检查。
 
 ## 为什么做这个项目
 
@@ -161,7 +161,7 @@ npm run dev
 | `npm run check` | Astro / TypeScript 检查与数学行为测试 |
 | `npm run build:preview` | 构建包含草稿的预览，页面带 noindex |
 | `npm run build` | 正式构建，排除草稿及其 URL |
-| `npm run deploy` | 通过 cf 构建并部署生产站，排除草稿 |
+| `npm run deploy` | 旧独立站部署命令；正式发布请使用 annouimo-publishing，勿从本仓库部署生产 |
 | `npm run deploy:preview` | 通过 cf 构建并部署当前分支的原生 Workers Preview，包含草稿 |
 | `npm run preview` | 在本地查看 dist 构建产物 |
 | `npm run new:note -- topic-slug "标题"` | 新建正文与制作说明，不覆盖已有主题 |
@@ -187,15 +187,9 @@ npm run dev
 
 ### 发布与预览
 
-同一个 Cloudflare Worker `why-notes` 托管生产站与原生 Workers Previews，使用 Workers Static Assets 分发构建产物和字体。配置位于 `cloudflare.config.ts`，CLI 与依赖版本由 package-lock.json 锁定。
+讲义正式页面位于 [blog.annouimo.com/notes](https://blog.annouimo.com/notes/)，由 `Annouimo/annouimo-publishing` 统一构建博客文章与讲义。该工程通过 `notes.lock` 固定本仓库的源提交；更新讲义后，须在发布工程中更新来源版本并完成构建、预览和发布。
 
-- 生产：`https://learn.annouimo.com/`，排除所有 `draft: true` 的主题。
-- 分支预览：`https://<preview-slug>.learn.annouimo.com/`，包含草稿。
-- 当前制作分支：`feat/uniform-continuity-preview`，对应 `https://feat-uniform-continuity-preview.learn.annouimo.com/notes/uniform-continuity/`。
-
-Cloudflare Workers Builds 连接此仓库：main 的提交运行 `npm run check`、`npm run deploy`；其他分支运行检查与 `npm run deploy:preview`。CLI 自动读取 CI 分支名称，更新同一 Preview，并输出固定的分支地址与每次部署的地址。分支 push 已实际触发并完成原生预览部署。合并 main 后才更新生产内容；新主题不需要新增 Worker 或配置域名。首次生产部署已完成，正式首页可访问；讲义仍为草稿。首次实际构建结果与阻塞记录见 docs/deployment.md。
-
-预览正文带 noindex；public/_headers 也为预览自定义域名设置 X-Robots-Tag。预览地址公开，未配置登录限制。生产首页可以先发布，讲义保持草稿，等待用户审阅。
+`learn.annouimo.com` 已于 2026-11-22 从 `why-notes` Worker 解绑，DNS 记录也已移除。讲义原稿、组件与 Worker 配置仍保留在本仓库供后续维护；旧独立站的部署历史见 [docs/deployment.md](docs/deployment.md)。不要用本仓库的 `npm run deploy` 发布正式站点。
 
 ## 参考与灵感
 
