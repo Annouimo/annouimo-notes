@@ -7,23 +7,22 @@ const { kind } = Astro.props;
 <figure class="box-explorer teaching-figure" data-kind={kind}>
   {kind === 'field' && <>
     <div class="figure-top"><h3>从一条曲线，到一个空间中的场</h3><span>图 1 · 描述方式</span></div>
-    <svg viewBox="0 0 560 254" role="img" aria-label="左图只研究沿x轴的场强大小，右图在平面上不同位置各放置一个矢量">
-      <defs><marker id="tf-field-arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7" fill="none" stroke="#3869b0" stroke-width="1.3"/></marker></defs>
-      <text x="119" y="20" text-anchor="middle" class="figure-title">一维取样 E(x)</text><text x="419" y="20" text-anchor="middle" class="figure-title">平面矢量场 F(x,y)</text>
-      <path d="M42 213V40M42 213H239" stroke="currentColor" stroke-opacity=".55" stroke-width="1.4" fill="none"/>
-      <text x="24" y="49" class="tick">E</text><text x="237" y="230" class="tick">x</text>
-      <path d="M46 196Q92 180 116 135T233 64" fill="none" stroke="var(--curve)" stroke-width="3"/>
-      <path d="M285 213H542M300 226V35" stroke="currentColor" stroke-opacity=".23" fill="none"/>
-      <text x="533" y="232" class="tick">x</text><text x="291" y="42" class="tick">y</text>
-      {Array.from({length:4},(_,i)=>i).map(i=>Array.from({length:3},(_,j)=>j).map(j=>{
-        const x=326+i*57, y=173-j*54;
-        const vx=(i+1)*10, vy=(j-1)*(-7);
-        return <g><circle cx={x} cy={y} r="2" fill="currentColor" fill-opacity=".3"/><line x1={x} y1={y} x2={x+vx} y2={y+vy} stroke="var(--curve)" stroke-width="2" marker-end="url(#tf-field-arr)"/></g>;
-      }))}
-      <path d="M252 128h20" stroke="currentColor" stroke-opacity=".36" stroke-dasharray="3 4"/>
-      <text x="272" y="247" text-anchor="middle" class="tick">同一位置可有三个分量</text>
-    </svg>
-    <figcaption>左侧只观察一个坐标上的变化；右侧每个位置都有自己的向量。实际电磁场还需要第三个空间方向和时间。</figcaption>
+    <svg viewBox="0 0 600 300" role="img" aria-label="左侧E随单一坐标x变化的图像，右侧带三条坐标轴的三维空间，每个采样位置画有场矢量箭头。">
+<defs><marker id="f-field-arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="var(--curve)"/></marker></defs>
+<text x="136" y="22" text-anchor="middle" class="figure-title">沿一条直线读取 E(x)</text><path d="M37 245V52M37 245H264" stroke="var(--muted)" stroke-width="1.5" fill="none"/>
+<path d="M43 216Q95 211 131 159T256 74" fill="none" stroke="var(--curve)" stroke-width="3"/><circle cx="161" cy="131" r="4.5" fill="var(--red)"/><path d="M161 131V245" stroke="var(--muted)" stroke-dasharray="4 4"/>
+<text x="16" y="60" class="tick">E</text><text x="260" y="263" class="tick">x</text><text x="162" y="263" text-anchor="middle" class="tick">某个位置</text>
+<text x="446" y="22" text-anchor="middle" class="figure-title">三维空间中的矢量场</text>
+<g fill="none" stroke="var(--border)" stroke-width="1.4"><path d="M406 224L552 267L423 291L276 245Z M406 224V86L552 129V267 M406 86L276 109V245 M276 109L423 153L552 129 M423 153V291"/></g>
+<path d="M406 224L558 268M406 224L275 246M406 224V72" stroke="var(--muted)" stroke-width="1.7" fill="none"/>
+<text x="559" y="278" class="tick">x</text><text x="267" y="263" class="tick">y</text><text x="398" y="67" class="tick">z</text>
+{[0,1,2].flatMap(i=>[0,1,2].flatMap(j=>[0,1].map(k=>{
+const x=322+i*57-j*26, y=225+i*17+j*9-k*76, dx=15+i*3, dy=-14-j*4-k*2;
+return <g><circle cx={x} cy={y} r="2" fill="var(--fg)" opacity=".35"/><line x1={x} y1={y} x2={x+dx} y2={y+dy} stroke="var(--curve)" stroke-width="1.9" marker-end="url(#f-field-arr)"/></g>;
+})))}
+<text x="443" y="299" text-anchor="middle" class="tick">不同位置，对应不同的箭头</text>
+</svg>
+    <figcaption>左侧每个位置对应一个标量数值；右侧显示三维空间不同位置的向量，方向由箭头朝向表示、大小由箭头长度表示。实际场并不只存在于图中抽样点。</figcaption>
   </>}
   {kind === 'differential' && <>
     <div class="figure-top"><h3>两份变化，为什么可以相加？</h3><span>图 2 · 切平面</span></div>
@@ -64,38 +63,41 @@ const { kind } = Astro.props;
   </>}
   {kind === 'potential' && <>
     <div class="figure-top"><h3>沿等势线走，为什么电势不变？</h3><span>图 3 · 电势与梯度</span></div>
-    <svg viewBox="0 0 560 266" role="img" aria-label="平行的等势线沿y方向延伸，向左电势增加，梯度向左；静电场向右。沿等势线向上移动电势不变，垂直移动时变化最快。">
-      <defs><marker id="tf-pot-a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L7 3L0 6Z" fill="var(--curve)"/></marker><marker id="tf-pot-b" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L7 3L0 6Z" fill="var(--red)"/></marker><marker id="tf-pot-c" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L7 3L0 6Z" fill="var(--green)"/></marker></defs>
-      <text x="22" y="22" class="figure-title">取一个均匀静电场：各条竖线对应不同电势</text>
-      {[95,170,245,320,395].map((x,i)=><g><line x1={x} y1="50" x2={x} y2="225" stroke="var(--border)" stroke-width="2" stroke-dasharray="5 5"/><text x={x} y="242" text-anchor="middle" class="tick">{4-i} V</text></g>)}
-      <circle cx="245" cy="137" r="6" fill="var(--fg)"/>
-      <path d="M245 137V78" stroke="var(--green)" stroke-width="3.3" marker-end="url(#tf-pot-c)"/>
-      <text x="255" y="83" class="legend">沿等势线：Δφ=0</text>
-      <path d="M245 137H336" stroke="var(--curve)" stroke-width="3.3" marker-end="url(#tf-pot-a)"/>
-      <text x="342" y="154" class="legend">静电场 E →</text>
-      <path d="M245 137H169" stroke="var(--red)" stroke-width="3.3" marker-end="url(#tf-pot-b)"/>
-      <text x="111" y="125" class="legend">∇φ</text>
-      <text x="22" y="258" class="tick">电场与电势梯度方向相反：E = −∇φ（静电场）</text>
-    </svg>
-    <figcaption>梯度垂直等势线，指向电势增长最快的方向；静电场则指向电势下降最快的方向。等势线是三维等势面的二维截面。</figcaption>
+    <svg viewBox="0 0 600 302" role="img" aria-label="等势线沿竖直方向，中央点发出向右的静电场箭头、向左的梯度箭头、向上的等势移动箭头和斜向左上的一般位移；虚线显示斜向位移的水平投影。">
+<defs><marker id="f-pot-e" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0 0L8 3.5L0 7Z" fill="var(--curve)"/></marker><marker id="f-pot-g" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0 0L8 3.5L0 7Z" fill="var(--red)"/></marker><marker id="f-pot-u" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0 0L8 3.5L0 7Z" fill="var(--green)"/></marker></defs>
+<text x="12" y="20" class="figure-title">电势相同的竖线；向左电势增高，向右电势降低</text>
+{[96,171,246,321,396,471].map((x,i)=><g><line x1={x} y1="52" x2={x} y2="244" stroke="var(--border)" stroke-width="2" stroke-dasharray="5 5"/><text x={x} y="263" text-anchor="middle" class="tick">{5-i} V</text></g>)}
+<circle cx="246" cy="168" r="5" fill="var(--fg)"/>
+<path d="M246 168V79" stroke="var(--green)" stroke-width="3" marker-end="url(#f-pot-u)"/><text x="259" y="88" class="legend">沿等势线：无变化</text>
+<path d="M246 168H350" stroke="var(--curve)" stroke-width="3.1" marker-end="url(#f-pot-e)"/><text x="358" y="186" class="legend">E</text>
+<path d="M246 168H155" stroke="var(--red)" stroke-width="3" marker-end="url(#f-pot-g)"/><text x="154" y="187" class="legend">∇φ</text>
+<path d="M246 168L173 98" stroke="var(--green)" stroke-width="3" marker-end="url(#f-pot-u)"/>
+<path d="M173 98V168" stroke="var(--muted)" stroke-dasharray="4 4" stroke-width="1.7"/>
+<path d="M173 168H246" stroke="var(--muted)" stroke-dasharray="4 4" stroke-width="1.7"/>
+<text x="109" y="83" class="legend">斜位移 u</text>
+<text x="65" y="119" class="tick">水平投影</text><text x="65" y="135" class="tick">= |u| cosθ</text><text x="210" y="148" class="tick">θ</text>
+<text x="13" y="291" class="tick">沿等势线：0 / 垂直等势线：变化最快 / 斜向：只计算沿梯度的投影</text>
+</svg>
+    <figcaption>沿等势线移动电势不变；沿垂直方向变化最快；斜向移动只取位移在梯度方向的投影。静电场与电势梯度相反。</figcaption>
   </>}
   {kind === 'flux' && <>
     <div class="figure-top"><h3>磁通量为什么需要“有方向的面积”？</h3><span>图 4 · 面片与法向量</span></div>
-    <svg viewBox="0 0 560 277" role="img" aria-label="空间中倾斜的微小平面面片，磁场向上，法向量与磁场夹角theta，只有磁场沿法向方向的分量产生穿过面片的通量">
-      <defs><marker id="tf-flux-a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L7 3L0 6Z" fill="var(--curve)"/></marker><marker id="tf-flux-b" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L7 3L0 6Z" fill="var(--green)"/></marker></defs>
-      <path d="M109 169L274 121L380 174L211 224Z" fill="var(--curve)" fill-opacity=".13" stroke="var(--curve)" stroke-width="2.2"/>
-      <path d="M210 176V43M290 154V28M350 183V54" stroke="var(--curve)" stroke-opacity=".42" stroke-width="2.4" fill="none" marker-end="url(#tf-flux-a)"/>
-      <path d="M248 171L293 57" stroke="var(--green)" stroke-width="3.5" marker-end="url(#tf-flux-b)"/>
-      <path d="M248 171V51" stroke="var(--curve)" stroke-width="3" marker-end="url(#tf-flux-a)"/>
-      <path d="M248 111Q270 116 272 112" stroke="var(--red)" stroke-width="2" fill="none"/>
-      <text x="275" y="108" class="figure-point">θ</text>
-      <circle cx="248" cy="171" r="5" fill="var(--fg)"/>
-      <text x="308" y="67" class="legend">单位法向 n̂</text>
-      <text x="188" y="44" class="legend">磁场 B</text>
-      <text x="290" y="218" class="figure-point">面片 dA</text>
-      <text x="46" y="257" class="tick">一片的磁通量：dΦ = B·n̂ dA = B cosθ dA</text>
-    </svg>
-    <figcaption>面片的面积大小不能告诉我们磁场是否穿过它；还必须指定面片的朝向。我们用单位法向量来记录方向，再通过点积取出磁场的穿透分量。</figcaption>
+    <svg viewBox="0 0 600 304" role="img" aria-label="大量蓝色箭头分布在空间中，表示磁场。穿过磁场的淡色弯曲曲面划分小面片，其中一个小面片高亮并有绿色法向量。">
+<defs><marker id="f-flux-b" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="var(--curve)"/></marker><marker id="f-flux-n" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0 0L8 3.5L0 7Z" fill="var(--green)"/></marker></defs>
+<text x="14" y="21" class="figure-title">先有整个空间里的磁场，再选择一个曲面与面元</text>
+{[70,143,216,289,362,435,508].flatMap(x=>[105,194,281].map(y=><line x1={x} y1={y} x2={x} y2={y-44} stroke="var(--curve)" opacity=".53" stroke-width="1.9" marker-end="url(#f-flux-b)"/>))}
+<path d="M110 192Q205 117 294 138Q398 157 481 117L506 154Q408 204 312 185Q210 165 131 239Z" fill="var(--curve)" fill-opacity=".08" stroke="var(--curve)" stroke-opacity=".39" stroke-width="2"/>
+<path d="M181 157Q191 178 204 210M255 138Q265 162 281 181M360 153Q368 174 387 192M135 221Q271 167 488 136" stroke="var(--curve)" stroke-opacity=".27" stroke-width="1.7" fill="none"/>
+<path d="M241 162L293 147L319 180L266 197Z" fill="var(--green)" fill-opacity=".28" stroke="var(--green)" stroke-width="2.5"/>
+<circle cx="278" cy="174" r="4" fill="var(--fg)"/>
+<path d="M278 174V65" stroke="var(--curve)" stroke-width="3" marker-end="url(#f-flux-b)"/>
+<path d="M278 174L338 85" stroke="var(--green)" stroke-width="3.5" marker-end="url(#f-flux-n)"/>
+<path d="M278 120Q294 115 302 127" fill="none" stroke="var(--red)" stroke-width="1.7"/>
+<text x="307" y="125" class="legend">θ</text><text x="266" y="53" class="legend">B</text><text x="348" y="86" class="legend">n̂</text>
+<text x="322" y="219" class="legend">小面片 dA</text>
+<text x="18" y="290" class="tick">穿过小面片的磁通量：dΦ = B cosθ dA；对整个曲面还需要逐片累加。</text>
+</svg>
+    <figcaption>背景箭头代表整个空间中的磁场，绿色只突出其中一小片曲面。面片的大小不足以决定通量，必须指定法向；点积取出磁场沿法向的穿透分量。</figcaption>
   </>}
   {kind === 'divergence' && <>
     <div class="figure-top"><h3>流进来多少？流出去多少？</h3><span>图 5 · 小盒子的净通量</span></div>
