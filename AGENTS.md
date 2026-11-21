@@ -2,6 +2,8 @@
 
 本项目属于“自由学习”：通过组织可探索的解释来学习数学与物理。保留人的教学意图与关键推理，自动构建不得调用 LLM 重新生成正文。
 
+**制作讲义前必须先阅读 [`docs/learning-principles.md`](docs/learning-principles.md)。** 先确保初学者能沿图解与推理建立理解，再考虑凝练表述、排版和交互；不得仅为了缩短篇幅删去必要例子和关键推理。
+
 ## 内容与实现
 
 - 正文只维护在 src/content/notes/<slug>/index.mdx；docs/briefs/<slug>.md 保存设计依据、交互约定和未决问题，不复制整篇正文。
