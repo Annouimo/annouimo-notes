@@ -386,7 +386,7 @@ const curveFieldTips=[{u:-.86,v:-.47},{u:-.35,v:.38},{u:.68,v:-.53},{u:.87,v:.4}
       <path d={pathPoints([dA,dC,dB,dD],true)} fill="var(--green)" fill-opacity=".21" stroke="var(--green)" stroke-width="2.6"/>
       <path d={pathPoints([dC,dC0])} fill="none" stroke="var(--muted)" stroke-width="1.6" stroke-dasharray="5 4"/>
       <path d={pathPoints([dD,dD0])} fill="none" stroke="var(--muted)" stroke-width="1.6" stroke-dasharray="5 4"/>
-      <path d={pathPoints([dB,dB0])} fill="none" stroke="var(--red)" stroke-width="2.9" marker-end="url(#dp-new-z)"/>
+      <path d={pathPoints([dB0,dB])} fill="none" stroke="var(--red)" stroke-width="2.9" marker-end="url(#dp-new-z)"/>
       <path d={pathPoints([dA,dC,dB])} fill="none" stroke="var(--curve)" stroke-width="3.7"/>
       <path d={pathPoints([dA,dD,dB])} fill="none" stroke="var(--green)" stroke-width="3.3" stroke-dasharray="7 4"/>
       {[{p:dA,t:'A',dx:-18,dy:-5},{p:dC,t:'C',dx:9,dy:-5},{p:dD,t:'D',dx:-19,dy:-7},{p:dB,t:'B',dx:12,dy:1}].map(({p,t,dx,dy})=><g><circle cx={p.x} cy={p.y} r="5" fill="var(--fg)"/><text x={p.x+dx} y={p.y+dy} class="figure-point">{t}</text></g>)}
