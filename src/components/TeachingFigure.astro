@@ -429,34 +429,34 @@ const curveFieldTips=[{u:-.86,v:-.47},{u:-.35,v:.38},{u:.68,v:-.53},{u:.87,v:.4}
     <figcaption>两张面在 A 点相切，但随着位移增大，蓝色真实曲面会偏离绿色切平面。本例的差恰好是 (Δx)²；缩小位移时，这个误差相对于一阶变化变得更小。</figcaption>
   </>}
   {kind === 'flux-plane' && <>
-    <div class="figure-top"><h3>先看一块平面：只有垂直穿透的磁场分量起作用</h3><span>磁通量 · 第一步</span></div>
-    <svg viewBox="0 0 690 315" role="img" aria-label="一块倾斜的绿色矩形面片，面积A，其中央发出法向量n帽。蓝色磁场B与n帽之间形成角θ；背景蓝色箭头显示均匀磁场穿过整个区域。">
+    <div class="figure-top"><h3>磁通量：为什么要比较磁场与面片法向？</h3><span>磁通量 · 平面示意</span></div>
+    <svg viewBox="0 0 690 320" role="img" aria-label="由两条三维切向边计算得到法向量的斜平面。红色磁场箭头与蓝色法向量在空间夹角θ；右侧标注通量来自磁场沿法向的分量。">
       <defs>
-        <marker id="fp-ba" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="var(--curve)"/></marker>
-        <marker id="fp-na" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="var(--green)"/></marker>
+        <marker id="fp-red-arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="var(--red)"/></marker>
+        <marker id="fp-blue-arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="var(--curve)"/></marker>
       </defs>
-      <text x="17" y="25" class="figure-title">空间中的同一个磁场，斜着穿过这一块平面</text>
-      {[95,178,261,344].flatMap(x=>[125,234].map(y=><line x1={x} y1={y+35} x2={x+16} y2={y-47} stroke="var(--curve)" stroke-width="1.8" opacity=".28" marker-end="url(#fp-ba)"/>))}
-      <path d="M109 218L298 167L378 227L189 278Z" fill="var(--green)" fill-opacity=".17" stroke="var(--green)" stroke-width="2.7"/>
-      <path d="M110 218L298 167M189 278L378 227" stroke="var(--green)" stroke-width="1.4" stroke-opacity=".45" stroke-dasharray="5 4"/>
-      <circle cx="243" cy="224" r="4.5" fill="var(--fg)"/>
-      <path d="M243 224L295 99" stroke="var(--green)" stroke-width="4" marker-end="url(#fp-na)"/>
-      <path d="M243 224L265 72" stroke="var(--curve)" stroke-width="4" marker-end="url(#fp-ba)"/>
-      <path d="M264 145Q285 148 283 161" stroke="var(--red)" stroke-width="2" fill="none"/>
-      <text x="288" y="146" class="figure-point">θ</text>
-      <text x="297" y="89" class="figure-point">n̂</text>
-      <text x="247" y="59" class="figure-point">B</text>
-      <text x="206" y="260" class="figure-point">面积 A</text>
-      <line x1="419" y1="55" x2="419" y2="277" stroke="var(--border)" stroke-width="1.2"/>
-      <text x="441" y="85" class="figure-point">沿法向的磁场：</text>
-      <text x="441" y="115" class="legend">B cosθ</text>
-      <text x="441" y="171" class="figure-point">穿过整片的磁通量：</text>
-      <text x="441" y="202" class="legend">Φ = B A cosθ</text>
-      <text x="441" y="255" class="tick">B 平行于面片时通量为 0</text>
+      <text x="17" y="22" class="figure-title">一块斜平面，四根平行磁场箭头</text>
+      <path d={pathPoints(fpCorners,true)} fill="var(--green)" fill-opacity=".15" stroke="var(--curve)" stroke-width="2.6"/>
+      {fpBG.map(({start,end})=><path d={pathPoints([start,end])} fill="none" stroke="var(--red)" stroke-width="2.6" stroke-opacity=".62" marker-end="url(#fp-red-arr)"/>)}
+      <path d={pathPoints([fpCenter,fpBT])} fill="none" stroke="var(--red)" stroke-width="3.5" marker-end="url(#fp-red-arr)"/>
+      <path d={pathPoints([fpCenter,fpNormalTip])} fill="none" stroke="var(--curve)" stroke-width="4" marker-end="url(#fp-blue-arr)"/>
+      <circle cx={fpCenter.x} cy={fpCenter.y} r="4.5" fill="var(--fg)"/>
+      <text x={fpNormalTip.x-25} y={fpNormalTip.y-10} class="figure-point">n̂</text>
+      <text x={fpBT.x+10} y={fpBT.y-2} class="figure-point">B</text>
+      <text x="201" y="222" class="figure-point">S</text>
+      <path d={'M '+(fpCenter.x+1)+' '+(fpCenter.y-26)+' Q '+(fpCenter.x+17)+' '+(fpCenter.y-26)+' '+(fpCenter.x+20)+' '+(fpCenter.y-20)} fill="none" stroke="var(--fg)" stroke-width="1.6"/>
+      <text x={fpCenter.x+22} y={fpCenter.y-32} class="figure-point">θ</text>
+      <line x1="423" y1="48" x2="423" y2="276" stroke="var(--border)" stroke-width="1.2"/>
+      <text x="443" y="83" class="figure-point">红色：磁场 B</text>
+      <text x="443" y="120" class="figure-point">蓝色：单位法向 n̂</text>
+      <text x="443" y="160" class="legend">θ 是 B 与 n̂ 的夹角</text>
+      <text x="443" y="197" class="figure-point">沿法向的分量</text>
+      <text x="443" y="224" class="legend">B cosθ</text>
+      <text x="443" y="265" class="legend">Φ = BA cosθ</text>
+      <text x="17" y="310" class="tick">法向由平面两条不平行的三维切向边叉积得到；斜投影后屏幕夹角未必是直角。</text>
     </svg>
-    <figcaption>先在一块平面上理解磁通量：必须给面片选法向，沿法向的磁场分量是 B cosθ。等理解这件事之后，再把曲面切成许多局部小面片，每片单独计算。</figcaption>
+    <figcaption>在三维中先取面片两条切向量 u、v，再计算 n̂=(u×v)/|u×v|，最后将平面、法向、磁场统一投影到屏幕。图中 θ 表示磁场与法向的空间夹角。</figcaption>
   </>}
-
   {kind === 'mixed-partials' && <>
     <div class="figure-top"><h3>同一个小矩形，两个求导次序</h3><span>混合偏导数交换定理</span></div>
     <svg viewBox="0 0 650 300" role="img" aria-label="小矩形ABCD：横向差值上边减下边，或纵向差值右边减左边，都形成相同的四角差。图上分别标注水平步长h、竖直步长k。">
