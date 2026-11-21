@@ -229,5 +229,5 @@ return <g><circle cx={x} cy={y} r="2" fill="var(--fg)" opacity=".35"/><line x1={
 .figure-point{font-size:15px;fill:var(--fg);font-weight:600}
 .tick{font-size:12px;fill:var(--muted)}
 .legend{font-size:12px;fill:var(--fg)}
-@media(max-width:600px){.teaching-figure{margin-left:10px;margin-right:10px;padding:13px 9px}.teaching-figure svg{min-width:0}.figure-top h3{font-size:.96rem}.figure-title{font-size:13px}}
+@media(max-width:600px){.teaching-figure{margin-left:10px;margin-right:10px;padding:13px 9px;overflow-x:auto;overscroll-behavior-x:contain}.teaching-figure svg{min-width:560px;width:560px;max-width:none}.teaching-figure figcaption::after{content:'（图在窄屏上可左右滑动）';white-space:normal}.figure-top h3{font-size:.96rem}.figure-title{font-size:13px}}
 </style>
