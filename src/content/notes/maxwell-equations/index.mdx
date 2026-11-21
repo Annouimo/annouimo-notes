@@ -1117,14 +1117,225 @@ $$
 
 它叫**广义斯托克斯定理**。左边是在区域内部累加外微分得到的局部贡献，右边直接沿整体边界测量原来的形式。
 
-此外，连续求两次外微分会得到零：$\mathrm d^2=0$。在三维向量语言里，对应熟悉的恒等式
+现在，广义斯托克斯定理已经把局部求导与取边界联系起来。还有一个很值得追问的问题：**同一个形式，如果连续求两次外微分，会得到什么？**
+
+### 先补一个数学事实：混合偏导为什么可以交换？
+
+取一个二元函数，例如
 
 $$
-\nabla\times(\nabla f)=0,\qquad
+f(x,y)=x^2y+3xy^2.
+$$
+
+先对 $x$ 求偏导，再对 $y$ 求偏导，得到
+
+$$
+f_x=2xy+3y^2,\qquad
+(f_x)_y=2x+6y.
+$$
+
+反过来，先对 $y$ 求偏导，再对 $x$ 求偏导，也得到
+
+$$
+f_y=x^2+6xy,\qquad
+(f_y)_x=2x+6y.
+$$
+
+这不是凑巧。为了理解原因，想象 $xy$ 平面上一块很小的矩形，四角分别为 $A=(x,y)$、$B=(x+h,y)$、$C=(x+h,y+k)$、$D=(x,y+k)$。
+
+<TeachingFigure kind="mixed-partials" />
+
+把**上边沿 $x$ 方向的函数增量**减去**下边的增量**：
+
+$$
+\begin{aligned}
+\Delta={}&[f(x+h,y+k)-f(x,y+k)]\\
+&-[f(x+h,y)-f(x,y)].
+\end{aligned}
+$$
+
+我们可以先除以 $h$，研究两条水平边上 $x$ 向变化率的差，再除以 $k$、缩小高度。若相应极限能够按这个顺序取得，结果是
+
+$$
+(f_x)_y.
+$$
+
+但同一个 $\Delta$ 也可以整理成**右边沿 $y$ 方向的增量减左边的增量**：
+
+$$
+\Delta=[f(x+h,y+k)-f(x+h,y)]
+-[f(x,y+k)-f(x,y)].
+$$
+
+先除以 $k$，再除以 $h$ 并依次取极限，得到 $(f_y)_x$。两条路线研究的是**同一个矩形四角差**。
+
+不过，**两次取极限不总能随意交换顺序**。一个常用的充分条件是：函数的二阶偏导数在附近存在且连续。此时，混合偏导数交换定理（也称施瓦茨定理或克莱罗定理）保证
+
+$$
+\boxed{(f_x)_y=(f_y)_x.}
+$$
+
+这意味着：对于足够光滑的函数，先沿一个坐标方向求变化率，再沿另一个方向求变化率，交换次序不会改变最终的混合二阶变化率。
+
+<details>
+<summary>为什么不能直接用“同一个矩形”证明任意函数的混合偏导相等？</summary>
+
+对任意有限的 $h,k$，四角差 $\Delta$ 确实完全相同；但如果先固定 $k$ 让 $h\to0$，再让 $k\to0$，与先固定 $h$ 让 $k\to0$、再让 $h\to0$，涉及**不同的极限顺序**。没有适当光滑性时，次序可能影响结果。因此“同一个四角差”给出的是直觉，连续性等条件才保证我们能够交换极限。
+
+</details>
+
+### 现在亲自计算：为什么 $\mathrm d(\mathrm df)=0$？
+
+先在二维空间考虑0-形式 $f$。第一次外微分是全微分：
+
+$$
+\mathrm df=f_x\,\mathrm dx+f_y\,\mathrm dy.
+$$
+
+第二次，直接照我们刚学过的外微分规则计算：
+
+$$
+\begin{aligned}
+\mathrm d(\mathrm df)
+&=\mathrm d(f_x)\wedge\mathrm dx+\mathrm d(f_y)\wedge\mathrm dy\\
+&=(f_{xx}\,\mathrm dx+f_{xy}\,\mathrm dy)\wedge\mathrm dx\\
+&\quad+(f_{yx}\,\mathrm dx+f_{yy}\,\mathrm dy)\wedge\mathrm dy\\
+&=(f_{yx}-f_{xy})\,\mathrm dx\wedge\mathrm dy.
+\end{aligned}
+$$
+
+这里我们继续采用下标从左到右的求导次序：$f_{xy}=(f_x)_y$。最后一步使用了 $\mathrm dx\wedge\mathrm dx=\mathrm dy\wedge\mathrm dy=0$，以及 $\mathrm dy\wedge\mathrm dx=-\mathrm dx\wedge\mathrm dy$。
+
+而对二阶偏导连续的函数，混合偏导数交换定理告诉我们 $f_{yx}=f_{xy}$，于是
+
+$$
+\boxed{\mathrm d(\mathrm df)=\mathrm d^2f=0.}
+$$
+
+**抵消有两个原因：混合偏导交换次序不变，外积交换次序却变号。** 并不是外微分刚好算出某个偶然为零的系数。
+
+再问一步：如果起点不是0-形式，而是1-形式，是否还成立？
+
+设三维空间中 $\alpha=P\,\mathrm dx+Q\,\mathrm dy+R\,\mathrm dz$。我们前面已经得到
+
+$$
+\begin{aligned}
+\mathrm d\alpha={}&(R_y-Q_z)\,\mathrm dy\wedge\mathrm dz\\
+&+(P_z-R_x)\,\mathrm dz\wedge\mathrm dx\\
+&+(Q_x-P_y)\,\mathrm dx\wedge\mathrm dy.
+\end{aligned}
+$$
+
+沿用对2-形式的计算规则，再求一次：
+
+$$
+\begin{aligned}
+\mathrm d^2\alpha
+={}&\bigl[(R_y-Q_z)_x+(P_z-R_x)_y\\
+&\qquad+(Q_x-P_y)_z\bigr]\,
+\mathrm dx\wedge\mathrm dy\wedge\mathrm dz.
+\end{aligned}
+$$
+
+把括号中的项配对，恰好是
+
+$$
+\underbrace{R_{yx}-R_{xy}}_{0}
++\underbrace{Q_{xz}-Q_{zx}}_{0}
++\underbrace{P_{zy}-P_{yz}}_{0}.
+$$
+
+每一组都因混合偏导数可交换而消失，所以 $\mathrm d^2\alpha=0$。更一般地，在任意维度、任意次数的光滑形式上，也有同样的规律：
+
+$$
+\boxed{\mathrm d^2=0.}
+$$
+
+现在再把它翻译回三维向量语言，就会**得到两个此前尚未正式认识的新恒等式**：
+
+$$
+\boxed{
+\nabla\times(\nabla f)=0,
+\qquad
 \nabla\cdot(\nabla\times\mathbf F)=0.
+}
 $$
 
-这与**边界的边界不会留下净边界**密切相关。到这里，我们才真正统一了三件事：**测量几何对象的形式、描述局部变化的外微分，以及连接局部与整体的积分定理。**
+第一条说：足够光滑的**梯度场的旋度为零**。例如静电场 $\mathbf E=-\nabla\varphi$，因此在静电情形下有 $\nabla\times\mathbf E=0$。第二条说：足够光滑的**旋度场的散度为零**；它并不是说原来的 $\mathbf F$ 必须没有散度。
+
+### 另一种理解：什么叫“边界的边界为零”？
+
+先从一条有方向的线段 $A\to B$ 开始。它的边界是两个端点，但要**带符号**地记录：
+
+$$
+\boxed{\partial[AB]=B-A.}
+$$
+
+这不是两点坐标相减，而是说：**终点记正，起点记负**。
+
+再看矩形 $ABCD$，按 $A\to B\to C\to D\to A$ 的方向绕行。它的边界是四条有向线段的组合：
+
+$$
+\partial S=[AB]+[BC]+[CD]+[DA].
+$$
+
+<TeachingFigure kind="boundary-square" />
+
+现在对这四条边**再取一次边界**，也就是分别记录每条线段的终点减起点：
+
+$$
+\begin{aligned}
+\partial(\partial S)
+&=(B-A)+(C-B)\\
+&\quad+(D-C)+(A-D)\\
+&=\boxed{0}.
+\end{aligned}
+$$
+
+矩形当然还有四个顶点。所谓“边界的边界为零”，**并不是顶点消失了**，而是每个顶点恰好既是前一条边的终点，又是下一条边的起点；带符号相加后，一个正号和一个负号相互抵消。
+
+因此，对有向线段、面片、体积等几何对象构成的适当区域，我们可以写成
+
+$$
+\boxed{\partial^2=0.}
+$$
+
+这里必须注意一个符号问题：**$\partial S$ 中的 $\partial$ 是“取边界”算子，不是偏导数 $\partial f/\partial x$ 中的求导符号。** 二者输入、输出不同，不能因为使用相同字形，就把它们当成同一运算。
+
+| 符号 | 作用对象 | 得到什么 |
+| --- | --- | --- |
+| $\partial f/\partial x$ | 多元函数 | 一个方向上的偏导数 |
+| $\partial S$ | 有向几何区域 | 比原区域低一维的有向边界 |
+| $\mathrm d\omega$ | 微分形式 | 次数比原形式高一的微分形式 |
+
+为什么取边界和外微分又有这样相似的零结果？它们真正的联系不是符号恰好一样，而是**广义斯托克斯定理**：
+
+$$
+\int_M\mathrm d\omega=\int_{\partial M}\omega.
+$$
+
+对合适的区域和光滑形式，连续使用两次，就有
+
+$$
+\begin{aligned}
+\int_M\mathrm d(\mathrm d\omega)
+&=\int_{\partial M}\mathrm d\omega\\
+&=\int_{\partial(\partial M)}\omega\\
+&=0.
+\end{aligned}
+$$
+
+如果在所有足够小的区域上积分都为零，对应的形式就必须处处为零。于是，我们从**边界重复计算会抵消**的几何事实，再次理解了 $\mathrm d^2=0$。
+
+回想一元微积分基本定理：
+
+$$
+\int_a^b f'(x)\,\mathrm dx=f(b)-f(a).
+$$
+
+它可以改写成 $\int_{[a,b]}\mathrm df=\int_{\partial[a,b]}f$：左边对函数求微分并沿区间积分；右边在区间的有向边界（终点减起点）上计算函数值。这正是同一个规律在一维的形式。
+
+**所以这里真正统一的是两种不同的运算：外微分作用在测量规则上，取边界作用在几何区域上；广义斯托克斯定理使它们在积分中相互对应。** 到这里，我们不仅知道连续两次外微分为什么为零，也理解了它与几何边界为什么有关系。
 
 <details>
 <summary>外微分能反过来积分吗？</summary>
