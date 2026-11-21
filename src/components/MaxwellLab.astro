@@ -1,0 +1,149 @@
+---
+interface Props { kind: 'field' | 'capacitor' | 'wave' }
+const {kind}=Astro.props;
+---
+<section class="box-explorer maxwell-lab" data-kind={kind} aria-label={kind==='field'?'散度与旋度实验':kind==='capacitor'?'电容器曲面实验':'电磁波传播实验'}>
+  {kind==='field' && <>
+    <div class="lab-heading"><h3>在同一个小方框里，测量两件事</h3><span>局部测量实验</span></div>
+    <p class="lab-task">先观察箭头并猜测结果，再切换五种矢量场。请关注同一绿色方框上的净通量和逆时针环量：两种测量是否可以同时非零？</p>
+    <div class="lab-controls" role="group" aria-label="选择矢量场">
+      <button type="button" data-field="constant" aria-pressed="false">恒定矢量场</button>
+      <button type="button" data-field="source" aria-pressed="true">向外扩张</button>
+      <button type="button" data-field="rotation" aria-pressed="false">绕中心转动</button>
+      <button type="button" data-field="both" aria-pressed="false">旋转且扩张</button>
+      <button type="button" data-field="saddle" aria-pressed="false">一边伸一边缩</button>
+    </div>
+    <svg class="lab-svg" data-plot viewBox="0 0 520 290" role="img" aria-label="二维矢量场及中心的小方框，切换模式可比较散度与旋度"></svg>
+    <p class="lab-feedback" data-result aria-live="polite">向外扩张：净通量为正，环量为零。</p>
+    <p class="lab-footnote">为保持直观，取固定的小方框与线性场；显示的是解析结果，不是依赖箭头采样得到的结论。</p>
+  </>}
+  {kind==='capacitor' && <>
+    <div class="lab-heading"><h3>同一条回路，两张积分曲面</h3><span>积分曲面实验</span></div>
+    <p class="lab-task">边界圆环 C 保持不变。切换计算曲面，看“穿过曲面的电流”为什么会变化。</p>
+    <div class="lab-controls" role="group" aria-label="选择积分曲面">
+      <button type="button" data-surface="one" aria-pressed="true">S₁：平圆盘</button>
+      <button type="button" data-surface="two" aria-pressed="false">S₂：鼓入间隙</button>
+    </div>
+    <svg class="lab-svg" viewBox="0 0 640 332" role="img" aria-label="电容器轴向剖面。C 是围绕左侧导线的圆形回路，在图上投影成椭圆；平圆盘 S1 直接截过导线。切换 S2 后，可见曲面绕过左极板的外缘，再伸进两极板之间的真空间隙。两种曲面共用边界 C。">
+      <defs>
+        <marker id="mlarrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="var(--curve)"/></marker>
+        <marker id="mlsurfacearrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="var(--green)"/></marker>
+      </defs>
+      <text x="22" y="22" font-size="13" fill="var(--muted)">轴向剖视：横向是电容器轴线，竖向表示径向距离</text>
+      <path d="M28 165H309M448 165H615" fill="none" stroke="var(--muted)" stroke-width="7" stroke-linecap="round"/>
+      <path d="M309 90V240M448 90V240" fill="none" stroke="var(--muted)" stroke-width="3" stroke-dasharray="3 4"/>
+      <rect x="306" y="89" width="10" height="152" rx="3" fill="#b96955"/>
+      <rect x="442" y="89" width="10" height="152" rx="3" fill="#6088af"/>
+      <text x="310" y="74" font-size="14" fill="#b96955" text-anchor="middle">正极板</text>
+      <text x="447" y="74" font-size="14" fill="#6088af" text-anchor="middle">负极板</text>
+      <path d="M335 126H419M335 166H419M335 205H419" stroke="var(--curve)" stroke-width="2.8" marker-end="url(#mlarrow)"/>
+      <text x="380" y="268" font-size="13" fill="var(--curve)" text-anchor="middle">板间 E(t) 增强 →</text>
+      <path d="M60 148H106" stroke="var(--curve)" stroke-width="2.7" marker-end="url(#mlarrow)"/>
+      <text x="27" y="128" font-size="13" fill="var(--fg)">传导电流 I →</text>
+      <g data-s1>
+        <ellipse cx="161" cy="165" rx="15" ry="47" fill="var(--curve)" fill-opacity=".22" stroke="var(--curve)" stroke-width="2.9"/>
+        <path d="M162 210L206 255" fill="none" stroke="var(--curve)" stroke-width="1.5"/>
+        <text x="212" y="264" font-size="15" fill="var(--curve)" font-weight="600">S₁：直接切过导线</text>
+      </g>
+      <g data-s2 style="display:none">
+        <path d="M161 118 C195 73 230 53 294 52 C355 50 385 70 401 112 C416 151 419 159 420 165 C419 173 416 179 401 218 C385 260 355 280 294 278 C230 277 195 256 161 212 Z" fill="var(--green)" fill-opacity=".06" stroke="var(--green)" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M190 100Q231 66 293 65" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-dasharray="5 5" marker-end="url(#mlsurfacearrow)"/>
+        <path d="M306 56Q374 60 408 137" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-dasharray="5 5" marker-end="url(#mlsurfacearrow)"/>
+        <text x="215" y="299" font-size="14" fill="var(--green)" font-weight="600">S₂：绕板外缘，鼓入极板间</text>
+      </g>
+      <ellipse cx="161" cy="165" rx="15" ry="47" fill="none" stroke="var(--curve)" stroke-width="3.2"/>
+      <text x="149" y="108" font-size="15" fill="var(--curve)" font-weight="650">C</text>
+      <text x="22" y="318" font-size="12" fill="var(--muted)">C 是固定的圆形回路；切换曲面不会改变 C。绿色线仅代表 S₂ 的剖面母线。</text>
+    </svg>
+    <p class="lab-feedback" data-result aria-live="polite">S₁ 穿过导线：传导电流为 I；位移电流贡献在理想模型下取 0。</p>
+    <p class="lab-footnote">这是一幅轴向剖面原理图：C 实际是围绕导线的圆环，在视图中投影成椭圆；S₂ 的绿色轮廓是曲面剖面母线，不是剖面中的实体气泡。曲面是数学上选取的薄膜，且绕开左极板后进入板间。两者始终具有同一条边界 C。</p>
+  </>}
+  {kind==='wave' && <>
+    <div class="lab-heading"><h3>让电场与磁场一起传播</h3><span>电磁波实验</span></div>
+    <p class="lab-task">这是三维空间在屏幕上的透视投影：电磁波沿 x 轴前进，蓝色电场沿 y 轴振荡，绿色磁场沿 z 轴振荡。拖动时刻，看两列波峰如何一起移动。</p>
+    <svg class="lab-svg" data-wave viewBox="0 0 660 385" role="img" aria-label="电磁波三维透视投影：传播方向为x轴，蓝色电场E沿y轴，绿色磁场B沿z轴，二者始终相互垂直，同相波峰随时间朝x正方向移动"></svg>
+    <div class="lab-slide"><label>时刻 <span data-time>0.0</span></label><input type="range" min="0" max="6.28" step="0.05" value="0" data-phase /><button type="button" data-wave-reset>重置</button></div>
+    <p class="lab-feedback">在同一位置，蓝色电场箭头沿 y，绿色磁场箭头沿 z；两个方向互相垂直，又都与传播方向 x 垂直。两种振荡同相，满足 E = cB。</p>
+    <p class="lab-footnote">这是带透视投影的空间示意，蓝色和绿色曲线连接的是各位置向量的箭头端点，并不代表粒子运动轨迹。为比较形状，将 cB 与 E 取相同的示意幅度。</p>
+  </>}
+</section>
+<style>
+.maxwell-lab{color:var(--fg)}.lab-heading{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap}.lab-heading h3{font-size:1.06rem;margin:0}.lab-heading span{color:var(--muted);font-size:.7rem}.lab-task{font-size:.82rem;line-height:1.7;margin:10px 0}.lab-controls{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.lab-controls button,.lab-slide button{padding:7px 12px;font-size:.75rem;min-height:40px}.lab-controls button[aria-pressed=true]{border-color:var(--curve);color:var(--curve);background:var(--box);font-weight:650}.lab-svg{display:block;width:100%;height:auto;max-height:320px}.lab-feedback{font-size:.82rem;line-height:1.65;padding:10px 12px;background:var(--soft);border-radius:6px;margin:9px 0}.lab-footnote{color:var(--muted);font-size:.69rem;line-height:1.65;margin:10px 0 0}.lab-slide{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:.75rem}.lab-slide label{min-width:65px}.lab-slide input{flex:1;min-width:130px;accent-color:var(--curve)}.maxwell-lab [hidden]{display:none!important}.maxwell-lab[data-kind="wave"] .lab-svg{max-height:440px}
+@media(max-width:600px){.lab-controls button{flex:1}.lab-heading h3{font-size:.98rem}}
+</style>
+<script>
+const NS='http://www.w3.org/2000/svg';
+const add=(svg:SVGSVGElement,tag:string,attrs:Record<string,string|number>,txt?:string)=>{
+ const el=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(attrs))el.setAttribute(k,String(v));if(txt!==undefined)el.textContent=txt;svg.appendChild(el);return el;
+};
+for(const root of document.querySelectorAll<HTMLElement>('.maxwell-lab')){
+ if(root.dataset.kind==='field'){
+  const svg=root.querySelector<SVGSVGElement>('[data-plot]')!;
+  const fields={
+   constant:{fn:(x:number,y:number)=>[1.2,.3],result:'恒定场 F=(1.2,0.3)：散度为 0，旋度为 0。所有位置的箭头都相同，方框两侧的通量和环量分别抵消。'},
+   source:{fn:(x:number,y:number)=>[x,y],result:'向外扩张 F=(x,y)：散度为 2，旋度为 0。小方框有净流出，但没有净环量。'},
+   rotation:{fn:(x:number,y:number)=>[-y,x],result:'绕中心转动 F=(−y,x)：散度为 0，旋度为 2。小方框有逆时针净环量，但没有净流出。'},
+   both:{fn:(x:number,y:number)=>[x-y,x+y],result:'同时扩张与旋转 F=(x−y,x+y)：散度为 2，旋度为 2。局部净通量与逆时针环量可以同时非零。'},
+   saddle:{fn:(x:number,y:number)=>[x,-y],result:'一边伸一边缩 F=(x,−y)：散度为 0，旋度为 0。两者都为零，场仍在变化。'}
+  };
+  type FieldKind=keyof typeof fields;
+  const draw=(kind:FieldKind)=>{
+   svg.replaceChildren();const field=fields[kind].fn;
+   for(let i=-3;i<=3;i++)for(let j=-2;j<=2;j++){
+    const x=i*.52,y=j*.52;const [u,v]=field(x,y);const a=Math.hypot(u,v),scale=a?15/(1+a*.35):0;
+    const X=260+x*86,Y=145-y*86,ex=X+u*scale,ey=Y-v*scale;
+    add(svg,'line',{x1:X,y1:Y,x2:ex,y2:ey,stroke:'var(--curve)','stroke-width':1.7,'stroke-linecap':'round'});
+    if(a>.05){const ang=Math.atan2(-(v*scale),u*scale),len=5;add(svg,'path',{d:`M ${ex-len*Math.cos(ang-.55)} ${ey-len*Math.sin(ang-.55)} L ${ex} ${ey} L ${ex-len*Math.cos(ang+.55)} ${ey-len*Math.sin(ang+.55)}`,stroke:'var(--curve)','stroke-width':1.7,fill:'none'});}
+   }
+   add(svg,'rect',{x:207,y:93,width:106,height:104,fill:'var(--box)',stroke:'var(--green)','stroke-width':2,'stroke-dasharray':'6 3'});
+   add(svg,'text',{x:260,y:216,'text-anchor':'middle','font-size':12,fill:'var(--muted)'},'固定观察方框');
+   root.querySelector<HTMLElement>('[data-result]')!.textContent=fields[kind].result;
+   root.querySelectorAll<HTMLButtonElement>('[data-field]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.field===kind)));
+  };
+  root.querySelectorAll<HTMLButtonElement>('[data-field]').forEach(b=>b.addEventListener('click',()=>draw(b.dataset.field as FieldKind)));draw('source');
+ }
+ if(root.dataset.kind==='capacitor'){
+  root.querySelectorAll<HTMLButtonElement>('[data-surface]').forEach(b=>b.addEventListener('click',()=>{
+   const two=b.dataset.surface==='two';
+   root.querySelector<SVGGElement>('[data-s1]')!.setAttribute('style',two?'display:none':'');
+   root.querySelector<SVGGElement>('[data-s2]')!.setAttribute('style',two?'':'display:none');
+   root.querySelectorAll<HTMLButtonElement>('[data-surface]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+   root.querySelector<HTMLElement>('[data-result]')!.textContent=two?'S₂ 避开导线进入极板间：传导电流为 0；变化电通量对应位移电流 I。':'S₁ 穿过导线：传导电流为 I；位移电流贡献在理想模型下取 0。';
+  }));
+ }
+ if(root.dataset.kind==='wave'){
+  const svg=root.querySelector<SVGSVGElement>('[data-wave]')!, slider=root.querySelector<HTMLInputElement>('[data-phase]')!;
+  const draw=(phase:number)=>{
+   svg.replaceChildren();
+   // 三维视图采用固定的轴测投影：x 向右，y 向上，z 向左下。
+   const base=(t:number)=>({x:120+455*t,y:235+37*t});
+   add(svg,'path',{d:'M120 154L575 191L575 351L120 314Z',fill:'var(--curve)','fill-opacity':'.045',stroke:'none'});
+   add(svg,'path',{d:'M60 277L180 193L635 230L515 314Z',fill:'var(--green)','fill-opacity':'.055',stroke:'none'});
+   add(svg,'path',{d:'M120 235L597 274M120 235V64M120 235L38 309',stroke:'var(--muted)','stroke-width':1.8,fill:'none'});
+   add(svg,'text',{x:606,y:280,'font-size':15,fill:'var(--fg)'},'x（传播）');
+   add(svg,'text',{x:112,y:56,'font-size':15,fill:'var(--curve)'},'y：E');
+   add(svg,'text',{x:18,y:325,'font-size':15,fill:'var(--green)'},'z：B');
+   add(svg,'circle',{cx:120,cy:235,r:4,fill:'var(--fg)'});
+   const tPoints=Array.from({length:321},(_,i)=>i/320);
+   const dE=tPoints.map((t,i)=>{const b=base(t),s=Math.sin(t*4*Math.PI-phase);return (i?'L':'M')+b.x.toFixed(1)+','+(b.y-76*s).toFixed(1)}).join(' ');
+   const dB=tPoints.map((t,i)=>{const b=base(t),s=Math.sin(t*4*Math.PI-phase);return (i?'L':'M')+(b.x-61*s).toFixed(1)+','+(b.y+43*s).toFixed(1)}).join(' ');
+   for(let i=0;i<=16;i++){
+     const t=i/16,b=base(t),s=Math.sin(t*4*Math.PI-phase);
+     if(Math.abs(s)<.025)continue;
+     add(svg,'line',{x1:b.x,y1:b.y,x2:b.x,y2:b.y-76*s,stroke:'var(--curve)','stroke-width':1.7,opacity:.73});
+     add(svg,'line',{x1:b.x,y1:b.y,x2:b.x-61*s,y2:b.y+43*s,stroke:'var(--green)','stroke-width':1.7,opacity:.75});
+   }
+   add(svg,'path',{d:dE,fill:'none',stroke:'var(--curve)','stroke-width':3.3,'stroke-linejoin':'round'});
+   add(svg,'path',{d:dB,fill:'none',stroke:'var(--green)','stroke-width':3.3,'stroke-linejoin':'round'});
+   add(svg,'path',{d:'M414 58H440',stroke:'var(--curve)','stroke-width':3});
+   add(svg,'text',{x:448,y:63,'font-size':13,fill:'var(--fg)'},'E_y（沿 y 方向）');
+   add(svg,'path',{d:'M414 86H440',stroke:'var(--green)','stroke-width':3});
+   add(svg,'text',{x:448,y:91,'font-size':13,fill:'var(--fg)'},'cB_z（沿 z 方向）');
+   add(svg,'text',{x:120,y:366,'font-size':12,fill:'var(--muted)'},'半透明平面显示各向量所在的振荡方向；彩色细线连接向量端点。');
+   root.querySelector<HTMLElement>('[data-time]')!.textContent=phase.toFixed(2);
+  };
+  slider.addEventListener('input',()=>draw(Number(slider.value)));
+  root.querySelector<HTMLButtonElement>('[data-wave-reset]')!.addEventListener('click',()=>{slider.value='0';draw(0);});draw(0);
+ }
+}
+</script>

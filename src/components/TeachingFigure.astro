@@ -1,0 +1,508 @@
+---
+interface Props {
+  kind: 'field' | 'differential' | 'potential' | 'flux' | 'divergence' | 'curl' | 'cancellation' | 'forms' | 'charge' | 'coupling' | 'wave-shift' | 'gauss-sphere' | 'gauss-cone' | 'volume-cancel' | 'potential-slopes' | 'differential-plane' | 'flux-plane' | 'mixed-partials' | 'boundary-square'
+}
+const { kind } = Astro.props;
+
+type Point3 = { x: number; y: number; z: number };
+const vAdd = (a: Point3, b: Point3): Point3 => ({x:a.x+b.x,y:a.y+b.y,z:a.z+b.z});
+const vScale = (a: Point3, s: number): Point3 => ({x:a.x*s,y:a.y*s,z:a.z*s});
+const vCross = (a: Point3, b: Point3): Point3 => ({x:a.y*b.z-a.z*b.y,y:a.z*b.x-a.x*b.z,z:a.x*b.y-a.y*b.x});
+const vUnit = (a: Point3): Point3 => { const len=Math.hypot(a.x,a.y,a.z); return vScale(a,1/len); };
+const pathPoints = (points: {x:number;y:number}[], close=false):string =>
+  points.map((p,i)=>(i?'L':'M')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ')+(close?' Z':'');
+const diffP = (x:number,y:number,z:number) => ({x:230+155*x-115*y,y:70+85*x+135*y-17*z});
+const dA=diffP(0,0,0),dC=diffP(1,0,4),dD=diffP(0,1,2),dB=diffP(1,1,6);
+const dC0=diffP(1,0,0),dD0=diffP(0,1,0),dB0=diffP(1,1,0);
+const fluxP = (p:Point3) => ({x:185+1.1*p.x-.65*p.y,y:150+.47*p.x+.75*p.y-p.z});
+const fluxU:Point3={x:135,y:0,z:20}, fluxV:Point3={x:0,y:100,z:35};
+const fluxCenter=vScale(vAdd(fluxU,fluxV),.5);
+const fluxNormal=vUnit(vCross(fluxU,fluxV));
+const fluxB:Point3={x:.5,y:-.3,z:.85};
+const fpCorners=[{x:0,y:0,z:0},fluxU,vAdd(fluxU,fluxV),fluxV].map(fluxP);
+const fpCenter=fluxP(fluxCenter),fpNormalTip=fluxP(vAdd(fluxCenter,vScale(fluxNormal,95)));
+const fpBT=fluxP(vAdd(fluxCenter,vScale(fluxB,105)));
+const fpBG=[{x:55,y:20,z:-15},{x:122,y:100,z:45},{x:0,y:75,z:10}].map(q=>({start:fluxP(q),end:fluxP(vAdd(q,vScale(fluxB,115)))}));
+const curve3=(u:number,v:number):Point3=>({x:100*u,y:80*v,z:23*Math.sin(1.2*u)+13*v*v+18*u*v});
+const curveTanU=(u:number,v:number):Point3=>({x:100,y:0,z:27.6*Math.cos(1.2*u)+18*v});
+const curveTanV=(u:number,v:number):Point3=>({x:0,y:80,z:26*v+18*u});
+const cU=.25,cV=-.09,cCenter=curve3(cU,cV);
+const cNormal=vUnit(vCross(curveTanU(cU,cV),curveTanV(cU,cV)));
+const curveP=(p:Point3)=>({x:221+1.12*p.x-.69*p.y,y:175+.42*p.x+.74*p.y-1.05*p.z});
+const zoomP=(p:Point3)=>({x:566+2.1*(p.x-cCenter.x)-1.5*(p.y-cCenter.y),y:168+.83*(p.x-cCenter.x)+1.55*(p.y-cCenter.y)-2.05*(p.z-cCenter.z)});
+const crange=[-1.15,-.75,-.35,.05,.45,.85,1.15],vrange=[-.86,-.43,0,.43,.86];
+const curveBorders=[
+  Array.from({length:26},(_,i)=>curveP(curve3(-1.15+i*2.3/25,-.86))),
+  Array.from({length:26},(_,i)=>curveP(curve3(1.15,-.86+i*1.72/25))),
+  Array.from({length:26},(_,i)=>curveP(curve3(1.15-i*2.3/25,.86))),
+  Array.from({length:26},(_,i)=>curveP(curve3(-1.15,.86-i*1.72/25)))
+];
+const curveOutline=pathPoints(curveBorders.flat(),true);
+const curveGridU=crange.map(u=>pathPoints(Array.from({length:19},(_,i)=>curveP(curve3(u,-.86+i*1.72/18)))));
+const curveGridV=vrange.map(v=>pathPoints(Array.from({length:23},(_,i)=>curveP(curve3(-1.15+i*2.3/22,v)))));
+const patchCorners=[curve3(.08,-.3),curve3(.43,-.3),curve3(.43,.13),curve3(.08,.13)];
+const patchPath=pathPoints(patchCorners.map(curveP),true);
+const zoomCorners=[
+  vAdd(cCenter,vAdd(vScale(curveTanU(cU,cV),-.21),vScale(curveTanV(cU,cV),-.27))),
+  vAdd(cCenter,vAdd(vScale(curveTanU(cU,cV),.21),vScale(curveTanV(cU,cV),-.27))),
+  vAdd(cCenter,vAdd(vScale(curveTanU(cU,cV),.21),vScale(curveTanV(cU,cV),.27))),
+  vAdd(cCenter,vAdd(vScale(curveTanU(cU,cV),-.21),vScale(curveTanV(cU,cV),.27)))
+].map(zoomP);
+const curveCenter=curveP(cCenter),curveNtip=curveP(vAdd(cCenter,vScale(cNormal,75)));
+const zoomCenter=zoomP(cCenter),zoomNtip=zoomP(vAdd(cCenter,vScale(cNormal,31)));
+const curveFieldTips=[{u:-.86,v:-.47},{u:-.35,v:.38},{u:.68,v:-.53},{u:.87,v:.4}].map(q=>{
+  const start=curve3(q.u,q.v);return {p:curveP(start),tip:curveP(vAdd(start,vScale(fluxB,77)))};
+});
+
+---
+<figure class="box-explorer teaching-figure" data-kind={kind}>
+  {kind === 'field' && <>
+    <div class="figure-top"><h3>从一条曲线，到一个空间中的场</h3><span>图 1 · 描述方式</span></div>
+    <svg viewBox="0 0 640 337" role="img" aria-label="左侧是一维E(x)曲线，右侧是有三维坐标轴的空间盒子，多个网格位置分布着方向与长度不同的场向量，图形与文字位于互不重叠的区域">
+<defs><marker id="f3d-f" markerWidth="6.5" markerHeight="6.5" refX="5.3" refY="3.2" orient="auto"><path d="M0 0L6.4 3.2L0 6.4Z" fill="var(--curve)"/></marker></defs>
+<text x="138" y="24" text-anchor="middle" class="figure-title">只沿一条线取样</text>
+<text x="478" y="24" text-anchor="middle" class="figure-title">整个三维空间上的矢量场</text>
+<path d="M48 270V61M48 270H271" stroke="var(--muted)" stroke-width="1.5" fill="none"/>
+<path d="M50 241Q95 240 134 190T265 79" stroke="var(--curve)" stroke-width="3.5" fill="none"/>
+<circle cx="158" cy="160" r="4.8" fill="var(--red)"/><path d="M158 160V270" stroke="var(--muted)" stroke-dasharray="4 4"/>
+<text x="29" y="67" class="legend">E</text><text x="263" y="289" class="legend">x</text>
+<text x="150" y="300" text-anchor="middle" class="tick">给定 x，读出一个数值</text>
+<path d="M438 246L560 282L354 282Z" fill="var(--soft)" fill-opacity=".45" stroke="var(--border)" stroke-width="1.4"/>
+<path d="M438 246V80L560 116V282M438 80L354 116V282M354 116L476 152L560 116M476 152V318" stroke="var(--border)" fill="none" stroke-width="1.4"/>
+<path d="M438 246L580 287M438 246L338 280M438 246V58" stroke="var(--muted)" stroke-width="1.7"/>
+<text x="588" y="289" class="figure-point">x</text><text x="329" y="290" class="figure-point">y</text><text x="432" y="49" class="figure-point">z</text>
+{[0,1,2].flatMap(i=>[0,1,2].flatMap(j=>[0,1,2].map(k=>{
+  const x=438+(i-1)*46-(j-1)*28,y=246+(i-1)*14+(j-1)*13-k*53;
+  const dx=8+i*5,dy=-12-j*2-k*2;
+  return <g><circle cx={x} cy={y} r="1.8" fill="var(--muted)"/><line x1={x} y1={y} x2={x+dx} y2={y+dy} stroke="var(--curve)" stroke-width="2.0" marker-end="url(#f3d-f)"/></g>;
+})))}
+<text x="478" y="332" text-anchor="middle" class="tick">箭头画在空间中，而非某张平面上</text>
+</svg>
+    <figcaption>左侧沿一条直线取样得到单变量曲线；右侧展示三维空间中多处位置的场向量。箭头方向与长度分别表示场的方向和大小；图上箭头只是连续场的少量取样。</figcaption>
+  </>}
+  {kind === 'differential' && <>
+    <div class="figure-top"><h3>两份变化，为什么可以相加？</h3><span>图 2 · 切平面</span></div>
+    <svg viewBox="0 0 690 384" role="img" aria-label="左边是二元函数z=x平方加2y在点A的局部真实蓝色弯曲曲面、绿色切平面平行四边形和下方灰色水平参考平面。两条路径从A到B，增量分别是4Δx与2Δy，真实B撇比切平面B略高。右侧逐步文字解释。">
+<text x="16" y="24" class="figure-title">在 A=(2,1,6) 处放大函数的局部</text>
+<path d="M191 240L333 254L265 285L123 271Z" fill="var(--soft)" stroke="var(--border)" stroke-width="1.5"/>
+<text x="207" y="318" text-anchor="middle" class="tick">z=6 的水平参考平面</text>
+<path d="M191 240L333 254M191 240L123 271" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4" fill="none"/>
+<text x="341" y="265" class="tick">Δx</text><text x="91" y="279" class="tick">Δy</text>
+<path d="M191 240Q256 203 333 166L265 148Q197 193 123 224Z" fill="var(--curve)" fill-opacity=".13" stroke="var(--curve)" stroke-width="2"/>
+<path d="M191 240Q256 203 333 166M155 231Q215 191 299 156M123 224Q190 180 265 148" stroke="var(--curve)" stroke-width="1.5" fill="none" opacity=".75"/>
+<path d="M191 240L333 192L265 176L123 224Z" fill="var(--green)" fill-opacity=".19" stroke="var(--green)" stroke-width="2.7"/>
+<path d="M191 240L333 192M333 192L265 176M265 176L123 224M123 224L191 240" stroke="var(--green)" stroke-width="2.3" fill="none"/>
+<path d="M333 254V192M123 271V224M265 285V176" stroke="var(--muted)" stroke-dasharray="4 4" stroke-width="1.4"/>
+<path d="M265 176V148" stroke="var(--red)" stroke-dasharray="4 3" stroke-width="2.6"/>
+<path d="M191 240L333 192" stroke="var(--curve)" stroke-width="3.7"/>
+<path d="M191 240L123 224" stroke="var(--green)" stroke-width="3.7"/>
+{[{x:191,y:240,t:'A',tx:202,ty:259},{x:333,y:192,t:'C',tx:342,ty:205},{x:123,y:224,t:'D',tx:112,ty:214},{x:265,y:176,t:'B',tx:276,ty:186},{x:265,y:148,t:'B′',tx:239,ty:137}].map(p=><g><circle cx={p.x} cy={p.y} r="4.8" fill={p.t.includes('′')?'var(--red)':'var(--fg)'}/><text x={p.tx} y={p.ty} class="figure-point">{p.t}</text></g>)}
+<path d="M354 67H377" stroke="var(--curve)" stroke-width="2.6"/><text x="387" y="71" class="legend">真实弯曲曲面（蓝）</text>
+<path d="M354 99H377" stroke="var(--green)" stroke-width="3.2"/><text x="387" y="103" class="legend">局部切平面（绿）</text>
+<path d="M354 131H377" stroke="var(--red)" stroke-width="2.6" stroke-dasharray="4 4"/><text x="387" y="135" class="legend">曲面与切平面的误差</text>
+<text x="359" y="181" class="figure-point">沿切平面的两条走法：</text>
+<text x="359" y="209" class="legend">A→C：沿 x，增加 4Δx</text>
+<text x="359" y="235" class="legend">C→B：沿 y，增加 2Δy</text>
+<text x="359" y="268" class="legend">或 A→D→B，仍是这两项</text>
+<text x="359" y="306" class="figure-point">切平面：4Δx + 2Δy</text>
+<text x="359" y="330" class="legend">真实曲面：再多 (Δx)²</text>
+<text x="15" y="374" class="tick">图将位移和高度放大表示；具体增量由正文中的 f(x,y)=x²+2y 计算得到。</text>
+</svg>
+    <figcaption>浅蓝网格是原函数曲面，绿色是切平面，底部是 z=6 的辅助平面。注意 B′（真实函数值）与 B（切平面近似）并不重合；它们的高度差是 Δx²。放大观察这个差异，才能看清为什么全微分是局部近似。</figcaption>
+  </>}
+  {kind === 'potential' && <>
+    <div class="figure-top"><h3>沿等势线走，为什么电势不变？</h3><span>图 3 · 电势与梯度</span></div>
+    <svg viewBox="0 0 600 302" role="img" aria-label="等势线沿竖直方向，中央点发出向右的静电场箭头、向左的梯度箭头、向上的等势移动箭头和斜向左上的一般位移；虚线显示斜向位移的水平投影。">
+<defs><marker id="f-pot-e" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0 0L8 3.5L0 7Z" fill="var(--curve)"/></marker><marker id="f-pot-g" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0 0L8 3.5L0 7Z" fill="var(--red)"/></marker><marker id="f-pot-u" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0 0L8 3.5L0 7Z" fill="var(--green)"/></marker></defs>
+<text x="12" y="20" class="figure-title">电势相同的竖线；向左电势增高，向右电势降低</text>
+{[96,171,246,321,396,471].map((x,i)=><g><line x1={x} y1="52" x2={x} y2="244" stroke="var(--border)" stroke-width="2" stroke-dasharray="5 5"/><text x={x} y="263" text-anchor="middle" class="tick">{5-i} V</text></g>)}
+<circle cx="246" cy="168" r="5" fill="var(--fg)"/>
+<path d="M246 168V79" stroke="var(--green)" stroke-width="3" marker-end="url(#f-pot-u)"/><text x="259" y="88" class="legend">沿等势线：无变化</text>
+<path d="M246 168H350" stroke="var(--curve)" stroke-width="3.1" marker-end="url(#f-pot-e)"/><text x="358" y="186" class="legend">E</text>
+<path d="M246 168H155" stroke="var(--red)" stroke-width="3" marker-end="url(#f-pot-g)"/><text x="154" y="187" class="legend">∇φ</text>
+<path d="M246 168L173 98" stroke="var(--green)" stroke-width="3" marker-end="url(#f-pot-u)"/>
+<path d="M173 98V168" stroke="var(--muted)" stroke-dasharray="4 4" stroke-width="1.7"/>
+<path d="M173 168H246" stroke="var(--muted)" stroke-dasharray="4 4" stroke-width="1.7"/>
+<text x="109" y="83" class="legend">斜位移 u</text>
+<text x="65" y="119" class="tick">水平投影</text><text x="65" y="135" class="tick">= |u| cosθ</text><text x="210" y="148" class="tick">θ</text>
+<text x="13" y="291" class="tick">沿等势线：0 / 垂直等势线：变化最快 / 斜向：只计算沿梯度的投影</text>
+</svg>
+    <figcaption>沿等势线移动电势不变；沿垂直方向变化最快；斜向移动只取位移在梯度方向的投影。静电场与电势梯度相反。</figcaption>
+  </>}
+  {kind === 'flux' && <>
+    <div class="figure-top"><h3>曲面上的磁通量：每片有自己的法向</h3><span>磁通量 · 曲面积分</span></div>
+    <svg viewBox="0 0 690 340" role="img" aria-label="左侧曲面和取样网格均由同一参数曲面生成，一处局部小面片高亮，蓝色法向按局部切向量叉积计算。右侧放大该面片的切平面，显示局部磁场和法向。">
+      <defs>
+        <marker id="fc-b-arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="var(--red)"/></marker>
+        <marker id="fc-n-arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="var(--curve)"/></marker>
+      </defs>
+      <text x="18" y="23" class="figure-title">曲面 S：选一小片，再近似成局部平面</text>
+      <path d={curveOutline} fill="var(--green)" fill-opacity=".09" stroke="var(--curve)" stroke-width="2.3"/>
+      {curveGridU.map(d=><path d={d} fill="none" stroke="var(--curve)" stroke-width="1.05" stroke-opacity=".27"/>)}
+      {curveGridV.map(d=><path d={d} fill="none" stroke="var(--curve)" stroke-width="1.05" stroke-opacity=".27"/>)}
+      {curveFieldTips.map(({p,tip})=><path d={pathPoints([p,tip])} fill="none" stroke="var(--red)" stroke-width="2.4" stroke-opacity=".66" marker-end="url(#fc-b-arr)"/>)}
+      <path d={patchPath} fill="var(--green)" fill-opacity=".38" stroke="var(--green)" stroke-width="2.8"/>
+      <path d={pathPoints([curveCenter,curveNtip])} fill="none" stroke="var(--curve)" stroke-width="3.4" marker-end="url(#fc-n-arr)"/>
+      <circle cx={curveCenter.x} cy={curveCenter.y} r="4.5" fill="var(--fg)"/>
+      <text x={curveNtip.x-21} y={curveNtip.y-7} class="figure-point">n̂ᵢ</text>
+      <text x="41" y="238" class="figure-point">S</text>
+      <text x={curveCenter.x+15} y={curveCenter.y+20} class="tick">ΔAᵢ</text>
+      <path d={'M '+(curveCenter.x+17)+' '+(curveCenter.y+4)+' Q 411 80 462 113'} stroke="var(--curve)" stroke-width="1.8" fill="none" stroke-dasharray="5 4"/>
+      <rect x="455" y="44" width="217" height="247" rx="8" fill="var(--soft)" fill-opacity=".23" stroke="var(--border)" stroke-width="1.6"/>
+      <text x="473" y="69" class="figure-point">局部面片放大</text>
+      <path d={pathPoints(zoomCorners,true)} fill="var(--green)" fill-opacity=".19" stroke="var(--green)" stroke-width="2.4"/>
+      <path d={pathPoints([zoomCenter,zoomNtip])} fill="none" stroke="var(--curve)" stroke-width="3.5" marker-end="url(#fc-n-arr)"/>
+      <path d={pathPoints([zoomCenter,zoomP(vAdd(cCenter,vScale(fluxB,55)))])} fill="none" stroke="var(--red)" stroke-width="3.3" marker-end="url(#fc-b-arr)"/>
+      <circle cx={zoomCenter.x} cy={zoomCenter.y} r="3.7" fill="var(--fg)"/>
+      <text x={zoomNtip.x-19} y={zoomNtip.y-7} class="figure-point">n̂ᵢ</text>
+      <text x="615" y="111" class="figure-point">B</text>
+      <text x="555" y="220" class="tick">局部切平面</text>
+      <text x="470" y="254" class="legend">ΔΦᵢ ≈ B(rᵢ) · n̂ᵢ ΔAᵢ</text>
+      <text x="470" y="276" class="tick">每片求出贡献，再累加</text>
+      <text x="18" y="328" class="tick">曲面按参数方程生成，法向由同一处的两根局部切向量叉积求出。</text>
+    </svg>
+    <figcaption>曲面网格代表取样方向。右侧放大的是选中点附近的局部切平面，不代表整张曲面都平坦。每一片的法向和磁场投影可能不同，通量是所有面片带符号贡献的和。</figcaption>
+  </>}
+  {kind === 'divergence' && <>
+    <div class="figure-top"><h3>流进来多少？流出去多少？</h3><span>图 5 · 小盒子的净通量</span></div>
+    <svg viewBox="0 0 690 347" role="img" aria-label="三维透视小长方体，左侧蓝色箭头流入，右侧较长的蓝色箭头流出；在远离图形的右侧单独注明两面外法向方向和右通量减左通量">
+<defs><marker id="d-new-flow" markerWidth="8" markerHeight="8" refX="6.7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="var(--curve)"/></marker></defs>
+<text x="14" y="23" class="figure-title">先只比较 x 方向的左右两个面</text>
+<path d="M136 97L284 97L339 57L190 57Z" fill="var(--soft)" stroke="var(--muted)" stroke-width="1.5"/>
+<path d="M136 97L284 97L284 242L136 242Z" fill="var(--curve)" fill-opacity=".08" stroke="var(--curve)" stroke-width="1.8"/>
+<path d="M284 97L339 57L339 202L284 242Z" fill="var(--green)" fill-opacity=".19" stroke="var(--green)" stroke-width="2.8"/>
+<path d="M136 97L190 57M190 57V202L136 242M190 202L339 202" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="4 5" fill="none"/>
+<path d="M46 151H134M46 197H134" stroke="var(--curve)" stroke-width="2.7" marker-end="url(#d-new-flow)"/>
+<path d="M337 147H424M337 194H424" stroke="var(--curve)" stroke-width="3.8" marker-end="url(#d-new-flow)"/>
+<text x="66" y="139" class="legend">流入</text><text x="354" y="134" class="legend">流出</text>
+<text x="162" y="284" class="legend" text-anchor="middle">左面朝外：−x</text>
+<text x="329" y="284" class="legend" text-anchor="middle">右面朝外：+x</text>
+<path d="M456 52H456V291" stroke="var(--border)" stroke-width="1.2"/>
+<text x="474" y="84" class="figure-point">右侧通量</text>
+<text x="474" y="110" class="figure-point">减去左侧通量</text>
+<text x="474" y="151" class="legend">两面面积相同</text>
+<text x="474" y="180" class="legend">右侧场分量更大</text>
+<text x="474" y="209" class="legend">→ 净向外流出为正</text>
+<text x="474" y="268" class="tick">另外两对面也类似</text>
+<text x="17" y="329" class="tick">画的是通量的方向与大小比较，不代表仅凭几根箭头就能证明散度公式。</text>
+</svg>
+    <figcaption>这里比较的不是左右箭头谁“更长”，而是两侧穿过相同面积面片的通量差。若右侧向外流出的量更大，盒子内部就有正的净流出贡献。</figcaption>
+  </>}
+  {kind === 'curl' && <>
+    <div class="figure-top"><h3>一个小矩形怎样测出旋度？</h3><span>图 6 · 局部环量</span></div>
+    <svg viewBox="0 0 560 290" role="img" aria-label="逆时针走小矩形，右侧向上矢量场比左侧更强，形成正环量；上边下边的水平分量在特例F=(0,x)中都为零">
+      <defs><marker id="tf-curl-a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L7 3L0 6Z" fill="var(--curve)"/></marker><marker id="tf-curl-b" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L7 3L0 6Z" fill="var(--green)"/></marker></defs>
+      <rect x="112" y="64" width="244" height="164" fill="var(--box)" stroke="var(--muted)" stroke-dasharray="5 4" stroke-width="1.5"/>
+      <path d="M140 228H324M356 206V82M327 64H142M112 86V205" fill="none" stroke="var(--green)" stroke-width="2.8" marker-end="url(#tf-curl-b)"/>
+      <path d="M91 210V155" stroke="var(--curve)" stroke-width="2.8" marker-end="url(#tf-curl-a)"/>
+      <path d="M380 215V87" stroke="var(--curve)" stroke-width="4.3" marker-end="url(#tf-curl-a)"/>
+      <text x="58" y="113" class="tick">Q(x)</text><text x="388" y="113" class="tick">Q(x+Δx)</text>
+      <text x="234" y="47" class="legend" text-anchor="middle">逆时针正方向</text>
+      <text x="234" y="146" class="figure-point" text-anchor="middle">F=(0,x)</text><text x="234" y="168" class="tick" text-anchor="middle">右侧向上更强</text>
+      <text x="235" y="254" text-anchor="middle" class="tick">环量 = [Q(x+Δx)−Q(x)]Δy</text>
+      <text x="235" y="274" text-anchor="middle" class="tick">除以 ΔxΔy → Qₓ；一般情形还要减去 Pᵧ</text>
+    </svg>
+    <figcaption>蓝箭头是场在左右两侧的取值；绿箭头是我们积分时选择的绕行方向，两者不能混淆。右侧与绕行方向一致，左侧相反，所以两边的贡献相减。</figcaption>
+  </>}
+  {kind === 'cancellation' && <>
+    <div class="figure-top"><h3>把小区域拼起来，内部发生了什么？</h3><span>图 7 · 公共边抵消</span></div>
+    <svg viewBox="0 0 560 265" role="img" aria-label="把一个大矩形分成三列两行，小矩形分别逆时针走边界；内部公共边被相邻小矩形反向走过，积分相消，最后只剩外边界">
+      <defs><marker id="tf-cancel-a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L7 3L0 6Z" fill="var(--curve)"/></marker><marker id="tf-cancel-b" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0 0L6 3L0 6Z" fill="var(--red)"/></marker></defs>
+      <rect x="82" y="44" width="390" height="170" fill="var(--box)" stroke="var(--curve)" stroke-width="4"/>
+      {[212,342].map(x=><line x1={x} y1="44" x2={x} y2="214" stroke="var(--muted)" stroke-opacity=".5" stroke-dasharray="4 3"/>)}
+      <line x1="82" y1="129" x2="472" y2="129" stroke="var(--muted)" stroke-opacity=".5" stroke-dasharray="4 3"/>
+      {[212,342].map(x=><g><path d={'M'+(x-10)+' 72V108'} stroke="var(--red)" stroke-width="2.1" fill="none" marker-end="url(#tf-cancel-b)"/><path d={'M'+(x+10)+' 108V72'} stroke="var(--red)" stroke-width="2.1" fill="none" marker-end="url(#tf-cancel-b)"/><path d={'M'+(x-10)+' 156V194'} stroke="var(--red)" stroke-width="2.1" fill="none" marker-end="url(#tf-cancel-b)"/><path d={'M'+(x+10)+' 194V156'} stroke="var(--red)" stroke-width="2.1" fill="none" marker-end="url(#tf-cancel-b)"/></g>)}
+      <path d="M132 214H241M472 189V88M421 44H300M82 79V169" stroke="var(--curve)" stroke-width="3" marker-end="url(#tf-cancel-a)" fill="none"/>
+      <text x="277" y="32" text-anchor="middle" class="figure-title">只有外边界留下来</text>
+      <text x="277" y="244" text-anchor="middle" class="tick">小面片的共用边：一次正向，一次反向 → 抵消</text>
+    </svg>
+    <figcaption>沿每块面片逆时针积分，把结果相加。公共边会被走两次，而且方向相反，因此贡献精确抵消；不是“内部的场恰好为零”。</figcaption>
+  </>}
+  {kind === 'forms' && <>
+    <div class="figure-top"><h3>点、线、面、体：到底在测量什么？</h3><span>图 8 · 形式次数</span></div>
+    <svg viewBox="0 0 620 240" role="img" aria-label="从点到有向线段、面片、体积：其中一根短箭头为u，两根短箭头u和v形成有向平行四边形，三根短箭头u、v、w张成有向平行六面体">
+<defs><marker id="form-arr-v" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="var(--curve)"/></marker></defs>
+<text x="69" y="25" class="figure-title" text-anchor="middle">0 个方向</text><text x="215" y="25" class="figure-title" text-anchor="middle">1 个方向</text><text x="369" y="25" class="figure-title" text-anchor="middle">2 个方向</text><text x="531" y="25" class="figure-title" text-anchor="middle">3 个方向</text>
+<circle cx="69" cy="118" r="6.5" fill="var(--curve)"/><text x="69" y="167" class="tick" text-anchor="middle">点：数值</text>
+<path d="M180 144L249 81" stroke="var(--curve)" stroke-width="3.2" fill="none" marker-end="url(#form-arr-v)"/><circle cx="180" cy="144" r="3" fill="var(--fg)"/><text x="250" y="69" class="figure-point">u</text>
+<text x="215" y="184" class="tick" text-anchor="middle">有向线段</text>
+<path d="M319 139L380 116L423 145L362 168Z" fill="var(--green)" fill-opacity=".18" stroke="var(--green)" stroke-width="2"/>
+<path d="M319 139L380 116M319 139L362 168" stroke="var(--curve)" stroke-width="3" marker-end="url(#form-arr-v)"/>
+<text x="385" y="105" class="figure-point">u</text><text x="364" y="187" class="figure-point">v</text>
+<text x="370" y="211" class="tick" text-anchor="middle">有向面积元素</text>
+<path d="M475 128L525 108L568 131L518 151Z" fill="var(--green)" fill-opacity=".14" stroke="var(--green)" stroke-width="2"/>
+<path d="M475 128L475 68L525 48L568 71L568 131M475 68L518 91L568 71M518 91L518 151M525 48L525 108" fill="none" stroke="var(--curve)" stroke-opacity=".6" stroke-width="1.8"/>
+<path d="M475 128L525 108M475 128L518 151M475 128V68" fill="none" stroke="var(--curve)" stroke-width="2.9" marker-end="url(#form-arr-v)"/>
+<text x="532" y="101" class="figure-point">u</text><text x="523" y="170" class="figure-point">v</text><text x="459" y="60" class="figure-point">w</text>
+<text x="539" y="212" class="tick" text-anchor="middle">有向体积元素</text>
+<text x="310" y="233" text-anchor="middle" class="tick">方向向量可记作 dr₁、dr₂、dr₃；也可简记为 u、v、w。</text>
+</svg>
+    <figcaption>每增加一个独立的方向向量，便多出一个几何维度。形式是测量这些有向元素的规则：1-形式测线段，2-形式测面积，3-形式测体积。</figcaption>
+  </>}
+  {kind === 'charge' && <>
+    <div class="figure-top"><h3>场线向外散开，散度就一定大于零吗？</h3><span>图 9 · 点电荷外部</span></div>
+    <svg viewBox="0 0 560 277" role="img" aria-label="带正电点电荷产生径向向外电场，较大的封闭圆包围电荷，右侧远处小方框不包围电荷，净通量为零">
+      <defs><marker id="tf-charge-a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L7 3L0 6Z" fill="var(--curve)"/></marker></defs>
+      <circle cx="164" cy="133" r="93" stroke="var(--green)" stroke-width="2" stroke-dasharray="6 5" fill="var(--box)"/>
+      {Array.from({length:12},(_,i)=>i*Math.PI/6).map(t=><path d={'M'+(164+24*Math.cos(t))+' '+(133+24*Math.sin(t))+'L'+(164+118*Math.cos(t))+' '+(133+118*Math.sin(t))} fill="none" stroke="var(--curve)" stroke-width="1.7" marker-end="url(#tf-charge-a)"/>)}
+      <circle cx="164" cy="133" r="13" fill="var(--red)"/><text x="164" y="139" text-anchor="middle" fill="white" font-size="19">+</text>
+      <rect x="347" y="100" width="88" height="72" fill="var(--green)" fill-opacity=".08" stroke="var(--green)" stroke-width="2.5"/>
+      <path d="M305 111L393 106L480 97M305 142L393 135L480 124M305 181L393 171L480 158" stroke="var(--curve)" stroke-width="1.7" fill="none" marker-end="url(#tf-charge-a)"/>
+      <text x="352" y="205" class="legend">小盒子不含电荷</text>
+      <text x="352" y="226" class="legend">净通量为零</text>
+      <text x="36" y="260" class="tick">大曲面包住电荷 → 正通量；小盒子不包住电荷 → 零净通量。</text>
+    </svg>
+    <figcaption>这里的小盒子与左边大圆是两个单独选取的积分区域；示意图用二维截面展示三维空间中的封闭曲面。穿过小盒子的场线可以是弯曲、发散的，但进入和流出的总通量相等。</figcaption>
+  </>}
+  {kind === 'coupling' && <>
+    <div class="figure-top"><h3>两条旋度定律到底在说什么？</h3><span>图 10 · 局部环绕</span></div>
+    <svg viewBox="0 0 600 274" role="img" aria-label="左边向纸面外的磁场正在增强，环绕它的感应电场顺时针；右边向纸面外的电场正在增强，环绕它的磁场逆时针。表明后两条麦克斯韦方程如何互相联系。">
+      <defs><marker id="f-couple-a" markerWidth="9" markerHeight="9" refX="6" refY="3.5" orient="auto"><path d="M0 0L8 3.5L0 7Z" fill="var(--curve)"/></marker><marker id="f-couple-b" markerWidth="9" markerHeight="9" refX="6" refY="3.5" orient="auto"><path d="M0 0L8 3.5L0 7Z" fill="var(--green)"/></marker></defs>
+      <line x1="300" y1="30" x2="300" y2="247" stroke="var(--border)" stroke-width="1.5" stroke-dasharray="5 5"/>
+      <text x="149" y="22" text-anchor="middle" class="figure-title">磁场随时间增强 → 电场环绕</text>
+      <text x="450" y="22" text-anchor="middle" class="figure-title">电场随时间增强 → 磁场环绕</text>
+      {[108,147,186].map(x=><g><circle cx={x} cy="142" r="10" fill="var(--soft)" stroke="var(--curve)" stroke-width="1.5"/><circle cx={x} cy="142" r="3.5" fill="var(--curve)"/></g>)}
+      {[408,447,486].map(x=><g><circle cx={x} cy="142" r="10" fill="var(--soft)" stroke="var(--green)" stroke-width="1.5"/><circle cx={x} cy="142" r="3.5" fill="var(--green)"/></g>)}
+      <path d="M150 74A73 73 0 0 1 221 141" stroke="var(--curve)" stroke-width="3.5" fill="none" marker-end="url(#f-couple-a)"/>
+      <path d="M450 74A73 73 0 0 0 380 141" stroke="var(--green)" stroke-width="3.5" fill="none" marker-end="url(#f-couple-b)"/>
+      <text x="150" y="113" text-anchor="middle" class="legend">B 增强 ⊙</text>
+      <text x="450" y="113" text-anchor="middle" class="legend">E 增强 ⊙</text>
+      <text x="150" y="233" text-anchor="middle" class="legend">顺时针的 E 环量</text>
+      <text x="450" y="233" text-anchor="middle" class="legend">逆时针的 B 环量</text>
+      <text x="300" y="266" text-anchor="middle" class="tick">⊙ 表示指向纸面外；两幅均为垂直于场方向的局部截面</text>
+    </svg>
+    <figcaption>左图对应法拉第定律的负号；右图对应安培–麦克斯韦定律中变化电场项的正号。图只说明局部旋度与时间变化的关系，并非电磁波传播的完整三维过程。</figcaption>
+  </>}
+  {kind === 'wave-shift' && <>
+    <div class="figure-top"><h3>为什么向右平移的波写成 f(x−vt)？</h3><span>图 11 · 波形平移</span></div>
+    <svg viewBox="0 0 600 271" role="img" aria-label="同一条正弦波在两个时刻的图像，第二时刻整条曲线向右移动了vΔt，原波峰与新波峰之间用水平箭头标出距离vΔt。">
+      <defs><marker id="f-shift-arr" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0 0L8 3.5L0 7Z" fill="var(--green)"/></marker></defs>
+      <path d="M30 152H575" stroke="var(--border)" stroke-width="1.6"/>
+      <text x="578" y="171" class="tick">x</text>
+      <path d={Array.from({length:265},(_,j)=>{const x=38+520*j/264, y=152-54*Math.sin((x-38)*2*Math.PI/300);return (j?'L':'M')+x.toFixed(1)+','+y.toFixed(1)}).join(' ')} stroke="var(--curve)" stroke-width="2.7" fill="none"/>
+      <path d={Array.from({length:265},(_,j)=>{const x=38+520*j/264, y=152-54*Math.sin((x-118)*2*Math.PI/300);return (j?'L':'M')+x.toFixed(1)+','+y.toFixed(1)}).join(' ')} stroke="var(--green)" stroke-width="2.7" stroke-dasharray="8 5" fill="none"/>
+      <line x1="113" y1="97" x2="113" y2="45" stroke="var(--muted)" stroke-dasharray="4 4"/>
+      <line x1="193" y1="97" x2="193" y2="45" stroke="var(--muted)" stroke-dasharray="4 4"/>
+      <line x1="113" y1="49" x2="191" y2="49" stroke="var(--green)" stroke-width="2.5" marker-end="url(#f-shift-arr)"/>
+      <text x="152" y="36" text-anchor="middle" class="legend">vΔt</text>
+      <path d="M310 217H332" stroke="var(--curve)" stroke-width="2.7"/><text x="339" y="221" class="legend">t=0：f(x)</text>
+      <path d="M310 244H332" stroke="var(--green)" stroke-width="2.7" stroke-dasharray="6 4"/><text x="339" y="248" class="legend">t=Δt：f(x−vΔt)</text>
+    </svg>
+    <figcaption>蓝色波峰原本在某个位置，时间经过 Δt 后出现在右侧 vΔt 的位置。要在新位置 x 读取旧图像，应当回到旧坐标 x−vΔt，因此新图像是 f(x−vΔt)。</figcaption>
+  </>}
+
+  {kind === 'gauss-sphere' && <>
+    <div class="figure-top"><h3>场强变弱，球面却在变大</h3><span>高斯定律 · 球面</span></div>
+    <svg viewBox="0 0 640 320" role="img" aria-label="以正点电荷为中心的两个同心球面的截面图，半径为r和R，电场向外辐射。球面面积随半径平方增长，场强随半径平方减弱，通量相同。">
+      <defs><marker id="gs-ar" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="var(--curve)"/></marker></defs>
+      <circle cx="222" cy="156" r="120" fill="var(--curve)" fill-opacity=".035" stroke="var(--curve)" stroke-width="2" stroke-dasharray="7 5"/>
+      <circle cx="222" cy="156" r="68" fill="var(--green)" fill-opacity=".075" stroke="var(--green)" stroke-width="2.5"/>
+      {Array.from({length:12},(_,j)=>j*Math.PI/6).map(t=><path d={'M'+(222+20*Math.cos(t))+' '+(156+20*Math.sin(t))+' L'+(222+143*Math.cos(t))+' '+(156+143*Math.sin(t))} fill="none" stroke="var(--curve)" stroke-width="1.4" opacity=".65" marker-end="url(#gs-ar)"/>)}
+      <circle cx="222" cy="156" r="15" fill="var(--red)"/><text x="222" y="161" fill="white" text-anchor="middle" font-size="17">+Q</text>
+      <path d="M222 156H342" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="5 4"/>
+      <text x="264" y="146" class="figure-point">r</text><text x="307" y="146" class="figure-point">R</text>
+      <text x="405" y="83" class="legend">内球：面积 4πr²</text><text x="405" y="110" class="legend">场强 kQ/r²</text>
+      <path d="M405 130H610" stroke="var(--border)" stroke-width="1.3"/>
+      <text x="405" y="170" class="legend">外球：面积 4πR²</text><text x="405" y="196" class="legend">场强 kQ/R²</text>
+      <text x="405" y="246" class="figure-point">通量均为 4πkQ</text>
+      <text x="405" y="269" class="tick">面积增加抵消场强减弱</text>
+    </svg>
+    <figcaption>二维画面展示的是三维球面的截面。沿径向的场强随半径平方减弱，但整个球面面积恰好按同一比例增加，所以穿过不同同心球面的总电通量相等。</figcaption>
+  </>}
+  {kind === 'gauss-cone' && <>
+    <div class="figure-top"><h3>一束射线穿过不同曲面，总通量为什么相同？</h3><span>高斯定律 · 几何证明</span></div>
+    <svg viewBox="0 0 640 318" role="img" aria-label="左侧点电荷发出的两条边界射线形成细锥，在两处截取球面片。右侧同一束射线穿过倾斜小面片，其垂直于径向的投影与球面片对应。">
+      <text x="154" y="22" text-anchor="middle" class="figure-title">① 同一束射线，球面片按 r² 变大</text>
+      <path d="M45 173L286 59L286 285Z" fill="var(--curve)" fill-opacity=".055"/>
+      <path d="M45 173L281 64M45 173L281 282" stroke="var(--curve)" stroke-width="2" stroke-dasharray="6 4" fill="none"/>
+      <path d="M129 134Q151 173 129 212" fill="none" stroke="var(--green)" stroke-width="5.5"/>
+      <path d="M239 83Q292 173 239 263" fill="none" stroke="var(--green)" stroke-width="5.5"/>
+      <circle cx="45" cy="173" r="9" fill="var(--red)"/><text x="45" y="177" fill="white" text-anchor="middle" font-size="12">+</text>
+      <text x="103" y="115" class="tick">内球面片</text><text x="215" y="64" class="tick">外球面片</text>
+      <line x1="322" y1="38" x2="322" y2="279" stroke="var(--border)" stroke-width="1.5" stroke-dasharray="5 5"/>
+      <text x="475" y="22" text-anchor="middle" class="figure-title">② 倾斜面片要计算径向投影</text>
+      <path d="M346 172L616 68M346 172L616 280" fill="none" stroke="var(--curve)" stroke-width="1.8" stroke-dasharray="6 4"/>
+      <path d="M473 132L541 209" stroke="var(--green)" stroke-width="7" stroke-linecap="round"/>
+      <path d="M475 120Q517 173 475 226" stroke="var(--curve)" stroke-width="2.4" fill="none" stroke-dasharray="4 4"/>
+      <path d="M473 132L475 120M541 209L475 226" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3 4"/>
+      <circle cx="346" cy="172" r="8" fill="var(--red)"/>
+      <text x="490" y="117" class="legend">斜面片</text>
+      <text x="425" y="246" class="legend">径向投影面片</text>
+      <text x="314" y="303" text-anchor="middle" class="tick">图是三维锥体的二维剖面；相同射线范围，对应相同有向通量。</text>
+    </svg>
+    <figcaption>半径放大时，球面片面积按半径平方变大、电场强度按半径平方减小；斜面片则取垂直于电场方向的投影。穿出取正，穿入取负，因此复杂曲面上多次穿越的贡献能相互抵消。</figcaption>
+  </>}
+  {kind === 'volume-cancel' && <>
+    <div class="figure-top"><h3>两个小盒子的公共面，为什么正好抵消？</h3><span>散度定理 · 三维拼接</span></div>
+    <svg viewBox="0 0 640 309" role="img" aria-label="两个三维小盒子并排相接，中间共用绿色面片，两侧的外法向方向相反，公共面通量被加一次又减一次。">
+      <defs><marker id="vc-right" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0 0L8 3.5L0 7Z" fill="var(--curve)"/></marker><marker id="vc-left" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0 0L8 3.5L0 7Z" fill="var(--red)"/></marker></defs>
+      <path d="M82 102L242 102L285 70L125 70Z" fill="var(--curve)" fill-opacity=".08" stroke="var(--curve)" stroke-width="1.7"/>
+      <path d="M82 102L242 102L242 228L82 228Z" fill="var(--curve)" fill-opacity=".07" stroke="var(--curve)" stroke-width="1.7"/>
+      <path d="M242 102L285 70L285 196L242 228Z" fill="var(--green)" fill-opacity=".22" stroke="var(--green)" stroke-width="3"/>
+      <path d="M285 70L449 70L406 102L242 102Z" fill="var(--red)" fill-opacity=".06" stroke="var(--red)" stroke-width="1.5"/>
+      <path d="M285 70L449 70L449 196L285 196Z" fill="var(--red)" fill-opacity=".04" stroke="var(--red)" stroke-width="1.5"/>
+      <path d="M242 102L406 102L406 228L242 228Z" fill="var(--red)" fill-opacity=".045" stroke="var(--red)" stroke-width="1.5"/>
+      <path d="M406 102L449 70L449 196L406 228Z" fill="var(--red)" fill-opacity=".06" stroke="var(--red)" stroke-width="1.5"/>
+      <path d="M253 146H313" stroke="var(--curve)" stroke-width="3" marker-end="url(#vc-right)"/>
+      <path d="M312 184H251" stroke="var(--red)" stroke-width="3" marker-end="url(#vc-left)"/>
+      <text x="147" y="156" class="figure-point">盒子 A</text><text x="336" y="156" class="figure-point">盒子 B</text>
+      <text x="280" y="48" text-anchor="middle" class="figure-point">公共面</text>
+      <text x="77" y="265" class="legend">A 看这个面：外法向 →</text>
+      <text x="327" y="265" class="legend">B 看这个面：外法向 ←</text>
+      <text x="316" y="295" text-anchor="middle" class="tick">相同的通量贡献，一次取正、一次取负；拼接后只剩外围表面。</text>
+    </svg>
+    <figcaption>两个不同颜色的箭头表示的是两个盒子各自的**外法向**，不是场本身的两个方向。它们在公共面上相反，因此该面通量相互抵消；其余外表面留下来。</figcaption>
+  </>}
+
+  {kind === 'potential-slopes' && <>
+    <div class="figure-top"><h3>先只沿一个方向看电势—位置图像</h3><span>梯度 · 两个切线斜率</span></div>
+    <svg viewBox="0 0 640 304" role="img" aria-label="左右两张电势对位置坐标的斜直线图，左图固定y研究φ(x)，右图固定x研究φ(y)，并画出在某点的切线斜率与电场分量之间的负号关系。">
+      <defs><marker id="ps-x" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="var(--curve)"/></marker></defs>
+      <text x="150" y="23" text-anchor="middle" class="figure-title">固定 y，只改变 x</text>
+      <text x="467" y="23" text-anchor="middle" class="figure-title">固定 x，只改变 y</text>
+      <path d="M54 245V55M54 245H282M374 245V55M374 245H607" stroke="var(--muted)" stroke-width="1.4" fill="none"/>
+      <text x="22" y="66" class="tick">φ</text><text x="277" y="264" class="tick">x</text>
+      <text x="343" y="66" class="tick">φ</text><text x="604" y="264" class="tick">y</text>
+      <path d="M69 83L260 207" fill="none" stroke="var(--curve)" stroke-width="3.5"/>
+      <path d="M386 115L587 201" fill="none" stroke="var(--green)" stroke-width="3.5"/>
+      <circle cx="166" cy="146" r="5" fill="var(--red)"/><circle cx="484" cy="157" r="5" fill="var(--red)"/>
+      <path d="M166 146L213 146L213 177" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/>
+      <path d="M484 157L530 157L530 177" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/>
+      <text x="166" y="113" text-anchor="middle" class="legend">x 向斜率 φₓ</text><text x="483" y="124" text-anchor="middle" class="legend">y 向斜率 φᵧ</text>
+      <text x="148" y="290" text-anchor="middle" class="figure-point">Eₓ = −φₓ</text>
+      <text x="465" y="290" text-anchor="middle" class="figure-point">Eᵧ = −φᵧ</text>
+    </svg>
+    <figcaption>在二维标量场中，“沿 x 轴读取变化率”与“沿 y 轴读取变化率”其实是分别画出的两张一元函数图像。电势沿一个方向的切线斜率取负号，正好给出电场沿该方向的分量。</figcaption>
+  </>}
+
+  {kind === 'differential-plane' && <>
+    <div class="figure-top"><h3>两个坐标都变了，为什么高度增量能相加？</h3><span>全微分 · 切平面与竖直高度</span></div>
+    <svg viewBox="0 0 690 330" role="img" aria-label="由三维坐标严格投影生成的宽阔绿色切平面平行四边形ACBD与下方灰色水平参考面。点C、D、B到水平面有竖直虚线。B处的竖直高度为4Δx+2Δy，两条路径分别为ACB与ADB。">
+      <defs>
+        <marker id="dp-new-z" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="var(--red)"/></marker>
+      </defs>
+      <text x="17" y="23" class="figure-title">绿色：切平面　　灰色：过 A 的水平参考面</text>
+      <path d={pathPoints([dA,dC0,dB0,dD0],true)} fill="var(--muted)" fill-opacity=".075" stroke="var(--muted)" stroke-opacity=".46" stroke-width="1.7" stroke-dasharray="5 5"/>
+      <path d={pathPoints([dA,dC,dB,dD],true)} fill="var(--green)" fill-opacity=".21" stroke="var(--green)" stroke-width="2.6"/>
+      <path d={pathPoints([dC,dC0])} fill="none" stroke="var(--muted)" stroke-width="1.6" stroke-dasharray="5 4"/>
+      <path d={pathPoints([dD,dD0])} fill="none" stroke="var(--muted)" stroke-width="1.6" stroke-dasharray="5 4"/>
+      <path d={pathPoints([dB0,dB])} fill="none" stroke="var(--red)" stroke-width="2.9" marker-end="url(#dp-new-z)"/>
+      <path d={pathPoints([dA,dC,dB])} fill="none" stroke="var(--curve)" stroke-width="3.7"/>
+      <path d={pathPoints([dA,dD,dB])} fill="none" stroke="var(--green)" stroke-width="3.3" stroke-dasharray="7 4"/>
+      {[{p:dA,t:'A',dx:-18,dy:-5},{p:dC,t:'C',dx:9,dy:-5},{p:dD,t:'D',dx:-19,dy:-7},{p:dB,t:'B',dx:12,dy:1}].map(({p,t,dx,dy})=><g><circle cx={p.x} cy={p.y} r="5" fill="var(--fg)"/><text x={p.x+dx} y={p.y+dy} class="figure-point">{t}</text></g>)}
+      <circle cx={dB0.x} cy={dB0.y} r="3.3" fill="var(--muted)"/>
+      <text x={dB0.x+11} y={dB0.y+5} class="tick">B 的水平投影</text>
+      <text x="342" y="141" class="tick">4Δx</text>
+      <text x="81" y="201" class="tick">2Δy</text>
+      <text x="291" y="217" class="figure-point">总高度</text>
+      <text x="290" y="238" class="legend">4Δx + 2Δy</text>
+      <path d="M43 135V70M43 70L39 80M43 70L47 80" fill="none" stroke="var(--fg)" stroke-width="1.8"/>
+      <text x="33" y="64" class="figure-point">z</text>
+      <text x="61" y="92" class="tick">竖直向上</text>
+      <path d="M441 45V304" stroke="var(--border)" stroke-width="1.2"/>
+      <path d="M459 65H480" stroke="var(--curve)" stroke-width="3.2"/>
+      <text x="489" y="70" class="legend">A → C → B</text>
+      <text x="458" y="97" class="tick">先沿 x，再沿 y</text>
+      <text x="458" y="126" class="legend">增加 4Δx，再加 2Δy</text>
+      <path d="M459 159H480" stroke="var(--green)" stroke-width="3.2" stroke-dasharray="6 3"/>
+      <text x="489" y="164" class="legend">A → D → B</text>
+      <text x="458" y="190" class="tick">先沿 y，再沿 x</text>
+      <text x="458" y="219" class="legend">增加 2Δy，再加 4Δx</text>
+      <text x="459" y="266" class="figure-point">同一个 B，同一个高度</text>
+      <text x="458" y="293" class="tick">例：Δx=Δy=1</text>
+    </svg>
+    <figcaption>四个顶点先按切平面方程 z=6+4(x−2)+2(y−1) 计算，再统一作三维斜投影。竖直连线对应真正的 z 方向高度差，而不是斜边长度。灰色参考面取 z=6；两条路线到达同一个 B，因而高度增量完全相同。</figcaption>
+  </>}
+  {kind === 'flux-plane' && <>
+    <div class="figure-top"><h3>磁通量：为什么要比较磁场与面片法向？</h3><span>磁通量 · 平面示意</span></div>
+    <svg viewBox="0 0 690 320" role="img" aria-label="由两条三维切向边计算得到法向量的斜平面。红色磁场箭头与蓝色法向量在空间夹角θ；右侧标注通量来自磁场沿法向的分量。">
+      <defs>
+        <marker id="fp-red-arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="var(--red)"/></marker>
+        <marker id="fp-blue-arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="var(--curve)"/></marker>
+      </defs>
+      <text x="17" y="22" class="figure-title">一块斜平面，四根平行磁场箭头</text>
+      <path d={pathPoints(fpCorners,true)} fill="var(--green)" fill-opacity=".15" stroke="var(--curve)" stroke-width="2.6"/>
+      {fpBG.map(({start,end})=><path d={pathPoints([start,end])} fill="none" stroke="var(--red)" stroke-width="2.6" stroke-opacity=".62" marker-end="url(#fp-red-arr)"/>)}
+      <path d={pathPoints([fpCenter,fpBT])} fill="none" stroke="var(--red)" stroke-width="3.5" marker-end="url(#fp-red-arr)"/>
+      <path d={pathPoints([fpCenter,fpNormalTip])} fill="none" stroke="var(--curve)" stroke-width="4" marker-end="url(#fp-blue-arr)"/>
+      <circle cx={fpCenter.x} cy={fpCenter.y} r="4.5" fill="var(--fg)"/>
+      <text x={fpNormalTip.x-25} y={fpNormalTip.y-10} class="figure-point">n̂</text>
+      <text x={fpBT.x+10} y={fpBT.y-2} class="figure-point">B</text>
+      <text x="201" y="222" class="figure-point">S</text>
+      <path d={'M '+(fpCenter.x+1)+' '+(fpCenter.y-26)+' Q '+(fpCenter.x+17)+' '+(fpCenter.y-26)+' '+(fpCenter.x+20)+' '+(fpCenter.y-20)} fill="none" stroke="var(--fg)" stroke-width="1.6"/>
+      <text x={fpCenter.x+22} y={fpCenter.y-32} class="figure-point">θ</text>
+      <line x1="423" y1="48" x2="423" y2="276" stroke="var(--border)" stroke-width="1.2"/>
+      <text x="443" y="83" class="figure-point">红色：磁场 B</text>
+      <text x="443" y="120" class="figure-point">蓝色：单位法向 n̂</text>
+      <text x="443" y="160" class="legend">θ 是 B 与 n̂ 的夹角</text>
+      <text x="443" y="197" class="figure-point">沿法向的分量</text>
+      <text x="443" y="224" class="legend">B cosθ</text>
+      <text x="443" y="265" class="legend">Φ = BA cosθ</text>
+      <text x="17" y="310" class="tick">法向由平面两条不平行的三维切向边叉积得到；斜投影后屏幕夹角未必是直角。</text>
+    </svg>
+    <figcaption>在三维中先取面片两条切向量 u、v，再计算 n̂=(u×v)/|u×v|，最后将平面、法向、磁场统一投影到屏幕。图中 θ 表示磁场与法向的空间夹角。</figcaption>
+  </>}
+  {kind === 'mixed-partials' && <>
+    <div class="figure-top"><h3>同一个小矩形，两个求导次序</h3><span>混合偏导数交换定理</span></div>
+    <svg viewBox="0 0 650 300" role="img" aria-label="小矩形ABCD：横向差值上边减下边，或纵向差值右边减左边，都形成相同的四角差。图上分别标注水平步长h、竖直步长k。">
+      <defs>
+        <marker id="mp-b" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="var(--curve)"/></marker>
+        <marker id="mp-g" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="var(--green)"/></marker>
+      </defs>
+      <rect x="82" y="64" width="242" height="170" rx="1" fill="var(--green)" fill-opacity=".06" stroke="var(--border)" stroke-width="1.5"/>
+      <path d="M90 234H314M90 64H314" stroke="var(--curve)" stroke-width="3.5" marker-end="url(#mp-b)"/>
+      <path d="M82 225V73M324 225V73" stroke="var(--green)" stroke-width="3.5" marker-end="url(#mp-g)"/>
+      <circle cx="82" cy="234" r="4.5" fill="var(--fg)"/><circle cx="324" cy="234" r="4.5" fill="var(--fg)"/>
+      <circle cx="324" cy="64" r="4.5" fill="var(--fg)"/><circle cx="82" cy="64" r="4.5" fill="var(--fg)"/>
+      <text x="61" y="254" class="figure-point">A</text><text x="333" y="254" class="figure-point">B</text><text x="333" y="61" class="figure-point">C</text><text x="61" y="61" class="figure-point">D</text>
+      <text x="203" y="262" text-anchor="middle" class="legend">水平位移 h</text>
+      <text x="56" y="152" text-anchor="middle" class="legend">k</text>
+      <line x1="375" y1="45" x2="375" y2="255" stroke="var(--border)" stroke-width="1.4"/>
+      <path d="M395 72H422" stroke="var(--curve)" stroke-width="3"/>
+      <text x="433" y="76" class="legend">比较上下的水平增量</text>
+      <text x="395" y="102" class="tick">上边 DC − 下边 AB</text>
+      <path d="M395 150H422" stroke="var(--green)" stroke-width="3"/>
+      <text x="433" y="154" class="legend">比较左右的竖直增量</text>
+      <text x="395" y="180" class="tick">右边 BC − 左边 AD</text>
+      <text x="395" y="235" class="figure-point">得到同一个四角差 Δ</text>
+      <text x="325" y="287" text-anchor="middle" class="tick">矩形不是函数图像；它只是输入平面上的四个取样位置。</text>
+    </svg>
+    <figcaption>蓝色箭头比较两条水平边，绿色箭头比较两条竖直边。两种组合都只使用 A、B、C、D 四个点的函数值；再缩小矩形，并在适当光滑性条件下交换极限次序，就得到相等的混合偏导。</figcaption>
+  </>}
+  {kind === 'boundary-square' && <>
+    <div class="figure-top"><h3>边界再取一次边界：为什么是零？</h3><span>有向边界 · 正负抵消</span></div>
+    <svg viewBox="0 0 650 300" role="img" aria-label="左侧有向矩形A到B到C到D到A，四条边上的方向依次右上左下。右侧用各条有向线段的终点减起点展开，显示A B C D各抵消一次。">
+      <defs>
+        <marker id="bd-arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="var(--green)"/></marker>
+      </defs>
+      <rect x="76" y="64" width="190" height="172" fill="var(--green)" fill-opacity=".10" stroke="var(--border)" stroke-width="1.2"/>
+      <path d="M90 236H251M266 222V81M252 64H90M76 80V218" fill="none" stroke="var(--green)" stroke-width="3.5" marker-end="url(#bd-arrow)"/>
+      <circle cx="76" cy="236" r="5" fill="var(--fg)"/><circle cx="266" cy="236" r="5" fill="var(--fg)"/><circle cx="266" cy="64" r="5" fill="var(--fg)"/><circle cx="76" cy="64" r="5" fill="var(--fg)"/>
+      <text x="55" y="255" class="figure-point">A</text><text x="273" y="255" class="figure-point">B</text><text x="273" y="58" class="figure-point">C</text><text x="55" y="58" class="figure-point">D</text>
+      <text x="173" y="156" text-anchor="middle" class="legend">有向面片 S</text>
+      <line x1="328" y1="42" x2="328" y2="254" stroke="var(--border)" stroke-width="1.4"/>
+      <text x="348" y="64" class="figure-point">每条有向边：终点 − 起点</text>
+      <text x="351" y="106" class="legend">AB → B − A</text>
+      <text x="351" y="138" class="legend">BC → C − B</text>
+      <text x="351" y="170" class="legend">CD → D − C</text>
+      <text x="351" y="202" class="legend">DA → A − D</text>
+      <text x="350" y="244" class="figure-point">相加后，每个点都抵消</text>
+      <text x="320" y="287" text-anchor="middle" class="tick">顶点依然存在；为零的是带符号相加后的“净边界”。</text>
+    </svg>
+    <figcaption>第一次取边界得到矩形四条有向边；第二次取边界得到每条边的终点减起点。A、B、C、D 各出现一次正号和一次负号，结果为零，并不是图中的顶点不存在了。</figcaption>
+  </>}
+
+</figure>
+<style>
+.teaching-figure{max-width:760px;padding:15px 18px;margin-top:28px;margin-bottom:29px}
+.figure-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.figure-top h3{font-size:1.02rem;line-height:1.4;margin:0}
+.figure-top span{font-size:.7rem;color:var(--muted);white-space:nowrap}
+.teaching-figure svg{width:100%;height:auto;display:block;margin:10px auto 2px;max-height:355px}
+.teaching-figure figcaption{color:var(--muted);line-height:1.8;font-size:.76rem;margin:8px 0 2px}
+.figure-title{font-size:14px;fill:var(--fg);font-weight:600}
+.figure-point{font-size:15px;fill:var(--fg);font-weight:600}
+.tick{font-size:12px;fill:var(--muted)}
+.legend{font-size:12px;fill:var(--fg)}
+@media(max-width:600px){.teaching-figure{margin-left:10px;margin-right:10px;padding:13px 9px;overflow-x:auto;overscroll-behavior-x:contain}.teaching-figure svg{min-width:560px;width:560px;max-width:none}.teaching-figure figcaption::after{content:'（图在窄屏上可左右滑动）';white-space:normal}.figure-top h3{font-size:.96rem}.figure-title{font-size:13px}}
+</style>
