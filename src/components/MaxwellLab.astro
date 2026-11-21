@@ -5,10 +5,12 @@ const {kind}=Astro.props;
 <section class="box-explorer maxwell-lab" data-kind={kind} aria-label={kind==='field'?'散度与旋度实验':kind==='capacitor'?'电容器曲面实验':'电磁波传播实验'}>
   {kind==='field' && <>
     <div class="lab-heading"><h3>在同一个小方框里，测量两件事</h3><span>局部测量实验</span></div>
-    <p class="lab-task">切换三种矢量场。观察箭头，再比较方框边界的净通量与逆时针环量。</p>
+    <p class="lab-task">先观察箭头并猜测结果，再切换五种矢量场。请关注同一绿色方框上的净通量和逆时针环量：两种测量是否可以同时非零？</p>
     <div class="lab-controls" role="group" aria-label="选择矢量场">
+      <button type="button" data-field="constant" aria-pressed="false">恒定矢量场</button>
       <button type="button" data-field="source" aria-pressed="true">向外扩张</button>
       <button type="button" data-field="rotation" aria-pressed="false">绕中心转动</button>
+      <button type="button" data-field="both" aria-pressed="false">旋转且扩张</button>
       <button type="button" data-field="saddle" aria-pressed="false">一边伸一边缩</button>
     </div>
     <svg class="lab-svg" data-plot viewBox="0 0 520 290" role="img" aria-label="二维矢量场及中心的小方框，切换模式可比较散度与旋度"></svg>
@@ -78,8 +80,10 @@ for(const root of document.querySelectorAll<HTMLElement>('.maxwell-lab')){
  if(root.dataset.kind==='field'){
   const svg=root.querySelector<SVGSVGElement>('[data-plot]')!;
   const fields={
+   constant:{fn:(x:number,y:number)=>[1.2,.3],result:'恒定场 F=(1.2,0.3)：散度为 0，旋度为 0。所有位置的箭头都相同，方框两侧的通量和环量分别抵消。'},
    source:{fn:(x:number,y:number)=>[x,y],result:'向外扩张 F=(x,y)：散度为 2，旋度为 0。小方框有净流出，但没有净环量。'},
    rotation:{fn:(x:number,y:number)=>[-y,x],result:'绕中心转动 F=(−y,x)：散度为 0，旋度为 2。小方框有逆时针净环量，但没有净流出。'},
+   both:{fn:(x:number,y:number)=>[x-y,x+y],result:'同时扩张与旋转 F=(x−y,x+y)：散度为 2，旋度为 2。局部净通量与逆时针环量可以同时非零。'},
    saddle:{fn:(x:number,y:number)=>[x,-y],result:'一边伸一边缩 F=(x,−y)：散度为 0，旋度为 0。两者都为零，场仍在变化。'}
   };
   type FieldKind=keyof typeof fields;
