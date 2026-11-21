@@ -37,15 +37,15 @@ const { kind } = Astro.props;
 <text x="207" y="318" text-anchor="middle" class="tick">z=6 的水平参考平面</text>
 <path d="M191 240L333 254M191 240L123 271" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4" fill="none"/>
 <text x="341" y="265" class="tick">Δx</text><text x="91" y="279" class="tick">Δy</text>
-<path d="M191 240Q256 213 333 180L265 163Q197 199 123 224Z" fill="var(--curve)" fill-opacity=".13" stroke="var(--curve)" stroke-width="2"/>
-<path d="M191 240Q256 213 333 180M155 233Q215 199 299 171M123 224Q190 185 265 163" stroke="var(--curve)" stroke-width="1.5" fill="none" opacity=".75"/>
+<path d="M191 240Q256 203 333 166L265 148Q197 193 123 224Z" fill="var(--curve)" fill-opacity=".13" stroke="var(--curve)" stroke-width="2"/>
+<path d="M191 240Q256 203 333 166M155 231Q215 191 299 156M123 224Q190 180 265 148" stroke="var(--curve)" stroke-width="1.5" fill="none" opacity=".75"/>
 <path d="M191 240L333 192L265 176L123 224Z" fill="var(--green)" fill-opacity=".19" stroke="var(--green)" stroke-width="2.7"/>
 <path d="M191 240L333 192M333 192L265 176M265 176L123 224M123 224L191 240" stroke="var(--green)" stroke-width="2.3" fill="none"/>
 <path d="M333 254V192M123 271V224M265 285V176" stroke="var(--muted)" stroke-dasharray="4 4" stroke-width="1.4"/>
-<path d="M265 176V163" stroke="var(--red)" stroke-dasharray="4 3" stroke-width="2.6"/>
+<path d="M265 176V148" stroke="var(--red)" stroke-dasharray="4 3" stroke-width="2.6"/>
 <path d="M191 240L333 192" stroke="var(--curve)" stroke-width="3.7"/>
 <path d="M191 240L123 224" stroke="var(--green)" stroke-width="3.7"/>
-{[{x:191,y:240,t:'A'},{x:333,y:192,t:'C'},{x:123,y:224,t:'D'},{x:265,y:176,t:'B'},{x:265,y:163,t:'B′'}].map(p=><g><circle cx={p.x} cy={p.y} r="4.8" fill={p.t.includes('′')?'var(--red)':'var(--fg)'}/><text x={p.x+8} y={p.y-9} class="figure-point">{p.t}</text></g>)}
+{[{x:191,y:240,t:'A',tx:202,ty:259},{x:333,y:192,t:'C',tx:342,ty:205},{x:123,y:224,t:'D',tx:112,ty:214},{x:265,y:176,t:'B',tx:276,ty:186},{x:265,y:148,t:'B′',tx:239,ty:137}].map(p=><g><circle cx={p.x} cy={p.y} r="4.8" fill={p.t.includes('′')?'var(--red)':'var(--fg)'}/><text x={p.tx} y={p.ty} class="figure-point">{p.t}</text></g>)}
 <path d="M354 67H377" stroke="var(--curve)" stroke-width="2.6"/><text x="387" y="71" class="legend">真实弯曲曲面（蓝）</text>
 <path d="M354 99H377" stroke="var(--green)" stroke-width="3.2"/><text x="387" y="103" class="legend">局部切平面（绿）</text>
 <path d="M354 131H377" stroke="var(--red)" stroke-width="2.6" stroke-dasharray="4 4"/><text x="387" y="135" class="legend">曲面与切平面的误差</text>
@@ -176,7 +176,7 @@ const { kind } = Astro.props;
 <path d="M475 128L525 108M475 128L518 151M475 128V68" fill="none" stroke="var(--curve)" stroke-width="2.9" marker-end="url(#form-arr-v)"/>
 <text x="532" y="101" class="figure-point">u</text><text x="523" y="170" class="figure-point">v</text><text x="459" y="60" class="figure-point">w</text>
 <text x="539" y="212" class="tick" text-anchor="middle">有向体积元素</text>
-<text x="310" y="233" text-anchor="middle" class="tick">方向向量不必沿坐标轴；外积保留它们共同确定的有向几何元素。</text>
+<text x="310" y="233" text-anchor="middle" class="tick">方向向量可记作 dr₁、dr₂、dr₃；也可简记为 u、v、w。</text>
 </svg>
     <figcaption>每增加一个独立的方向向量，便多出一个几何维度。形式是测量这些有向元素的规则：1-形式测线段，2-形式测面积，3-形式测体积。</figcaption>
   </>}
