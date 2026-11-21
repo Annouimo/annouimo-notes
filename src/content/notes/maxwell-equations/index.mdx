@@ -66,7 +66,7 @@ $$
 
 这里的符号 $\partial$（读作“偏”）特意与一元微积分的 $\mathrm d$ 区分开。$\mathrm{d}f/\mathrm{d}x$ 通常表示一个只依赖 $x$ 的函数对 $x$ 求导；对于 $f(x,y)$，只改变 $x$、固定 $y$ 时得到的导数写成 $\partial f/\partial x$，提醒我们**还有别的自变量被固定住了**。
 
-求法其实没有变：把 $y$ 暂时当作常数，$\partial(x^2+2y)/\partial x=2x$。之后的 $\mathrm{d}f$ 是**全微分**，将把各个方向的一阶变化重新合在一起；它和单个偏导数不是同一个量。
+求法其实没有变：把 $y$ 暂时当作常数，$\partial(x^2+2y)/\partial x=2x$。
 
 再固定 $x$，只改变 $y$，得到
 
@@ -609,60 +609,84 @@ $$
 
 因此，我们可以换一种思路：与其先把有向面积“翻译”成法向量，不如直接保留有向面积；与其为线段、面积和体积规定三套不同算法，不如研究它们共同的结构。这就是我们接下来要做的事。
 
-## 从有向几何元素到微分形式
+## 从几何对象到测量规则：微分形式是什么？
 
 ### 一条边、两条边、三条边
 
-先从一个点出发，选择三个任意方向的短向量 $\mathbf u,\mathbf v,\mathbf w$。
+我们前面已经沿曲线算过功、穿过曲面算过通量、在体积内累加过散度。现在暂时不管这些积分的计算公式，先只看它们所依赖的几何对象。
 
-- **一个向量 $\mathbf u$**，确定一段有方向的线段。
-- **两个向量 $\mathbf u,\mathbf v$**，张成一块有方向的平行四边形。交换两条边的次序，就相当于反转取向。
-- **三个向量 $\mathbf u,\mathbf v,\mathbf w$**，张成一块有方向的平行六面体。交换其中任意两条边，取向也会反转。
+从某一点出发，画一根短向量 $\mathbf u$，它确定一段**有向线段**。再增加一根方向不平行的向量 $\mathbf v$，两根向量张成一个**有向平行四边形**。如果再增加第三根不共面的向量 $\mathbf w$，便张成一个**有向平行六面体**。
 
 <TeachingFigure kind="forms" />
 
-这里的“有方向”不只是说物体朝向哪里，还意味着我们区分正反两种**取向**。例如，同一块面片，从相反的一面看，对应的有向面积符号相反。
+“有向”在这里指的是**取向**：交换两根边的先后顺序，会反转所张成面片的取向；交换三根边中任意两根，也会反转体积的取向。我们不要求每根边都沿着 $x,y,z$ 轴，它们可以朝任意方向。
 
-我们想用一种统一的记法，把这种由多个向量共同张成的有向几何元素保留下来。把向量的**外积**记作 $\wedge$：
+接下来问一个更重要的问题：**我们已经有了线段、面片、体积，可怎么计算某个场对它们的作用？**
 
-$$
-\boxed{
-\mathbf u,\qquad
-\mathbf u\wedge\mathbf v,\qquad
-\mathbf u\wedge\mathbf v\wedge\mathbf w.
-}
-$$
+### 测量规则不是微元，而是一种函数
 
-第一个是向量本身；第二个是**二重向量**，表示由两条边张成的有向面积元素；第三个是**三重向量**，表示有向三维体积元素。它们不是普通标量，也不要求把有向平面转换成垂直向量。
-
-这里最关键的规则是
+用一个具体例子来观察。设某点附近的电场向量为
 
 $$
-\mathbf u\wedge\mathbf v=-\mathbf v\wedge\mathbf u,
-\qquad \mathbf u\wedge\mathbf u=0.
+\mathbf E=(3,4),
 $$
 
-交换两条边，取向反转；两条相同方向的边，根本张不出面积。更一般地，$k$ 个向量可以外积成一个 $k$ 重向量。这个想法**不限于三维空间**。
-
-<details>
-<summary>为什么换了记法，还能算出熟悉的面积与体积？</summary>
-
-在三维直角坐标中，$\mathbf u=(u_x,u_y,u_z)$、$\mathbf v=(v_x,v_y,v_z)$ 张成的平行四边形，投影到三个坐标平面的**有向面积**分别是
+现在从这个点沿小位移 $\mathbf u=(0.01,0.02)$ 走一段。电场沿位移的贡献（可以理解为单位电荷的电场力做功）是
 
 $$
-\begin{aligned}
-A_{xy}&=\begin{vmatrix}u_x&u_y\\v_x&v_y\end{vmatrix},\\
-A_{yz}&=\begin{vmatrix}u_y&u_z\\v_y&v_z\end{vmatrix},\\
-A_{zx}&=\begin{vmatrix}u_z&u_x\\v_z&v_x\end{vmatrix}.
-\end{aligned}
+\mathbf E\cdot\mathbf u
+=3\times0.01+4\times0.02=0.11.
 $$
 
-这些二阶行列式也是三维叉积的三个分量（按 $yz,zx,xy$ 排列）。叉积没有创造新的面积，而是利用三维空间的法向量，把同一组有向面积信息重新表示出来。
+这里实际出现了**两个对象**：$\mathbf u$ 是一段具体的位移，点积则告诉我们怎么由这段位移算出贡献。
 
-三个向量张成的有向体积可以直接用三阶行列式表示：
+我们试着把“怎么计算”本身看成一个函数，记为 $\alpha$：
 
 $$
-V_{\mathrm{or}}=
+\boxed{\alpha(\mathbf u)=\mathbf E\cdot\mathbf u.}
+$$
+
+普通函数 $f(x)=x^2$ 接收一个**数**、返回一个数；$\alpha$ 接收一个**向量**、返回一个数。如果换一段位移 $\mathbf v$，就能算出 $\alpha(\mathbf v)$；不需要重新定义这条规则。
+
+而且它满足线性性：
+
+$$
+\alpha(a\mathbf u+b\mathbf v)
+=a\alpha(\mathbf u)+b\alpha(\mathbf v).
+$$
+
+这是一种**线性函数**，在线性代数中也叫**线性泛函**。我们把这样在每个点接收一个方向向量、线性输出实数的规则称为**1-形式**。场若随位置变化，就在每个位置使用该点的场向量定义对应的规则。
+
+那么，它与前面熟悉的“微元”有什么区别？
+
+| 对象 | 扮演的角色 |
+| --- | --- |
+| $\mathrm d\mathbf r$ | 实际取来参与计算的一小段**位移** |
+| $\alpha$ | 接受位移、计算贡献的**规则**（1-形式） |
+| $\alpha(\mathrm d\mathbf r)$ | 将规则用在这段位移上，得到的**微元贡献** |
+
+在电场的例子里，最后一项就是 $\mathbf E\cdot\mathrm d\mathbf r$。因此，**形式本身并不是那一小段位移，也不是算完后得到的数，而是负责计算的函数**。这也是为什么形式可以沿着一条曲线逐段积分。
+
+### 从一个输入，推广到两个、三个输入
+
+对曲面积分，我们也可以采取同样的思路。设两根小向量 $\mathbf u,\mathbf v$ 张成一个有向面片；固定该点的磁场 $\mathbf B$，它穿过面片的贡献是
+
+$$
+\boxed{\beta(\mathbf u,\mathbf v)=\mathbf B\cdot(\mathbf u\times\mathbf v).}
+$$
+
+这也是函数，只不过现在需要**两个向量作为输入**。它对两个输入分别线性；交换两根边，叉积反号，输出也反号：
+
+$$
+\beta(\mathbf v,\mathbf u)=-\beta(\mathbf u,\mathbf v).
+$$
+
+这种规则叫**2-形式**。它的反对称性刚好负责区分面片两种相反的取向。
+
+如果输入三根向量 $\mathbf u,\mathbf v,\mathbf w$，则可以用三阶行列式定义测量有向体积的**3-形式**：
+
+$$
+\gamma(\mathbf u,\mathbf v,\mathbf w)=
 \begin{vmatrix}
 u_x&u_y&u_z\\
 v_x&v_y&v_z\\
@@ -670,63 +694,55 @@ w_x&w_y&w_z
 \end{vmatrix}.
 $$
 
-在三维中，这也等于 $(\mathbf u\times\mathbf v)\cdot\mathbf w$。**行列式贯穿着二重、三重的有向几何测量；点积、叉积和混合积则是三维欧氏空间的方便工具。**
+交换任意两个输入，行列式也会反号。普通标量函数 $f$ 则不需要方向向量输入，所以叫**0-形式**。
+
+这样，我们得到了一个统一的分类：
+
+| 形式 | 接收几个向量 | 测量什么 |
+| --- | --- | --- |
+| 0-形式 $f$ | 0 个 | 点上的数值 |
+| 1-形式 $\alpha(\mathbf u)$ | 1 个 | 有向线段的贡献 |
+| 2-形式 $\beta(\mathbf u,\mathbf v)$ | 2 个 | 有向面片的贡献 |
+| 3-形式 $\gamma(\mathbf u,\mathbf v,\mathbf w)$ | 3 个 | 有向体积的贡献 |
+
+更一般地，**$k$-形式就是接收 $k$ 个向量、对每个输入都线性、交换任意两个输入就反号的测量规则**；对0-形式，后面两项条件无需考虑。形式的次数由**输入向量的数量**决定。
+
+注意这里的一项改变：在三维空间里，我们借助点积、叉积或行列式给出了这些规则的例子；但“接收 $k$ 个向量、满足线性与反对称性”这个定义本身不依赖三维空间，也不要求先把一个面片转换成法向量。
+
+<details>
+<summary>那么，向量本身能不能也使用外积？</summary>
+
+可以。向量外积 $\mathbf u\wedge\mathbf v$ 会产生表示有向面积元素的**二重向量**，三个向量还能外积得到三重向量。它们与微分形式有关，但**有向几何元素**和**测量它的微分形式**并不是同一种对象。本篇先把重点放在测量规则上，不另开一条多重向量的主线。
 
 </details>
 
-### 有了几何元素，还需要“测量它的规则”
+### 回到坐标：dx 与 dy 原来也是测量规则
 
-刚才保留了有向线段、面积和体积，可是**一块面积本身不是磁通量**。还必须知道矢量场穿过它的程度；同样，位移本身也不是做功，还要知道力沿它的分量。
-
-所以，我们需要一种规则：**把有向几何元素作为输入，输出一个实数。**
-
-一个只需要**一个**方向向量、并且对输入线性的测量规则，称为**1-形式**，记作 $\alpha$。例如固定某点的场值 $\mathbf F$：
+抽象的函数还需要一种方便的计算写法。我们先定义最简单的1-形式：
 
 $$
-\alpha(\mathbf u)=\mathbf F\cdot\mathbf u.
+\mathrm dx(\mathbf u)=u_x,\qquad
+\mathrm dy(\mathbf u)=u_y,\qquad
+\mathrm dz(\mathbf u)=u_z.
 $$
 
-一个接受**两个**方向向量、对每个输入分别线性且交换输入会反号的规则，称为**2-形式**，记作 $\beta$。在三维空间里，磁通量提供了例子：
+这里的 $\mathrm dx$ 不再指一段已经指定好的位移，而是**读取输入向量的 $x$ 分量的函数**。例如 $\mathbf u=(3,4)$，就有 $\mathrm dx(\mathbf u)=3$、$\mathrm dy(\mathbf u)=4$。
+
+所以，若某点的矢量场是 $\mathbf F=(P,Q,R)$，它对应的1-形式就可以写成
 
 $$
-\beta(\mathbf u,\mathbf v)=\mathbf B\cdot(\mathbf u\times\mathbf v).
+\boxed{\alpha=P\,\mathrm dx+Q\,\mathrm dy+R\,\mathrm dz.}
 $$
 
-类似地，接受**三个**方向向量、满足同样线性与反对称条件的规则，叫**3-形式**。可以用上面那个三阶行列式测量有向体积。普通标量函数 $f$ 不需要方向向量输入，称为**0-形式**。
+请亲自将 $\mathbf u$ 代进去：右边输出 $Pu_x+Qu_y+Ru_z$，恰好是 $\mathbf F\cdot\mathbf u$。
 
-这就出现了很整齐的分类：
+**我们没有发明一种新的做功规律，只是把“场的系数”和“读取位移方向的规则”拆开写了。**
 
-| 形式 | 输入 | 它能够测量 |
-| --- | --- | --- |
-| 0-形式 | 不需要方向向量 | 点上的数值 |
-| 1-形式 $\alpha(\mathbf u)$ | 1个向量 | 有向线段 |
-| 2-形式 $\beta(\mathbf u,\mathbf v)$ | 2个向量 | 有向面片 |
-| 3-形式 $\gamma(\mathbf u,\mathbf v,\mathbf w)$ | 3个向量 | 有向体积 |
+### 两个1-形式怎样合成面积测量？由此引出外积
 
-需要特别分清：**向量外积得到的是有向几何元素；微分形式是测量这些元素的规则。** 两者能自然配对，但不是同一种对象。
+现在试着让 $\mathrm dx$ 与 $\mathrm dy$ **一起接收两根向量** $\mathbf u,\mathbf v$。我们希望输出它们在 $xy$ 平面上张成的有向面积。
 
-形式的次数就是它接收的向量个数。推广到四维、五维乃至更一般的空间时，这个定义也不需要改变。我们没有丢掉三维例子的直觉，只是暂时放下了用法向量代表面积的特殊习惯。
-
-### 回到坐标：为什么出现 dx、dy 和楔积？
-
-抽象定义帮我们看清了对象，但实际计算还需要坐标。
-
-在直角坐标系里，$\mathrm{d}x$ 可以理解为一个**读取向量 $x$ 分量的1-形式**：
-
-$$
-\mathrm{d}x(\mathbf u)=u_x.
-$$
-
-同样，$\mathrm{d}y(\mathbf u)=u_y$，$\mathrm{d}z(\mathbf u)=u_z$。因此，任何形如 $\alpha(\mathbf u)=\mathbf F\cdot\mathbf u$ 的1-形式，都可以写为
-
-$$
-\boxed{\alpha=P\,\mathrm{d}x+Q\,\mathrm{d}y+R\,\mathrm{d}z},
-\qquad \mathbf F=(P,Q,R).
-$$
-
-注意，$\mathrm{d}x$ 在这里是**测量规则**，不是某一条实际移动中的固定长度；把具体位移 $\mathbf u$ 代入，它才返回 $u_x$。
-
-对于2-形式，我们也希望用坐标分量表达。前面已经见过 $xy$ 平面上的有向投影面积：
+这个数在线性代数中就是一个二阶行列式：
 
 $$
 \begin{vmatrix}
@@ -736,41 +752,55 @@ v_x&v_y
 =u_xv_y-u_yv_x.
 $$
 
-这个测量规则可以写作 $\mathrm{d}x\wedge\mathrm{d}y$，即**两个1-形式的外积**：
+它既对每根输入向量线性，交换两根输入又会反号，正好符合2-形式的要求。
 
-$$
-(\mathrm{d}x\wedge\mathrm{d}y)(\mathbf u,\mathbf v)=u_xv_y-u_yv_x.
-$$
-
-这里的 $\wedge$ 与前面向量之间的外积相呼应：都保留多方向组合的反对称性；但现在是**测量规则之间的外积**，其结果仍是微分形式。对两条边交换顺序，结果便反号：
-
-$$
-\mathrm{d}x\wedge\mathrm{d}y=-\mathrm{d}y\wedge\mathrm{d}x.
-$$
-
-三维空间中，任意2-形式都能表示成三个坐标面积测量规则的组合：
-
-$$
-\beta=P\,\mathrm{d}y\wedge\mathrm{d}z+
-Q\,\mathrm{d}z\wedge\mathrm{d}x+
-R\,\mathrm{d}x\wedge\mathrm{d}y.
-$$
-
-如果 $\mathbf F=(P,Q,R)$，这条规则测量 $\mathbf u,\mathbf v$ 时，恰好输出 $\mathbf F\cdot(\mathbf u\times\mathbf v)$，也就是熟悉的通量贡献。
-
-三个向量的有向体积则可由 $\mathrm{d}x\wedge\mathrm{d}y\wedge\mathrm{d}z$ 测量。具体说，如果
-
-$$
-\mathbf u=(u_x,u_y,u_z),\quad
-\mathbf v=(v_x,v_y,v_z),\quad
-\mathbf w=(w_x,w_y,w_z),
-$$
-
-那么测量结果就是一个清楚的**三阶行列式**：
+于是我们专门给这种**把两个1-形式组合成2-形式**的运算取名叫**外积**（也叫楔积），记作 $\wedge$：
 
 $$
 \boxed{
-(\mathrm{d}x\wedge\mathrm{d}y\wedge\mathrm{d}z)(\mathbf u,\mathbf v,\mathbf w)
+(\mathrm dx\wedge\mathrm dy)(\mathbf u,\mathbf v)
+=u_xv_y-u_yv_x.
+}
+$$
+
+为什么使用这个符号？它提醒我们，交换两个方向会反转有向面积：
+
+$$
+\mathrm dx\wedge\mathrm dy=-\mathrm dy\wedge\mathrm dx,
+\qquad
+\mathrm dx\wedge\mathrm dx=0.
+$$
+
+第二条同样很直观：用两次相同的方向测量，不可能形成非零的有向面积。
+
+再给出一个一般的组合公式。若 $\alpha,\eta$ 都是1-形式，则
+
+$$
+\boxed{
+(\alpha\wedge\eta)(\mathbf u,\mathbf v)
+=\alpha(\mathbf u)\eta(\mathbf v)
+-\alpha(\mathbf v)\eta(\mathbf u).
+}
+$$
+
+把 $\alpha=\mathrm dx,\eta=\mathrm dy$ 代入，就会恢复刚才的二阶行列式。这说明外积不是一个只能处理坐标轴的技巧，而是一种**组合测量规则的运算**。
+
+在三维中，任何2-形式都能写成三种基本有向投影面积测量的组合：
+
+$$
+\beta=P\,\mathrm dy\wedge\mathrm dz+
+Q\,\mathrm dz\wedge\mathrm dx+
+R\,\mathrm dx\wedge\mathrm dy.
+$$
+
+当 $\mathbf F=(P,Q,R)$ 时，把 $\mathbf u,\mathbf v$ 代入，输出的正是前面熟悉的 $\mathbf F\cdot(\mathbf u\times\mathbf v)$：三维叉积在这里变成了**计算形式的一种方便方法**，而不再是形式的定义。
+
+三个1-形式还可以继续外积。对任意三根输入向量，
+
+$$
+\boxed{
+(\mathrm dx\wedge\mathrm dy\wedge\mathrm dz)
+(\mathbf u,\mathbf v,\mathbf w)
 =
 \begin{vmatrix}
 u_x&u_y&u_z\\
@@ -780,114 +810,208 @@ w_x&w_y&w_z
 }
 $$
 
-对照刚才面积的二阶行列式：**两个方向构成有向面积，三个方向构成有向体积。** 这条从线性代数延伸出的规律，比三维叉积与混合积的记法更加统一。
+由二阶行列式的有向面积，到三阶行列式的有向体积，现在有了同一套计算语言。
 
 <details>
-<summary>为什么曲线积分能把形式转换到一元参数上？</summary>
+<summary>为什么沿曲线积分1-形式，最后仍能用一元积分？</summary>
 
-取抛物线 $\mathbf r(t)=(t,t^2)$、$0\le t\le1$，考虑1-形式 $\alpha=y\,\mathrm{d}x+x\,\mathrm{d}y$。沿曲线有 $x=t,y=t^2$；给定沿参数增加的微小位移，$\mathrm{d}x=\mathrm{d}t,\mathrm{d}y=2t\,\mathrm{d}t$。因此
+取抛物线 $\mathbf r(t)=(t,t^2)$，$0\le t\le1$，考虑 $\alpha=y\,\mathrm dx+x\,\mathrm dy$。沿曲线有 $x=t,y=t^2$，而曲线的切向位移满足 $\mathrm dx=\mathrm dt$、$\mathrm dy=2t\,\mathrm dt$，所以
 
 $$
-\alpha\ \longmapsto\ t^2\,\mathrm{d}t+2t^2\,\mathrm{d}t
-=3t^2\,\mathrm{d}t,
+\alpha\longmapsto t^2\,\mathrm dt+2t^2\,\mathrm dt=3t^2\,\mathrm dt.
 $$
 
-沿曲线积分便等于 $\int_0^1 3t^2\,\mathrm{d}t=1$。这是把测量规则**拉回**参数轴，不是把弯曲的空间路径变成直线。参数化本身的求导，在更深入的理论中会由映射的微分来统一描述。
+于是 $\int_C\alpha=\int_0^13t^2\,\mathrm dt=1$。这叫将测量规则**拉回**参数轴：变的是表达方式，并没有把空间曲线变成直线。
 
 </details>
 
-## 外微分：把三个局部变化统一成一个运算
+## 外微分：让局部求导也使用同一种语言
 
-现在，统一的不只是“测量什么”，还有“局部怎样变化”。
+微分形式已经统一了**测量什么**。现在轮到另一个问题：梯度、旋度、散度的计算为什么一会儿得到向量、一会儿得到标量？
 
-试着逐层观察：
+### 先从熟悉的求导中寻找规律
 
-- 对**0-形式 $f$**，沿小线段看两端函数值的差，除以长度，便得到方向变化率；它需要一个输入方向，因此是**1-形式**。
-- 对**1-形式 $\alpha$**，沿极小面片的边界积分，得到局部环量；用有向面积归一化，得到接受两个方向的**2-形式**。
-- 对**2-形式 $\beta$**，沿极小体积的边界积分，得到净通量；用有向体积归一化，得到接受三个方向的**3-形式**。
+回顾我们已经算过的三个运算：
 
-我们在梯度、旋度、散度中已经各自做过这些测量。现在给这种从**边界上的测量**提取**高一维区域的局部变化**的统一操作起名，叫**外微分**，记作 $\mathrm{d}$：
+$$
+\begin{aligned}
+\text{梯度：}\quad&\nabla f=(f_x,f_y,f_z),\\
+\text{旋度：}\quad&\nabla\times\mathbf F=(R_y-Q_z,\ P_z-R_x,\ Q_x-P_y),\\
+\text{散度：}\quad&\nabla\cdot\mathbf F=P_x+Q_y+R_z.
+\end{aligned}
+$$
+
+它们的共同点很明显：**都在对场的系数求偏导**；差别则在于如何组合这些偏导。旋度中的相减，又正好与小回路不同边的取向相反有关。
+
+我们希望寻找一个统一运算：在0-形式上产生1-形式，在1-形式上产生2-形式，在2-形式上产生3-形式，并使这些计算结果自然出现。把这个运算称为**外微分**，仍记作 $\mathrm d$。
+
+### 先看0-形式，再建立计算规则
+
+对于普通函数 $f$，外微分的起点就是我们早已学过的**全微分**：
+
+$$
+\mathrm df=f_x\,\mathrm dx+f_y\,\mathrm dy+f_z\,\mathrm dz.
+$$
+
+现在的问题是：如果输入的不再是函数 $f$，而是一个1-形式，应该怎么求导？
+
+设二维平面上有
+
+$$
+\alpha=P\,\mathrm dx+Q\,\mathrm dy.
+$$
+
+我们试着保持线性：分别处理两项。对每一项，**先求系数的全微分，再与原来的方向测量做外积**。例如规定
 
 $$
 \boxed{
-\text{0-形式}\xrightarrow{\mathrm d}\text{1-形式}
-\xrightarrow{\mathrm d}\text{2-形式}
-\xrightarrow{\mathrm d}\text{3-形式}.
+\mathrm d(P\,\mathrm dx)=\mathrm dP\wedge\mathrm dx,
+\qquad
+\mathrm d(Q\,\mathrm dy)=\mathrm dQ\wedge\mathrm dy.
 }
 $$
 
-这条链条不像 $\nabla f,\nabla\times\mathbf F,\nabla\cdot\mathbf F$ 那样忽而输出向量、忽而输出标量；**每次都只是把形式次数提高一**。到了四维空间，它还可以继续指向4-形式。
+这里要说清楚：这是我们正在**建立的外微分计算规则**，不是单凭前面的全微分公式就证明出来的结论。它可以由外微分的线性性、乘法规则以及 $\mathrm d^2=0$ 等性质统一刻画。下面先用熟悉的几何结果检验它是否合理。
 
-为什么在熟悉的三维向量分析中，看不出这样的整齐？因为三维空间里，1-形式恰好有三个独立分量，2-形式也恰好有三个独立分量。借助欧氏内积、空间定向等附加结构，我们把两种不同的形式都表示成了普通的三维向量；而3-形式又可以表示成一个标量乘体积形式。这些方便的翻译掩盖了它们本来的次数。
+### 亲自计算一次：为什么出现 $Q_x-P_y$？
 
-### 外微分怎么计算？
-
-外微分不是单纯在式子上多写一个 $\wedge$，而是对**形式的系数求导，并用反对称性整理结果**。
-
-例如，二维平面上的1-形式
+先展开第一项。对系数函数 $P(x,y)$ 求全微分：
 
 $$
-\alpha=P\,\mathrm{d}x+Q\,\mathrm{d}y
+\mathrm dP=P_x\,\mathrm dx+P_y\,\mathrm dy.
 $$
 
-对应沿线段的测量。它的外微分应该在面积上测量局部环量。我们已从小矩形算过：
+因此
+
+$$
+\begin{aligned}
+\mathrm d(P\,\mathrm dx)
+&=(P_x\,\mathrm dx+P_y\,\mathrm dy)\wedge\mathrm dx\\
+&=P_x\,\mathrm dx\wedge\mathrm dx
++P_y\,\mathrm dy\wedge\mathrm dx\\
+&=-P_y\,\mathrm dx\wedge\mathrm dy.
+\end{aligned}
+$$
+
+最后一步用了刚学过的两条外积规则：$\mathrm dx\wedge\mathrm dx=0$，而 $\mathrm dy\wedge\mathrm dx=-\mathrm dx\wedge\mathrm dy$。
+
+同样，对于另一项，
+
+$$
+\begin{aligned}
+\mathrm d(Q\,\mathrm dy)
+&=(Q_x\,\mathrm dx+Q_y\,\mathrm dy)\wedge\mathrm dy\\
+&=Q_x\,\mathrm dx\wedge\mathrm dy.
+\end{aligned}
+$$
+
+把两项相加：
+
+$$
+\boxed{\mathrm d\alpha=(Q_x-P_y)\,\mathrm dx\wedge\mathrm dy.}
+$$
+
+读者现在可以回答：为什么是**相减**？因为交换有向面积的两种方向会反号。为什么偏导的下标会**交叉出现**？因为同方向的外积等于零，留下了另一方向的变化率。
+
+### 与小矩形环量相遇：同一个结果从哪里来？
+
+还记得我们前面围着小矩形走一圈吗？当时完全从几何积分出发，得到**单位有向面积的环量**：
+
+$$
+\lim_{\Delta A\to0}\frac{\Gamma_C}{\Delta A}
+=Q_x-P_y
+$$
+
+（这里的小矩形取固定的正向、逐渐缩小；符号由它的取向决定。）
+
+另一方面，刚算出的2-形式 $\mathrm d\alpha$ 用在这个面片的两个方向向量上，也测得同一个系数乘以有向面积。
+
+**两条路线在这里汇合了：一条沿面片边界逐段计算环量，另一条对1-形式使用外微分的代数规则。**
+
+因此，外微分在1-形式上的作用，正好表达了前面旋度的局部环量测量；在三维空间中，三个坐标面上的结果可以组合成旋度向量。
+
+### 对2-形式也计算一次：散度为什么会出现？
+
+这次用三维空间里的通量2-形式：
+
+$$
+\beta=P\,\mathrm dy\wedge\mathrm dz+
+Q\,\mathrm dz\wedge\mathrm dx+
+R\,\mathrm dx\wedge\mathrm dy.
+$$
+
+延续同一条规则：对每一项的系数求全微分，再外积上原来的方向测量。
+
+例如第一项：
+
+$$
+\begin{aligned}
+\mathrm d(P\,\mathrm dy\wedge\mathrm dz)
+&=\mathrm dP\wedge\mathrm dy\wedge\mathrm dz\\
+&=(P_x\,\mathrm dx+P_y\,\mathrm dy+P_z\,\mathrm dz)
+\wedge\mathrm dy\wedge\mathrm dz\\
+&=P_x\,\mathrm dx\wedge\mathrm dy\wedge\mathrm dz.
+\end{aligned}
+$$
+
+包含 $\mathrm dy\wedge\mathrm dy$ 或 $\mathrm dz\wedge\mathrm dz$ 的项全部为零。同样地，另外两项分别留下 $Q_y$、$R_z$。因此
 
 $$
 \boxed{
-\mathrm{d}\alpha=(Q_x-P_y)\,\mathrm{d}x\wedge\mathrm{d}y.
+\mathrm d\beta=(P_x+Q_y+R_z)\,
+\mathrm dx\wedge\mathrm dy\wedge\mathrm dz.
 }
 $$
 
-括号里的 $Q_x-P_y$，正是旋度垂直于平面的分量；$\mathrm{d}x\wedge\mathrm{d}y$ 则负责测量有向面积。
+系数恰好是**散度**：我们前面从小盒子六个面的净通量除以体积，也得到 $P_x+Q_y+R_z$。
 
-把三维矢量场 $(P,Q,R)$ 对应的通量2-形式写为
+这一次，代数计算与几何净通量再次汇合。
 
-$$
-\beta=P\,\mathrm{d}y\wedge\mathrm{d}z+
-Q\,\mathrm{d}z\wedge\mathrm{d}x+
-R\,\mathrm{d}x\wedge\mathrm{d}y,
-$$
+<details>
+<summary>把外微分规则说得更完整一点</summary>
 
-我们同样得到
+对形式，外微分具有线性性，并满足分次乘法规则
 
 $$
-\boxed{
-\mathrm{d}\beta=(P_x+Q_y+R_z)\,
-\mathrm{d}x\wedge\mathrm{d}y\wedge\mathrm{d}z.
-}
+\mathrm d(\alpha\wedge\beta)
+=\mathrm d\alpha\wedge\beta+(-1)^k\alpha\wedge\mathrm d\beta
 $$
 
-括号里的系数就是散度。对标量函数 $f$，外微分则是熟悉的全微分：
+其中 $\alpha$ 是 $k$-形式。坐标1-形式满足 $\mathrm d(\mathrm dx)=\mathrm d(\mathrm dy)=\mathrm d(\mathrm dz)=0$。因此对系数函数 $P$ 与坐标外积的组合，就得到正文使用的计算方法。这个规则与全微分一致，并保证 $\mathrm d^2=0$。
 
-$$
-\mathrm{d}f=f_x\,\mathrm{d}x+f_y\,\mathrm{d}y+f_z\,\mathrm{d}z.
-$$
-
-因此我们终于能准确地说：**在三维欧氏空间，通过将向量场与相应次数的微分形式配对，梯度、旋度、散度便分别对应外微分在0、1、2-形式上的作用。**
+</details>
 
 ### 广义斯托克斯定理：局部与整体的统一
 
-设 $M$ 是有向的曲线、曲面或体积区域，$\partial M$ 是它的有向边界，$\omega$ 是适合沿边界积分的形式。三个积分定理都归入一个表达式：
+现在我们可以重新看三个积分定理：
+
+- 0-形式的外微分，描述沿**线段**累加的函数值变化；
+- 1-形式的外微分，描述穿过**面片**的局部环量；
+- 2-形式的外微分，描述**体积**中的局部净流出。
+
+三者每次都把测量规则的次数提高一，而且局部积分与边界积分之间，都有我们早已见过的公共边界抵消。
+
+设 $M$ 是有向的线段、曲面或体积区域，$\partial M$ 是它的**有向边界**，$\omega$ 是可以沿该边界积分的形式。那么统一表达式便是
 
 $$
-\boxed{\int_M\mathrm{d}\omega=\int_{\partial M}\omega.}
+\boxed{\int_M\mathrm d\omega=\int_{\partial M}\omega.}
 $$
 
-左边：在区域内部积分**局部边界变化**；右边：直接沿整体的**有向边界**积分原形式。这一关系之所以能够成立，仍是你早已理解的“内部公共边界抵消”。
+它叫**广义斯托克斯定理**。左边是在区域内部累加外微分得到的局部贡献，右边直接沿整体边界测量原来的形式。
 
-此外，连续做两次外微分，总会得到零：$\mathrm{d}^2=0$。它在三维向量语言中对应
+此外，连续求两次外微分会得到零：$\mathrm d^2=0$。在三维向量语言里，对应熟悉的恒等式
 
 $$
 \nabla\times(\nabla f)=0,\qquad
 \nabla\cdot(\nabla\times\mathbf F)=0.
 $$
 
-几何上，这与“边界的边界为空”密切呼应。至此，我们不是为了写出漂亮符号而引入微分形式，而是找到了**测量对象、局部求导与整体积分**共同的结构。
+这与**边界的边界不会留下净边界**密切相关。到这里，我们才真正统一了三件事：**测量几何对象的形式、描述局部变化的外微分，以及连接局部与整体的积分定理。**
 
 <details>
 <summary>外微分能反过来积分吗？</summary>
 
-有时可以寻找 $\eta$，使 $\mathrm{d}\eta=\omega$，这叫寻找原形式。但由于 $\mathrm{d}^2=0$，有原形式必然要求 $\mathrm{d}\omega=0$；即便满足这个条件，在存在“洞”的区域上也未必有全局原形式。这与路径无关性和空间拓扑有关，留作后续专题。
+有时可以寻找 $\eta$，使 $\mathrm d\eta=\omega$，叫作寻找原形式。但由 $\mathrm d^2=0$，有原形式必然要求 $\mathrm d\omega=0$；即使满足这一条件，在有“洞”的区域上也未必存在全局原形式。这与路径无关性和空间拓扑有关，留待后续专题。
 
 </details>
 
