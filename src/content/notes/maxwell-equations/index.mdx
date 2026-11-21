@@ -758,7 +758,29 @@ $$
 
 如果 $\mathbf F=(P,Q,R)$，这条规则测量 $\mathbf u,\mathbf v$ 时，恰好输出 $\mathbf F\cdot(\mathbf u\times\mathbf v)$，也就是熟悉的通量贡献。
 
-三个向量的有向体积则可由 $\mathrm{d}x\wedge\mathrm{d}y\wedge\mathrm{d}z$ 测量；它接受三个向量，输出它们的三阶行列式。
+三个向量的有向体积则可由 $\mathrm{d}x\wedge\mathrm{d}y\wedge\mathrm{d}z$ 测量。具体说，如果
+
+$
+\mathbf u=(u_x,u_y,u_z),\quad
+\mathbf v=(v_x,v_y,v_z),\quad
+\mathbf w=(w_x,w_y,w_z),
+$
+
+那么测量结果就是一个清楚的**三阶行列式**：
+
+$
+\boxed{
+(\mathrm{d}x\wedge\mathrm{d}y\wedge\mathrm{d}z)(\mathbf u,\mathbf v,\mathbf w)
+=
+\begin{vmatrix}
+u_x&u_y&u_z\\
+v_x&v_y&v_z\\
+w_x&w_y&w_z
+\end{vmatrix}.
+}
+$
+
+对照刚才面积的二阶行列式：**两个方向构成有向面积，三个方向构成有向体积。** 这条从线性代数延伸出的规律，比三维叉积与混合积的记法更加统一。
 
 <details>
 <summary>为什么曲线积分能把形式转换到一元参数上？</summary>
