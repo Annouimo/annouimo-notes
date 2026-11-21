@@ -226,6 +226,69 @@ return <g><circle cx={x} cy={y} r="2" fill="var(--fg)" opacity=".35"/><line x1={
     <figcaption>蓝色波峰原本在某个位置，时间经过 Δt 后出现在右侧 vΔt 的位置。要在新位置 x 读取旧图像，应当回到旧坐标 x−vΔt，因此新图像是 f(x−vΔt)。</figcaption>
   </>}
 
+  {kind === 'gauss-sphere' && <>
+    <div class="figure-top"><h3>场强变弱，球面却在变大</h3><span>高斯定律 · 球面</span></div>
+    <svg viewBox="0 0 640 320" role="img" aria-label="以正点电荷为中心的两个同心球面的截面图，半径为r和R，电场向外辐射。球面面积随半径平方增长，场强随半径平方减弱，通量相同。">
+      <defs><marker id="gs-ar" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="var(--curve)"/></marker></defs>
+      <circle cx="222" cy="156" r="120" fill="var(--curve)" fill-opacity=".035" stroke="var(--curve)" stroke-width="2" stroke-dasharray="7 5"/>
+      <circle cx="222" cy="156" r="68" fill="var(--green)" fill-opacity=".075" stroke="var(--green)" stroke-width="2.5"/>
+      {Array.from({length:12},(_,j)=>j*Math.PI/6).map(t=><path d={'M'+(222+20*Math.cos(t))+' '+(156+20*Math.sin(t))+' L'+(222+143*Math.cos(t))+' '+(156+143*Math.sin(t))} fill="none" stroke="var(--curve)" stroke-width="1.4" opacity=".65" marker-end="url(#gs-ar)"/>)}
+      <circle cx="222" cy="156" r="15" fill="var(--red)"/><text x="222" y="161" fill="white" text-anchor="middle" font-size="17">+Q</text>
+      <path d="M222 156H342" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="5 4"/>
+      <text x="264" y="146" class="figure-point">r</text><text x="307" y="146" class="figure-point">R</text>
+      <text x="405" y="83" class="legend">内球：面积 4πr²</text><text x="405" y="110" class="legend">场强 kQ/r²</text>
+      <path d="M405 130H610" stroke="var(--border)" stroke-width="1.3"/>
+      <text x="405" y="170" class="legend">外球：面积 4πR²</text><text x="405" y="196" class="legend">场强 kQ/R²</text>
+      <text x="405" y="246" class="figure-point">通量均为 4πkQ</text>
+      <text x="405" y="269" class="tick">面积增加抵消场强减弱</text>
+    </svg>
+    <figcaption>二维画面展示的是三维球面的截面。沿径向的场强随半径平方减弱，但整个球面面积恰好按同一比例增加，所以穿过不同同心球面的总电通量相等。</figcaption>
+  </>}
+  {kind === 'gauss-cone' && <>
+    <div class="figure-top"><h3>一束射线穿过不同曲面，总通量为什么相同？</h3><span>高斯定律 · 几何证明</span></div>
+    <svg viewBox="0 0 640 318" role="img" aria-label="左侧点电荷发出的两条边界射线形成细锥，在两处截取球面片。右侧同一束射线穿过倾斜小面片，其垂直于径向的投影与球面片对应。">
+      <text x="154" y="22" text-anchor="middle" class="figure-title">① 同一束射线，球面片按 r² 变大</text>
+      <path d="M45 173L286 59L286 285Z" fill="var(--curve)" fill-opacity=".055"/>
+      <path d="M45 173L281 64M45 173L281 282" stroke="var(--curve)" stroke-width="2" stroke-dasharray="6 4" fill="none"/>
+      <path d="M129 134Q151 173 129 212" fill="none" stroke="var(--green)" stroke-width="5.5"/>
+      <path d="M239 83Q292 173 239 263" fill="none" stroke="var(--green)" stroke-width="5.5"/>
+      <circle cx="45" cy="173" r="9" fill="var(--red)"/><text x="45" y="177" fill="white" text-anchor="middle" font-size="12">+</text>
+      <text x="103" y="115" class="tick">内球面片</text><text x="215" y="64" class="tick">外球面片</text>
+      <line x1="322" y1="38" x2="322" y2="279" stroke="var(--border)" stroke-width="1.5" stroke-dasharray="5 5"/>
+      <text x="475" y="22" text-anchor="middle" class="figure-title">② 倾斜面片要计算径向投影</text>
+      <path d="M346 172L616 68M346 172L616 280" fill="none" stroke="var(--curve)" stroke-width="1.8" stroke-dasharray="6 4"/>
+      <path d="M473 132L541 209" stroke="var(--green)" stroke-width="7" stroke-linecap="round"/>
+      <path d="M475 120Q517 173 475 226" stroke="var(--curve)" stroke-width="2.4" fill="none" stroke-dasharray="4 4"/>
+      <path d="M473 132L475 120M541 209L475 226" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3 4"/>
+      <circle cx="346" cy="172" r="8" fill="var(--red)"/>
+      <text x="490" y="117" class="legend">斜面片</text>
+      <text x="425" y="246" class="legend">径向投影面片</text>
+      <text x="314" y="303" text-anchor="middle" class="tick">图是三维锥体的二维剖面；相同射线范围，对应相同有向通量。</text>
+    </svg>
+    <figcaption>半径放大时，球面片面积按半径平方变大、电场强度按半径平方减小；斜面片则取垂直于电场方向的投影。穿出取正，穿入取负，因此复杂曲面上多次穿越的贡献能相互抵消。</figcaption>
+  </>}
+  {kind === 'volume-cancel' && <>
+    <div class="figure-top"><h3>两个小盒子的公共面，为什么正好抵消？</h3><span>散度定理 · 三维拼接</span></div>
+    <svg viewBox="0 0 640 309" role="img" aria-label="两个三维小盒子并排相接，中间共用绿色面片，两侧的外法向方向相反，公共面通量被加一次又减一次。">
+      <defs><marker id="vc-right" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0 0L8 3.5L0 7Z" fill="var(--curve)"/></marker><marker id="vc-left" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0 0L8 3.5L0 7Z" fill="var(--red)"/></marker></defs>
+      <path d="M82 102L242 102L285 70L125 70Z" fill="var(--curve)" fill-opacity=".08" stroke="var(--curve)" stroke-width="1.7"/>
+      <path d="M82 102L242 102L242 228L82 228Z" fill="var(--curve)" fill-opacity=".07" stroke="var(--curve)" stroke-width="1.7"/>
+      <path d="M242 102L285 70L285 196L242 228Z" fill="var(--green)" fill-opacity=".22" stroke="var(--green)" stroke-width="3"/>
+      <path d="M285 70L449 70L406 102L242 102Z" fill="var(--red)" fill-opacity=".06" stroke="var(--red)" stroke-width="1.5"/>
+      <path d="M285 70L449 70L449 196L285 196Z" fill="var(--red)" fill-opacity=".04" stroke="var(--red)" stroke-width="1.5"/>
+      <path d="M242 102L406 102L406 228L242 228Z" fill="var(--red)" fill-opacity=".045" stroke="var(--red)" stroke-width="1.5"/>
+      <path d="M406 102L449 70L449 196L406 228Z" fill="var(--red)" fill-opacity=".06" stroke="var(--red)" stroke-width="1.5"/>
+      <path d="M253 146H313" stroke="var(--curve)" stroke-width="3" marker-end="url(#vc-right)"/>
+      <path d="M312 184H251" stroke="var(--red)" stroke-width="3" marker-end="url(#vc-left)"/>
+      <text x="147" y="156" class="figure-point">盒子 A</text><text x="336" y="156" class="figure-point">盒子 B</text>
+      <text x="280" y="48" text-anchor="middle" class="figure-point">公共面</text>
+      <text x="77" y="265" class="legend">A 看这个面：外法向 →</text>
+      <text x="327" y="265" class="legend">B 看这个面：外法向 ←</text>
+      <text x="316" y="295" text-anchor="middle" class="tick">相同的通量贡献，一次取正、一次取负；拼接后只剩外围表面。</text>
+    </svg>
+    <figcaption>两个不同颜色的箭头表示的是两个盒子各自的**外法向**，不是场本身的两个方向。它们在公共面上相反，因此该面通量相互抵消；其余外表面留下来。</figcaption>
+  </>}
+
 </figure>
 <style>
 .teaching-figure{max-width:760px;padding:15px 18px;margin-top:28px;margin-bottom:29px}
