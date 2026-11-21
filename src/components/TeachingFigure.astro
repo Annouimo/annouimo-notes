@@ -1,6 +1,6 @@
 ---
 interface Props {
-  kind: 'field' | 'differential' | 'potential' | 'flux' | 'divergence' | 'curl' | 'cancellation' | 'forms' | 'charge' | 'coupling' | 'wave-shift'
+  kind: 'field' | 'differential' | 'potential' | 'flux' | 'divergence' | 'curl' | 'cancellation' | 'forms' | 'charge' | 'coupling' | 'wave-shift' | 'gauss-sphere' | 'gauss-cone' | 'volume-cancel'
 }
 const { kind } = Astro.props;
 ---
@@ -155,15 +155,24 @@ return <g><circle cx={x} cy={y} r="2" fill="var(--fg)" opacity=".35"/><line x1={
   </>}
   {kind === 'forms' && <>
     <div class="figure-top"><h3>点、线、面、体：到底在测量什么？</h3><span>图 8 · 形式次数</span></div>
-    <svg viewBox="0 0 560 212" role="img" aria-label="0形式在点求值，1形式测量有向线段，2形式测量平行四边形有向面积，3形式测量平行六面体有向体积">
-      <circle cx="65" cy="96" r="6" fill="var(--curve)"/><text x="65" y="54" class="figure-title" text-anchor="middle">点</text><text x="65" y="165" class="tick" text-anchor="middle">0-形式</text>
-      <path d="M153 98H226" stroke="var(--curve)" stroke-width="4"/><path d="M216 91L227 98L216 105Z" fill="var(--curve)"/><text x="192" y="54" class="figure-title" text-anchor="middle">线</text><text x="192" y="165" class="tick" text-anchor="middle">1-形式</text>
-      <path d="M273 110L342 110L371 74L302 74Z" fill="var(--green)" fill-opacity=".22" stroke="var(--green)" stroke-width="2.5"/><text x="322" y="54" class="figure-title" text-anchor="middle">面</text><text x="322" y="165" class="tick" text-anchor="middle">2-形式</text>
-      <path d="M433 87L491 87L515 70L457 70Z M433 87V136L491 136L515 119V70 M491 87V136 M433 136L457 119L515 119" fill="none" stroke="var(--curve)" stroke-width="2"/>
-      <path d="M433 87L491 87L515 70L457 70Z" fill="var(--curve)" fill-opacity=".15"/><text x="470" y="54" class="figure-title" text-anchor="middle">体</text><text x="470" y="165" class="tick" text-anchor="middle">3-形式</text>
-      <text x="280" y="199" text-anchor="middle" class="tick">次数 = 测量规则接受的方向向量数，不是楔积符号个数</text>
-    </svg>
-    <figcaption>积分要求“形式的次数”与“积分区域的维度”相同：1-形式沿曲线积，2-形式在曲面积，3-形式在体积内积。</figcaption>
+    <svg viewBox="0 0 620 240" role="img" aria-label="从点到有向线段、面片、体积：其中一根短箭头为u，两根短箭头u和v形成有向平行四边形，三根短箭头u、v、w张成有向平行六面体">
+<defs><marker id="form-arr-v" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="var(--curve)"/></marker></defs>
+<text x="69" y="25" class="figure-title" text-anchor="middle">0 个方向</text><text x="215" y="25" class="figure-title" text-anchor="middle">1 个方向</text><text x="369" y="25" class="figure-title" text-anchor="middle">2 个方向</text><text x="531" y="25" class="figure-title" text-anchor="middle">3 个方向</text>
+<circle cx="69" cy="118" r="6.5" fill="var(--curve)"/><text x="69" y="167" class="tick" text-anchor="middle">点：数值</text>
+<path d="M180 144L249 81" stroke="var(--curve)" stroke-width="3.2" fill="none" marker-end="url(#form-arr-v)"/><circle cx="180" cy="144" r="3" fill="var(--fg)"/><text x="250" y="69" class="figure-point">u</text>
+<text x="215" y="184" class="tick" text-anchor="middle">有向线段</text>
+<path d="M319 139L380 116L423 145L362 168Z" fill="var(--green)" fill-opacity=".18" stroke="var(--green)" stroke-width="2"/>
+<path d="M319 139L380 116M319 139L362 168" stroke="var(--curve)" stroke-width="3" marker-end="url(#form-arr-v)"/>
+<text x="385" y="105" class="figure-point">u</text><text x="364" y="187" class="figure-point">v</text>
+<text x="370" y="211" class="tick" text-anchor="middle">有向面积元素</text>
+<path d="M475 128L525 108L568 131L518 151Z" fill="var(--green)" fill-opacity=".14" stroke="var(--green)" stroke-width="2"/>
+<path d="M475 128L475 68L525 48L568 71L568 131M475 68L518 91L568 71M518 91L518 151M525 48L525 108" fill="none" stroke="var(--curve)" stroke-opacity=".6" stroke-width="1.8"/>
+<path d="M475 128L525 108M475 128L518 151M475 128V68" fill="none" stroke="var(--curve)" stroke-width="2.9" marker-end="url(#form-arr-v)"/>
+<text x="532" y="101" class="figure-point">u</text><text x="523" y="170" class="figure-point">v</text><text x="459" y="60" class="figure-point">w</text>
+<text x="539" y="212" class="tick" text-anchor="middle">有向体积元素</text>
+<text x="310" y="233" text-anchor="middle" class="tick">方向向量不必沿坐标轴；外积保留它们共同确定的有向几何元素。</text>
+</svg>
+    <figcaption>每增加一个独立的方向向量，便多出一个几何维度。形式是测量这些有向元素的规则：1-形式测线段，2-形式测面积，3-形式测体积。</figcaption>
   </>}
   {kind === 'charge' && <>
     <div class="figure-top"><h3>场线向外散开，散度就一定大于零吗？</h3><span>图 9 · 点电荷外部</span></div>
