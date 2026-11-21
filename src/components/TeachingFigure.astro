@@ -7,22 +7,27 @@ const { kind } = Astro.props;
 <figure class="box-explorer teaching-figure" data-kind={kind}>
   {kind === 'field' && <>
     <div class="figure-top"><h3>从一条曲线，到一个空间中的场</h3><span>图 1 · 描述方式</span></div>
-    <svg viewBox="0 0 600 300" role="img" aria-label="左侧E随单一坐标x变化的图像，右侧带三条坐标轴的三维空间，每个采样位置画有场矢量箭头。">
-<defs><marker id="f-field-arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="var(--curve)"/></marker></defs>
-<text x="136" y="22" text-anchor="middle" class="figure-title">沿一条直线读取 E(x)</text><path d="M37 245V52M37 245H264" stroke="var(--muted)" stroke-width="1.5" fill="none"/>
-<path d="M43 216Q95 211 131 159T256 74" fill="none" stroke="var(--curve)" stroke-width="3"/><circle cx="161" cy="131" r="4.5" fill="var(--red)"/><path d="M161 131V245" stroke="var(--muted)" stroke-dasharray="4 4"/>
-<text x="16" y="60" class="tick">E</text><text x="260" y="263" class="tick">x</text><text x="162" y="263" text-anchor="middle" class="tick">某个位置</text>
-<text x="446" y="22" text-anchor="middle" class="figure-title">三维空间中的矢量场</text>
-<g fill="none" stroke="var(--border)" stroke-width="1.4"><path d="M406 224L552 267L423 291L276 245Z M406 224V86L552 129V267 M406 86L276 109V245 M276 109L423 153L552 129 M423 153V291"/></g>
-<path d="M406 224L558 268M406 224L275 246M406 224V72" stroke="var(--muted)" stroke-width="1.7" fill="none"/>
-<text x="559" y="278" class="tick">x</text><text x="267" y="263" class="tick">y</text><text x="398" y="67" class="tick">z</text>
-{[0,1,2].flatMap(i=>[0,1,2].flatMap(j=>[0,1].map(k=>{
-const x=322+i*57-j*26, y=225+i*17+j*9-k*76, dx=15+i*3, dy=-14-j*4-k*2;
-return <g><circle cx={x} cy={y} r="2" fill="var(--fg)" opacity=".35"/><line x1={x} y1={y} x2={x+dx} y2={y+dy} stroke="var(--curve)" stroke-width="1.9" marker-end="url(#f-field-arr)"/></g>;
+    <svg viewBox="0 0 640 337" role="img" aria-label="左侧是一维E(x)曲线，右侧是有三维坐标轴的空间盒子，多个网格位置分布着方向与长度不同的场向量，图形与文字位于互不重叠的区域">
+<defs><marker id="f3d-f" markerWidth="6.5" markerHeight="6.5" refX="5.3" refY="3.2" orient="auto"><path d="M0 0L6.4 3.2L0 6.4Z" fill="var(--curve)"/></marker></defs>
+<text x="138" y="24" text-anchor="middle" class="figure-title">只沿一条线取样</text>
+<text x="478" y="24" text-anchor="middle" class="figure-title">整个三维空间上的矢量场</text>
+<path d="M48 270V61M48 270H271" stroke="var(--muted)" stroke-width="1.5" fill="none"/>
+<path d="M50 241Q95 240 134 190T265 79" stroke="var(--curve)" stroke-width="3.5" fill="none"/>
+<circle cx="158" cy="160" r="4.8" fill="var(--red)"/><path d="M158 160V270" stroke="var(--muted)" stroke-dasharray="4 4"/>
+<text x="29" y="67" class="legend">E</text><text x="263" y="289" class="legend">x</text>
+<text x="150" y="300" text-anchor="middle" class="tick">给定 x，读出一个数值</text>
+<path d="M438 246L560 282L354 282Z" fill="var(--soft)" fill-opacity=".45" stroke="var(--border)" stroke-width="1.4"/>
+<path d="M438 246V80L560 116V282M438 80L354 116V282M354 116L476 152L560 116M476 152V318" stroke="var(--border)" fill="none" stroke-width="1.4"/>
+<path d="M438 246L580 287M438 246L338 280M438 246V58" stroke="var(--muted)" stroke-width="1.7"/>
+<text x="588" y="289" class="figure-point">x</text><text x="329" y="290" class="figure-point">y</text><text x="432" y="49" class="figure-point">z</text>
+{[0,1,2].flatMap(i=>[0,1,2].flatMap(j=>[0,1,2].map(k=>{
+  const x=438+(i-1)*46-(j-1)*28,y=246+(i-1)*14+(j-1)*13-k*53;
+  const dx=8+i*5,dy=-12-j*2-k*2;
+  return <g><circle cx={x} cy={y} r="1.8" fill="var(--muted)"/><line x1={x} y1={y} x2={x+dx} y2={y+dy} stroke="var(--curve)" stroke-width="2.0" marker-end="url(#f3d-f)"/></g>;
 })))}
-<text x="443" y="299" text-anchor="middle" class="tick">不同位置，对应不同的箭头</text>
+<text x="478" y="332" text-anchor="middle" class="tick">箭头画在空间中，而非某张平面上</text>
 </svg>
-    <figcaption>左侧每个位置对应一个标量数值；右侧显示三维空间不同位置的向量，方向由箭头朝向表示、大小由箭头长度表示。实际场并不只存在于图中抽样点。</figcaption>
+    <figcaption>左侧沿一条直线取样得到单变量曲线；右侧展示三维空间中多处位置的场向量。箭头方向与长度分别表示场的方向和大小；图上箭头只是连续场的少量取样。</figcaption>
   </>}
   {kind === 'differential' && <>
     <div class="figure-top"><h3>两份变化，为什么可以相加？</h3><span>图 2 · 切平面</span></div>
