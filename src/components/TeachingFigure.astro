@@ -368,40 +368,42 @@ const curveFieldTips=[{u:-.86,v:-.47},{u:-.35,v:.38},{u:.68,v:-.53},{u:.87,v:.4}
   </>}
 
   {kind === 'differential-plane' && <>
-    <div class="figure-top"><h3>先只看切平面：两条路为何得到相同高度？</h3><span>全微分 · 第一步</span></div>
-    <svg viewBox="0 0 690 337" role="img" aria-label="绿色倾斜切平面上四点A C B D组成平行四边形，A到C沿x方向一阶高度增加4Δx，C到B沿y方向增加2Δy；反向路径A到D到B也到达同一终点。下方虚线平面提示水平位移。">
+    <div class="figure-top"><h3>两个坐标都变了，为什么高度增量能相加？</h3><span>全微分 · 切平面与竖直高度</span></div>
+    <svg viewBox="0 0 690 330" role="img" aria-label="由三维坐标严格投影生成的宽阔绿色切平面平行四边形ACBD与下方灰色水平参考面。点C、D、B到水平面有竖直虚线。B处的竖直高度为4Δx+2Δy，两条路径分别为ACB与ADB。">
       <defs>
-        <marker id="dp-arr-x" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="var(--curve)"/></marker>
-        <marker id="dp-arr-y" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="var(--green)"/></marker>
+        <marker id="dp-new-z" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="var(--red)"/></marker>
       </defs>
-      <text x="19" y="24" class="figure-title">只保留 A 点处的切平面，不画真实曲面</text>
-      <path d="M174 237L340 278L244 323L78 282Z" fill="var(--soft)" fill-opacity=".55" stroke="var(--muted)" stroke-opacity=".38" stroke-width="1.6" stroke-dasharray="5 5"/>
-      <path d="M174 237L340 177L244 128L78 188Z" fill="var(--green)" fill-opacity=".16" stroke="var(--green)" stroke-width="2.3"/>
-      <path d="M174 237L340 177M174 237L78 188" stroke="var(--muted)" stroke-width="2" stroke-opacity=".4"/>
-      <path d="M174 237L340 177" stroke="var(--curve)" stroke-width="3.5" marker-end="url(#dp-arr-x)"/>
-      <path d="M340 177L244 128" stroke="var(--green)" stroke-width="3.5" marker-end="url(#dp-arr-y)"/>
-      <path d="M174 237L78 188" stroke="var(--green)" stroke-width="2.2" stroke-dasharray="6 4"/>
-      <path d="M78 188L244 128" stroke="var(--curve)" stroke-width="2.2" stroke-dasharray="6 4"/>
-      <path d="M340 278V177M78 282V188M244 323V128" fill="none" stroke="var(--muted)" stroke-width="1.3" stroke-dasharray="4 5"/>
-      <path d="M174 237L340 278M174 237L78 282" fill="none" stroke="var(--muted)" stroke-width="1.3" stroke-dasharray="4 5"/>
-      <text x="295" y="283" class="tick">水平 Δx</text>
-      <text x="35" y="289" class="tick">水平 Δy</text>
-      <circle cx="174" cy="237" r="5" fill="var(--fg)"/><text x="185" y="256" class="figure-point">A</text>
-      <circle cx="340" cy="177" r="5" fill="var(--fg)"/><text x="350" y="183" class="figure-point">C</text>
-      <circle cx="78" cy="188" r="5" fill="var(--fg)"/><text x="58" y="182" class="figure-point">D</text>
-      <circle cx="244" cy="128" r="5" fill="var(--fg)"/><text x="250" y="116" class="figure-point">B</text>
-      <line x1="385" y1="39" x2="385" y2="307" stroke="var(--border)" stroke-width="1.2"/>
-      <text x="409" y="66" class="figure-point">第一条走法：</text>
-      <text x="409" y="95" class="legend">A → C：沿 x 增加 4Δx</text>
-      <text x="409" y="125" class="legend">C → B：沿 y 增加 2Δy</text>
-      <path d="M411 143H650" stroke="var(--border)" stroke-width="1.2"/>
-      <text x="409" y="168" class="figure-point">第二条走法：</text>
-      <text x="409" y="197" class="legend">A → D：沿 y 增加 2Δy</text>
-      <text x="409" y="227" class="legend">D → B：沿 x 增加 4Δx</text>
-      <text x="409" y="277" class="figure-point">终点相同，都到 B</text>
-      <text x="409" y="299" class="legend">高度变化：4Δx + 2Δy</text>
+      <text x="17" y="23" class="figure-title">绿色：切平面　　灰色：过 A 的水平参考面</text>
+      <path d={pathPoints([dA,dC0,dB0,dD0],true)} fill="var(--muted)" fill-opacity=".075" stroke="var(--muted)" stroke-opacity=".46" stroke-width="1.7" stroke-dasharray="5 5"/>
+      <path d={pathPoints([dA,dC,dB,dD],true)} fill="var(--green)" fill-opacity=".21" stroke="var(--green)" stroke-width="2.6"/>
+      <path d={pathPoints([dC,dC0])} fill="none" stroke="var(--muted)" stroke-width="1.6" stroke-dasharray="5 4"/>
+      <path d={pathPoints([dD,dD0])} fill="none" stroke="var(--muted)" stroke-width="1.6" stroke-dasharray="5 4"/>
+      <path d={pathPoints([dB,dB0])} fill="none" stroke="var(--red)" stroke-width="2.9" marker-end="url(#dp-new-z)"/>
+      <path d={pathPoints([dA,dC,dB])} fill="none" stroke="var(--curve)" stroke-width="3.7"/>
+      <path d={pathPoints([dA,dD,dB])} fill="none" stroke="var(--green)" stroke-width="3.3" stroke-dasharray="7 4"/>
+      {[{p:dA,t:'A',dx:-18,dy:-5},{p:dC,t:'C',dx:9,dy:-5},{p:dD,t:'D',dx:-19,dy:-7},{p:dB,t:'B',dx:12,dy:1}].map(({p,t,dx,dy})=><g><circle cx={p.x} cy={p.y} r="5" fill="var(--fg)"/><text x={p.x+dx} y={p.y+dy} class="figure-point">{t}</text></g>)}
+      <circle cx={dB0.x} cy={dB0.y} r="3.3" fill="var(--muted)"/>
+      <text x={dB0.x+11} y={dB0.y+5} class="tick">B 的水平投影</text>
+      <text x="342" y="141" class="tick">4Δx</text>
+      <text x="84" y="174" class="tick">2Δy</text>
+      <text x="291" y="217" class="figure-point">总高度</text>
+      <text x="290" y="238" class="legend">4Δx + 2Δy</text>
+      <path d="M43 135V70M43 70L39 80M43 70L47 80" fill="none" stroke="var(--fg)" stroke-width="1.8"/>
+      <text x="33" y="64" class="figure-point">z</text>
+      <text x="61" y="92" class="tick">竖直向上</text>
+      <path d="M441 45V304" stroke="var(--border)" stroke-width="1.2"/>
+      <path d="M459 65H480" stroke="var(--curve)" stroke-width="3.2"/>
+      <text x="489" y="70" class="legend">A → C → B</text>
+      <text x="458" y="97" class="tick">先沿 x，再沿 y</text>
+      <text x="458" y="126" class="legend">增加 4Δx，再加 2Δy</text>
+      <path d="M459 159H480" stroke="var(--green)" stroke-width="3.2" stroke-dasharray="6 3"/>
+      <text x="489" y="164" class="legend">A → D → B</text>
+      <text x="458" y="190" class="tick">先沿 y，再沿 x</text>
+      <text x="458" y="219" class="legend">增加 2Δy，再加 4Δx</text>
+      <text x="459" y="266" class="figure-point">同一个 B，同一个高度</text>
+      <text x="458" y="293" class="tick">例：Δx=Δy=1</text>
     </svg>
-    <figcaption>绿色是切平面上的一个平行四边形，虚线只是水平位移的辅助投影。平面上沿同一坐标方向的斜率保持不变，所以两条走法的高度增量相同。此图只说明方向与线性叠加，不按比例表示各段长度；暂时不讨论真实曲面带来的误差。</figcaption>
+    <figcaption>四个顶点先按切平面方程 z=6+4(x−2)+2(y−1) 计算，再统一作三维斜投影。竖直连线对应真正的 z 方向高度差，而不是斜边长度。灰色参考面取 z=6；两条路线到达同一个 B，因而高度增量完全相同。</figcaption>
   </>}
   {kind === 'differential-error' && <>
     <div class="figure-top"><h3>再把真实曲面放回来：为什么还存在误差？</h3><span>全微分 · 第二步</span></div>
