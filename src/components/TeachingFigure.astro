@@ -80,41 +80,53 @@ const { kind } = Astro.props;
   </>}
   {kind === 'flux' && <>
     <div class="figure-top"><h3>磁通量为什么需要“有方向的面积”？</h3><span>图 4 · 面片与法向量</span></div>
-    <svg viewBox="0 0 600 304" role="img" aria-label="大量蓝色箭头分布在空间中，表示磁场。穿过磁场的淡色弯曲曲面划分小面片，其中一个小面片高亮并有绿色法向量。">
-<defs><marker id="f-flux-b" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="var(--curve)"/></marker><marker id="f-flux-n" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto"><path d="M0 0L8 3.5L0 7Z" fill="var(--green)"/></marker></defs>
-<text x="14" y="21" class="figure-title">先有整个空间里的磁场，再选择一个曲面与面元</text>
-{[70,143,216,289,362,435,508].flatMap(x=>[105,194,281].map(y=><line x1={x} y1={y} x2={x} y2={y-44} stroke="var(--curve)" opacity=".53" stroke-width="1.9" marker-end="url(#f-flux-b)"/>))}
-<path d="M110 192Q205 117 294 138Q398 157 481 117L506 154Q408 204 312 185Q210 165 131 239Z" fill="var(--curve)" fill-opacity=".08" stroke="var(--curve)" stroke-opacity=".39" stroke-width="2"/>
-<path d="M181 157Q191 178 204 210M255 138Q265 162 281 181M360 153Q368 174 387 192M135 221Q271 167 488 136" stroke="var(--curve)" stroke-opacity=".27" stroke-width="1.7" fill="none"/>
-<path d="M241 162L293 147L319 180L266 197Z" fill="var(--green)" fill-opacity=".28" stroke="var(--green)" stroke-width="2.5"/>
-<circle cx="278" cy="174" r="4" fill="var(--fg)"/>
-<path d="M278 174V65" stroke="var(--curve)" stroke-width="3" marker-end="url(#f-flux-b)"/>
-<path d="M278 174L338 85" stroke="var(--green)" stroke-width="3.5" marker-end="url(#f-flux-n)"/>
-<path d="M278 120Q294 115 302 127" fill="none" stroke="var(--red)" stroke-width="1.7"/>
-<text x="307" y="125" class="legend">θ</text><text x="266" y="53" class="legend">B</text><text x="348" y="86" class="legend">n̂</text>
-<text x="322" y="219" class="legend">小面片 dA</text>
-<text x="18" y="290" class="tick">穿过小面片的磁通量：dΦ = B cosθ dA；对整个曲面还需要逐片累加。</text>
+    <svg viewBox="0 0 690 359" role="img" aria-label="三维透视的弯曲曲面上划分许多网格面片，蓝色磁场箭头从面片附近穿过，其中一小块绿色面片的法向量与磁场有夹角θ。右侧是独立的图例。">
+<defs><marker id="flux-new-blue" markerWidth="7" markerHeight="7" refX="5.7" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="var(--curve)"/></marker><marker id="flux-new-green" markerWidth="8" markerHeight="8" refX="6.7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="var(--green)"/></marker></defs>
+<text x="16" y="22" class="figure-title">空间中的磁场，穿过一张倾斜曲面</text>
+<path d="M95 228L321 182L419 259L182 306Z" fill="var(--soft)" stroke="var(--border)" stroke-opacity=".5" stroke-width="1.2"/>
+<path d="M83 183Q181 136 314 164Q377 175 406 215L420 246Q324 220 219 266Q128 267 91 242Z" fill="var(--curve)" fill-opacity=".09" stroke="var(--curve)" stroke-opacity=".65" stroke-width="1.9"/>
+<path d="M112 181Q138 210 128 251M171 162Q203 199 186 264M238 155Q260 192 249 253M306 162Q342 193 326 234M370 192Q387 222 388 230" stroke="var(--curve)" stroke-opacity=".27" stroke-width="1.4" fill="none"/>
+<path d="M88 204Q223 162 414 229M90 232Q225 194 418 250" stroke="var(--curve)" stroke-opacity=".27" stroke-width="1.4" fill="none"/>
+{[94,166,238,310,382].flatMap(x=>[123,254].map(y=><line x1={x} y1={y+48} x2={x} y2={y-12} stroke="var(--curve)" stroke-opacity=".37" stroke-width="1.8" marker-end="url(#flux-new-blue)"/>))}
+<path d="M216 189L259 182L287 207L242 219Z" fill="var(--green)" fill-opacity=".32" stroke="var(--green)" stroke-width="2.6"/>
+<circle cx="251" cy="198" r="4" fill="var(--fg)"/>
+<path d="M251 198V91" stroke="var(--curve)" stroke-width="3.3" marker-end="url(#flux-new-blue)"/>
+<path d="M251 198L311 114" stroke="var(--green)" stroke-width="3.8" marker-end="url(#flux-new-green)"/>
+<path d="M251 153Q272 151 277 162" stroke="var(--red)" stroke-width="1.7" fill="none"/>
+<text x="280" y="152" class="figure-point">θ</text>
+<path d="M451 73H476" stroke="var(--curve)" stroke-width="3"/><text x="486" y="78" class="legend">B：磁场方向</text>
+<path d="M451 112H476" stroke="var(--green)" stroke-width="3"/><text x="486" y="117" class="legend">n̂：面片法向</text>
+<path d="M451 154H476" stroke="var(--green)" stroke-width="8" opacity=".3"/><text x="486" y="160" class="legend">选中的小面片</text>
+<text x="451" y="211" class="figure-point">穿透分量</text>
+<text x="451" y="237" class="legend">B cosθ</text>
+<text x="451" y="281" class="tick">面片越倾斜，</text><text x="451" y="300" class="tick">法向投影越小</text>
+<text x="14" y="344" class="tick">其余曲面也可以继续划成小面片；每一片都有自己的面积与法向量。</text>
 </svg>
     <figcaption>背景箭头代表整个空间中的磁场，绿色只突出其中一小片曲面。面片的大小不足以决定通量，必须指定法向；点积取出磁场沿法向的穿透分量。</figcaption>
   </>}
   {kind === 'divergence' && <>
     <div class="figure-top"><h3>流进来多少？流出去多少？</h3><span>图 5 · 小盒子的净通量</span></div>
-    <svg viewBox="0 0 560 316" role="img" aria-label="透视小盒子，左侧通量进入右侧通量流出。在右侧展示x方向两面净流出由P(x+delta x)减P(x)决定。其他两对面同理。">
-      <defs><marker id="tf-div-a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L7 3L0 6Z" fill="var(--curve)"/></marker><marker id="tf-div-b" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L7 3L0 6Z" fill="var(--red)"/></marker></defs>
-      <path d="M120 104L240 104L292 68L169 68Z" fill="var(--soft)" stroke="var(--muted)" stroke-opacity=".7"/>
-      <path d="M240 104L292 68L292 211L240 247Z" fill="var(--green)" fill-opacity=".13" stroke="var(--green)" stroke-width="2"/>
-      <path d="M120 104L240 104L240 247L120 247Z" fill="var(--curve)" fill-opacity=".08" stroke="var(--curve)" stroke-width="2"/>
-      <path d="M120 104L169 68M169 68L169 211L120 247M169 211L292 211" stroke="var(--muted)" stroke-opacity=".55" fill="none" stroke-dasharray="5 4"/>
-      <path d="M50 148H119M50 195H119" stroke="var(--curve)" stroke-width="2.7" marker-end="url(#tf-div-a)"/>
-      <path d="M240 147H359M240 194H359" stroke="var(--curve)" stroke-width="3.5" marker-end="url(#tf-div-a)"/>
-      <path d="M97 124H64M316 125H356" stroke="var(--red)" stroke-width="2" marker-end="url(#tf-div-b)"/>
-      <text x="49" y="131" class="tick">流入</text><text x="309" y="133" class="tick">流出</text>
-      <text x="32" y="274" class="legend">左面法向指向 −x</text><text x="259" y="274" class="legend">右面法向指向 +x</text>
-      <text x="400" y="111" class="legend">同一方向的</text><text x="400" y="130" class="legend">两面相减：</text>
-      <text x="398" y="164" class="figure-point">右面 − 左面</text>
-      <text x="400" y="188" class="tick">再考虑 y、z</text><text x="400" y="206" class="tick">方向的两对面</text>
-      <text x="40" y="303" class="tick">盒子越小，净通量 ÷ 体积越接近散度；图示以 x 方向流动为例。</text>
-    </svg>
+    <svg viewBox="0 0 690 347" role="img" aria-label="三维透视小长方体，左侧蓝色箭头流入，右侧较长的蓝色箭头流出；在远离图形的右侧单独注明两面外法向方向和右通量减左通量">
+<defs><marker id="d-new-flow" markerWidth="8" markerHeight="8" refX="6.7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="var(--curve)"/></marker></defs>
+<text x="14" y="23" class="figure-title">先只比较 x 方向的左右两个面</text>
+<path d="M136 97L284 97L339 57L190 57Z" fill="var(--soft)" stroke="var(--muted)" stroke-width="1.5"/>
+<path d="M136 97L284 97L284 242L136 242Z" fill="var(--curve)" fill-opacity=".08" stroke="var(--curve)" stroke-width="1.8"/>
+<path d="M284 97L339 57L339 202L284 242Z" fill="var(--green)" fill-opacity=".19" stroke="var(--green)" stroke-width="2.8"/>
+<path d="M136 97L190 57M190 57V202L136 242M190 202L339 202" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="4 5" fill="none"/>
+<path d="M46 151H134M46 197H134" stroke="var(--curve)" stroke-width="2.7" marker-end="url(#d-new-flow)"/>
+<path d="M337 147H424M337 194H424" stroke="var(--curve)" stroke-width="3.8" marker-end="url(#d-new-flow)"/>
+<text x="66" y="139" class="legend">流入</text><text x="354" y="134" class="legend">流出</text>
+<text x="162" y="284" class="legend" text-anchor="middle">左面朝外：−x</text>
+<text x="329" y="284" class="legend" text-anchor="middle">右面朝外：+x</text>
+<path d="M456 52H456V291" stroke="var(--border)" stroke-width="1.2"/>
+<text x="474" y="84" class="figure-point">右侧通量</text>
+<text x="474" y="110" class="figure-point">减去左侧通量</text>
+<text x="474" y="151" class="legend">两面面积相同</text>
+<text x="474" y="180" class="legend">右侧场分量更大</text>
+<text x="474" y="209" class="legend">→ 净向外流出为正</text>
+<text x="474" y="268" class="tick">另外两对面也类似</text>
+<text x="17" y="329" class="tick">画的是通量的方向与大小比较，不代表仅凭几根箭头就能证明散度公式。</text>
+</svg>
     <figcaption>这里比较的不是左右箭头谁“更长”，而是两侧穿过相同面积面片的通量差。若右侧向外流出的量更大，盒子内部就有正的净流出贡献。</figcaption>
   </>}
   {kind === 'curl' && <>
