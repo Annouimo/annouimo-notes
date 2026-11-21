@@ -15,7 +15,8 @@
     "new:note": "node scripts/new-note.mjs",
     "generate-types": "cf workers types",
     "deploy": "cf build && node scripts/check-drafts.mjs && cf deploy --prebuilt --mode production",
-    "deploy:preview": "WHY_NOTES_PREVIEW=1 cf previews deploy"
+    "deploy:preview": "WHY_NOTES_PREVIEW=1 cf previews deploy",
+    "precheck": "python3 scripts/sync-design.py"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^15.0.0-beta.5",
