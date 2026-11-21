@@ -1,6 +1,6 @@
 ---
 interface Props {
-  kind: 'field' | 'differential' | 'potential' | 'flux' | 'divergence' | 'curl' | 'cancellation' | 'forms' | 'charge' | 'coupling' | 'wave-shift' | 'gauss-sphere' | 'gauss-cone' | 'volume-cancel' | 'potential-slopes' | 'differential-plane' | 'differential-error' | 'flux-plane'
+  kind: 'field' | 'differential' | 'potential' | 'flux' | 'divergence' | 'curl' | 'cancellation' | 'forms' | 'charge' | 'coupling' | 'wave-shift' | 'gauss-sphere' | 'gauss-cone' | 'volume-cancel' | 'potential-slopes' | 'differential-plane' | 'differential-error' | 'flux-plane' | 'mixed-partials' | 'boundary-square'
 }
 const { kind } = Astro.props;
 ---
@@ -402,6 +402,56 @@ const { kind } = Astro.props;
       <text x="441" y="255" class="tick">B 平行于面片时通量为 0</text>
     </svg>
     <figcaption>先在一块平面上理解磁通量：必须给面片选法向，沿法向的磁场分量是 B cosθ。等理解这件事之后，再把曲面切成许多局部小面片，每片单独计算。</figcaption>
+  </>}
+
+  {kind === 'mixed-partials' && <>
+    <div class="figure-top"><h3>同一个小矩形，两个求导次序</h3><span>混合偏导数交换定理</span></div>
+    <svg viewBox="0 0 650 300" role="img" aria-label="小矩形ABCD：横向差值上边减下边，或纵向差值右边减左边，都形成相同的四角差。图上分别标注水平步长h、竖直步长k。">
+      <defs>
+        <marker id="mp-b" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="var(--curve)"/></marker>
+        <marker id="mp-g" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="var(--green)"/></marker>
+      </defs>
+      <rect x="82" y="64" width="242" height="170" rx="1" fill="var(--green)" fill-opacity=".06" stroke="var(--border)" stroke-width="1.5"/>
+      <path d="M90 234H314M90 64H314" stroke="var(--curve)" stroke-width="3.5" marker-end="url(#mp-b)"/>
+      <path d="M82 225V73M324 225V73" stroke="var(--green)" stroke-width="3.5" marker-end="url(#mp-g)"/>
+      <circle cx="82" cy="234" r="4.5" fill="var(--fg)"/><circle cx="324" cy="234" r="4.5" fill="var(--fg)"/>
+      <circle cx="324" cy="64" r="4.5" fill="var(--fg)"/><circle cx="82" cy="64" r="4.5" fill="var(--fg)"/>
+      <text x="61" y="254" class="figure-point">A</text><text x="333" y="254" class="figure-point">B</text><text x="333" y="61" class="figure-point">C</text><text x="61" y="61" class="figure-point">D</text>
+      <text x="203" y="262" text-anchor="middle" class="legend">水平位移 h</text>
+      <text x="56" y="152" text-anchor="middle" class="legend">k</text>
+      <line x1="375" y1="45" x2="375" y2="255" stroke="var(--border)" stroke-width="1.4"/>
+      <path d="M395 72H422" stroke="var(--curve)" stroke-width="3"/>
+      <text x="433" y="76" class="legend">比较上下的水平增量</text>
+      <text x="395" y="102" class="tick">上边 DC − 下边 AB</text>
+      <path d="M395 150H422" stroke="var(--green)" stroke-width="3"/>
+      <text x="433" y="154" class="legend">比较左右的竖直增量</text>
+      <text x="395" y="180" class="tick">右边 BC − 左边 AD</text>
+      <text x="395" y="235" class="figure-point">得到同一个四角差 Δ</text>
+      <text x="325" y="287" text-anchor="middle" class="tick">矩形不是函数图像；它只是输入平面上的四个取样位置。</text>
+    </svg>
+    <figcaption>蓝色箭头比较两条水平边，绿色箭头比较两条竖直边。两种组合都只使用 A、B、C、D 四个点的函数值；再缩小矩形，并在适当光滑性条件下交换极限次序，就得到相等的混合偏导。</figcaption>
+  </>}
+  {kind === 'boundary-square' && <>
+    <div class="figure-top"><h3>边界再取一次边界：为什么是零？</h3><span>有向边界 · 正负抵消</span></div>
+    <svg viewBox="0 0 650 300" role="img" aria-label="左侧有向矩形A到B到C到D到A，四条边上的方向依次右上左下。右侧用各条有向线段的终点减起点展开，显示A B C D各抵消一次。">
+      <defs>
+        <marker id="bd-arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="var(--green)"/></marker>
+      </defs>
+      <rect x="76" y="64" width="190" height="172" fill="var(--green)" fill-opacity=".10" stroke="var(--border)" stroke-width="1.2"/>
+      <path d="M90 236H251M266 222V81M252 64H90M76 80V218" fill="none" stroke="var(--green)" stroke-width="3.5" marker-end="url(#bd-arrow)"/>
+      <circle cx="76" cy="236" r="5" fill="var(--fg)"/><circle cx="266" cy="236" r="5" fill="var(--fg)"/><circle cx="266" cy="64" r="5" fill="var(--fg)"/><circle cx="76" cy="64" r="5" fill="var(--fg)"/>
+      <text x="55" y="255" class="figure-point">A</text><text x="273" y="255" class="figure-point">B</text><text x="273" y="58" class="figure-point">C</text><text x="55" y="58" class="figure-point">D</text>
+      <text x="173" y="156" text-anchor="middle" class="legend">有向面片 S</text>
+      <line x1="328" y1="42" x2="328" y2="254" stroke="var(--border)" stroke-width="1.4"/>
+      <text x="348" y="64" class="figure-point">每条有向边：终点 − 起点</text>
+      <text x="351" y="106" class="legend">AB → B − A</text>
+      <text x="351" y="138" class="legend">BC → C − B</text>
+      <text x="351" y="170" class="legend">CD → D − C</text>
+      <text x="351" y="202" class="legend">DA → A − D</text>
+      <text x="350" y="244" class="figure-point">相加后，每个点都抵消</text>
+      <text x="320" y="287" text-anchor="middle" class="tick">顶点依然存在；为零的是带符号相加后的“净边界”。</text>
+    </svg>
+    <figcaption>第一次取边界得到矩形四条有向边；第二次取边界得到每条边的终点减起点。A、B、C、D 各出现一次正号和一次负号，结果为零，并不是图中的顶点不存在了。</figcaption>
   </>}
 
 </figure>
