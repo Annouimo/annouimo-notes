@@ -1,0 +1,180 @@
+---
+interface Props {
+  kind: 'field' | 'differential' | 'potential' | 'flux' | 'divergence' | 'curl' | 'cancellation' | 'forms' | 'charge'
+}
+const { kind } = Astro.props;
+---
+<figure class="box-explorer teaching-figure">
+  {kind === 'field' && <>
+    <div class="figure-top"><h3>从一条曲线，到一个空间中的场</h3><span>图 1 · 描述方式</span></div>
+    <svg viewBox="0 0 560 254" role="img" aria-label="左图只研究沿x轴的场强大小，右图在平面上不同位置各放置一个矢量">
+      <defs><marker id="tf-field-arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7" fill="none" stroke="#3869b0" stroke-width="1.3"/></marker></defs>
+      <text x="119" y="20" text-anchor="middle" class="figure-title">一维取样 E(x)</text><text x="419" y="20" text-anchor="middle" class="figure-title">平面矢量场 F(x,y)</text>
+      <path d="M42 213V40M42 213H239" stroke="currentColor" stroke-opacity=".55" stroke-width="1.4" fill="none"/>
+      <text x="24" y="49" class="tick">E</text><text x="237" y="230" class="tick">x</text>
+      <path d="M46 196Q92 180 116 135T233 64" fill="none" stroke="var(--curve)" stroke-width="3"/>
+      <path d="M285 213H542M300 226V35" stroke="currentColor" stroke-opacity=".23" fill="none"/>
+      <text x="533" y="232" class="tick">x</text><text x="291" y="42" class="tick">y</text>
+      {Array.from({length:4},(_,i)=>i).map(i=>Array.from({length:3},(_,j)=>j).map(j=>{
+        const x=326+i*57, y=173-j*54;
+        const vx=(i+1)*10, vy=(j-1)*(-7);
+        return <g><circle cx={x} cy={y} r="2" fill="currentColor" fill-opacity=".3"/><line x1={x} y1={y} x2={x+vx} y2={y+vy} stroke="var(--curve)" stroke-width="2" marker-end="url(#tf-field-arr)"/></g>;
+      }))}
+      <path d="M252 128h20" stroke="currentColor" stroke-opacity=".36" stroke-dasharray="3 4"/>
+      <text x="272" y="247" text-anchor="middle" class="tick">同一位置可有三个分量</text>
+    </svg>
+    <figcaption>左侧只观察一个坐标上的变化；右侧每个位置都有自己的向量。实际电磁场还需要第三个空间方向和时间。</figcaption>
+  </>}
+  {kind === 'differential' && <>
+    <div class="figure-top"><h3>两份变化，为什么可以相加？</h3><span>图 2 · 切平面</span></div>
+    <svg viewBox="0 0 560 314" role="img" aria-label="三维透视：从A沿x方向到C，再沿y方向到切平面上的B；也可沿y到D再沿x到B。形成切平面的平行四边形，并标出曲面真正的点B'与B之间的高阶误差。">
+      <defs><marker id="tf-diff-arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#3869b0"/></marker></defs>
+      <text x="18" y="24" class="figure-title">局部放大 f(x,y)=x²+2y，考察 A=(1,1,3)</text>
+      <path d="M148 247L350 280L205 306L41 268Z" fill="var(--box)" stroke="var(--border)" stroke-width="1"/>
+      <path d="M148 247L267 203L210 175L88 219Z" fill="var(--curve)" fill-opacity=".07" stroke="var(--curve)" stroke-width="1.5" stroke-dasharray="4 4"/>
+      <path d="M148 247L268 205L204 162L84 204Z" fill="var(--green)" fill-opacity=".14" stroke="var(--green)" stroke-width="2.1"/>
+      <path d="M148 247L268 205M148 247L84 204M84 204L204 162M268 205L204 162" stroke="var(--green)" stroke-width="2"/>
+      <path d="M148 247L268 205" stroke="var(--curve)" stroke-width="3" marker-end="url(#tf-diff-arr)"/>
+      <path d="M148 247L84 204" stroke="var(--red)" stroke-width="3"/>
+      <path d="M204 162V148" stroke="var(--red)" stroke-dasharray="4 3" stroke-width="2"/>
+      <circle cx="148" cy="247" r="5" fill="var(--fg)"/><circle cx="268" cy="205" r="5" fill="var(--curve)"/><circle cx="84" cy="204" r="5" fill="var(--red)"/><circle cx="204" cy="162" r="5" fill="var(--green)"/><circle cx="204" cy="148" r="4.5" fill="var(--red)"/>
+      <text x="154" y="265" class="figure-point">A</text><text x="276" y="209" class="figure-point">C</text><text x="67" y="198" class="figure-point">D</text><text x="211" y="169" class="figure-point">B</text><text x="212" y="139" class="figure-point">B′</text>
+      <path d="M148 247L349 280M148 247L41 268M148 247V94" stroke="var(--border)" stroke-width="1.1" fill="none" stroke-dasharray="4 4"/>
+      <text x="351" y="283" class="tick">x</text><text x="29" y="276" class="tick">y</text><text x="153" y="91" class="tick">z</text>
+      <path d="M308 69H330" stroke="var(--green)" stroke-width="3"/><text x="338" y="73" class="legend">切平面上的平行四边形</text>
+      <path d="M308 99H330" stroke="var(--curve)" stroke-width="3"/><text x="338" y="103" class="legend">x 方向贡献</text>
+      <path d="M308 129H330" stroke="var(--red)" stroke-width="3"/><text x="338" y="133" class="legend">y 方向贡献</text>
+      <text x="308" y="178" class="legend">A→C→B</text>
+      <text x="308" y="199" class="legend">与 A→D→B</text>
+      <text x="308" y="220" class="legend">具有相同的一阶高度变化</text>
+      <text x="308" y="263" class="tick">B′ 是曲面上的真实点；</text>
+      <text x="308" y="282" class="tick">B 是切平面上的近似点。</text>
+    </svg>
+    <figcaption>图中放大了局部：绿色平行四边形在切平面上，故相邻两条边可按向量加法合成；曲面上的真实点 B′ 与切平面上的 B 存在小误差。对本例而言，这个误差恰好是 \((\Delta x)^2\)，比位移的一次项更小。</figcaption>
+  </>}
+  {kind === 'potential' && <>
+    <div class="figure-top"><h3>沿等势线走，为什么电势不变？</h3><span>图 3 · 电势与梯度</span></div>
+    <svg viewBox="0 0 560 266" role="img" aria-label="平行的等势线沿y方向延伸，向左电势增加，梯度向左；静电场向右。沿等势线向上移动电势不变，垂直移动时变化最快。">
+      <defs><marker id="tf-pot-a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L7 3L0 6Z" fill="var(--curve)"/></marker><marker id="tf-pot-b" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L7 3L0 6Z" fill="var(--red)"/></marker><marker id="tf-pot-c" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L7 3L0 6Z" fill="var(--green)"/></marker></defs>
+      <text x="22" y="22" class="figure-title">取一个均匀静电场：各条竖线对应不同电势</text>
+      {[95,170,245,320,395].map((x,i)=><g><line x1={x} y1="50" x2={x} y2="225" stroke="var(--border)" stroke-width="2" stroke-dasharray="5 5"/><text x={x} y="242" text-anchor="middle" class="tick">{4-i} V</text></g>)}
+      <circle cx="245" cy="137" r="6" fill="var(--fg)"/>
+      <path d="M245 137V78" stroke="var(--green)" stroke-width="3.3" marker-end="url(#tf-pot-c)"/>
+      <text x="255" y="83" class="legend">沿等势线：Δφ=0</text>
+      <path d="M245 137H336" stroke="var(--curve)" stroke-width="3.3" marker-end="url(#tf-pot-a)"/>
+      <text x="342" y="154" class="legend">静电场 E →</text>
+      <path d="M245 137H169" stroke="var(--red)" stroke-width="3.3" marker-end="url(#tf-pot-b)"/>
+      <text x="111" y="125" class="legend">∇φ</text>
+      <text x="22" y="258" class="tick">电场与电势梯度方向相反：E = −∇φ（静电场）</text>
+    </svg>
+    <figcaption>梯度垂直等势线，指向电势增长最快的方向；静电场则指向电势下降最快的方向。等势线是三维等势面的二维截面。</figcaption>
+  </>}
+  {kind === 'flux' && <>
+    <div class="figure-top"><h3>磁通量为什么需要“有方向的面积”？</h3><span>图 4 · 面片与法向量</span></div>
+    <svg viewBox="0 0 560 277" role="img" aria-label="空间中倾斜的微小平面面片，磁场向上，法向量与磁场夹角theta，只有磁场沿法向方向的分量产生穿过面片的通量">
+      <defs><marker id="tf-flux-a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L7 3L0 6Z" fill="var(--curve)"/></marker><marker id="tf-flux-b" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L7 3L0 6Z" fill="var(--green)"/></marker></defs>
+      <path d="M109 169L274 121L380 174L211 224Z" fill="var(--curve)" fill-opacity=".13" stroke="var(--curve)" stroke-width="2.2"/>
+      <path d="M210 176V43M290 154V28M350 183V54" stroke="var(--curve)" stroke-opacity=".42" stroke-width="2.4" fill="none" marker-end="url(#tf-flux-a)"/>
+      <path d="M248 171L293 57" stroke="var(--green)" stroke-width="3.5" marker-end="url(#tf-flux-b)"/>
+      <path d="M248 171V51" stroke="var(--curve)" stroke-width="3" marker-end="url(#tf-flux-a)"/>
+      <path d="M248 111Q270 116 272 112" stroke="var(--red)" stroke-width="2" fill="none"/>
+      <text x="275" y="108" class="figure-point">θ</text>
+      <circle cx="248" cy="171" r="5" fill="var(--fg)"/>
+      <text x="308" y="67" class="legend">单位法向 n̂</text>
+      <text x="188" y="44" class="legend">磁场 B</text>
+      <text x="290" y="218" class="figure-point">面片 dA</text>
+      <text x="46" y="257" class="tick">一片的磁通量：dΦ = B·n̂ dA = B cosθ dA</text>
+    </svg>
+    <figcaption>面片的面积大小不能告诉我们磁场是否穿过它；还必须指定面片的朝向。我们用单位法向量来记录方向，再通过点积取出磁场的穿透分量。</figcaption>
+  </>}
+  {kind === 'divergence' && <>
+    <div class="figure-top"><h3>流进来多少？流出去多少？</h3><span>图 5 · 小盒子的净通量</span></div>
+    <svg viewBox="0 0 560 316" role="img" aria-label="透视小盒子，左侧通量进入右侧通量流出。在右侧展示x方向两面净流出由P(x+delta x)减P(x)决定。其他两对面同理。">
+      <defs><marker id="tf-div-a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L7 3L0 6Z" fill="var(--curve)"/></marker><marker id="tf-div-b" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L7 3L0 6Z" fill="var(--red)"/></marker></defs>
+      <path d="M120 104L240 104L292 68L169 68Z" fill="var(--soft)" stroke="var(--muted)" stroke-opacity=".7"/>
+      <path d="M240 104L292 68L292 211L240 247Z" fill="var(--green)" fill-opacity=".13" stroke="var(--green)" stroke-width="2"/>
+      <path d="M120 104L240 104L240 247L120 247Z" fill="var(--curve)" fill-opacity=".08" stroke="var(--curve)" stroke-width="2"/>
+      <path d="M120 104L169 68M169 68L169 211L120 247M169 211L292 211" stroke="var(--muted)" stroke-opacity=".55" fill="none" stroke-dasharray="5 4"/>
+      <path d="M50 148H119M50 195H119" stroke="var(--curve)" stroke-width="2.7" marker-end="url(#tf-div-a)"/>
+      <path d="M240 147H359M240 194H359" stroke="var(--curve)" stroke-width="3.5" marker-end="url(#tf-div-a)"/>
+      <path d="M97 124H64M316 125H356" stroke="var(--red)" stroke-width="2" marker-end="url(#tf-div-b)"/>
+      <text x="49" y="131" class="tick">流入</text><text x="309" y="133" class="tick">流出</text>
+      <text x="32" y="274" class="legend">左面法向指向 −x</text><text x="259" y="274" class="legend">右面法向指向 +x</text>
+      <text x="400" y="111" class="legend">同一方向的</text><text x="400" y="130" class="legend">两面相减：</text>
+      <text x="398" y="164" class="figure-point">右面 − 左面</text>
+      <text x="400" y="188" class="tick">再考虑 y、z</text><text x="400" y="206" class="tick">方向的两对面</text>
+      <text x="40" y="303" class="tick">盒子越小，净通量 ÷ 体积越接近散度；图示以 x 方向流动为例。</text>
+    </svg>
+    <figcaption>这里比较的不是左右箭头谁“更长”，而是两侧穿过相同面积面片的通量差。若右侧向外流出的量更大，盒子内部就有正的净流出贡献。</figcaption>
+  </>}
+  {kind === 'curl' && <>
+    <div class="figure-top"><h3>一个小矩形怎样测出旋度？</h3><span>图 6 · 局部环量</span></div>
+    <svg viewBox="0 0 560 290" role="img" aria-label="逆时针走小矩形，右侧向上矢量场比左侧更强，形成正环量；上边下边的水平分量在特例F=(0,x)中都为零">
+      <defs><marker id="tf-curl-a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L7 3L0 6Z" fill="var(--curve)"/></marker><marker id="tf-curl-b" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L7 3L0 6Z" fill="var(--green)"/></marker></defs>
+      <rect x="112" y="64" width="244" height="164" fill="var(--box)" stroke="var(--muted)" stroke-dasharray="5 4" stroke-width="1.5"/>
+      <path d="M140 228H324M356 206V82M327 64H142M112 86V205" fill="none" stroke="var(--green)" stroke-width="2.8" marker-end="url(#tf-curl-b)"/>
+      <path d="M91 210V155" stroke="var(--curve)" stroke-width="2.8" marker-end="url(#tf-curl-a)"/>
+      <path d="M380 215V87" stroke="var(--curve)" stroke-width="4.3" marker-end="url(#tf-curl-a)"/>
+      <text x="58" y="113" class="tick">Q(x)</text><text x="388" y="113" class="tick">Q(x+Δx)</text>
+      <text x="234" y="47" class="legend" text-anchor="middle">逆时针正方向</text>
+      <text x="234" y="146" class="figure-point" text-anchor="middle">F=(0,x)</text><text x="234" y="168" class="tick" text-anchor="middle">右侧向上更强</text>
+      <text x="235" y="254" text-anchor="middle" class="tick">环量 = [Q(x+Δx)−Q(x)]Δy</text>
+      <text x="235" y="274" text-anchor="middle" class="tick">除以 ΔxΔy → Qₓ；一般情形还要减去 Pᵧ</text>
+    </svg>
+    <figcaption>蓝箭头是场在左右两侧的取值；绿箭头是我们积分时选择的绕行方向，两者不能混淆。右侧与绕行方向一致，左侧相反，所以两边的贡献相减。</figcaption>
+  </>}
+  {kind === 'cancellation' && <>
+    <div class="figure-top"><h3>把小区域拼起来，内部发生了什么？</h3><span>图 7 · 公共边抵消</span></div>
+    <svg viewBox="0 0 560 265" role="img" aria-label="把一个大矩形分成三列两行，小矩形分别逆时针走边界；内部公共边被相邻小矩形反向走过，积分相消，最后只剩外边界">
+      <defs><marker id="tf-cancel-a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L7 3L0 6Z" fill="var(--curve)"/></marker></defs>
+      <rect x="82" y="44" width="390" height="170" fill="var(--box)" stroke="var(--curve)" stroke-width="4"/>
+      {[212,342].map(x=><line x1={x} y1="44" x2={x} y2="214" stroke="var(--muted)" stroke-opacity=".5" stroke-dasharray="4 3"/>)}
+      <line x1="82" y1="129" x2="472" y2="129" stroke="var(--muted)" stroke-opacity=".5" stroke-dasharray="4 3"/>
+      {[212,342].map(x=><g><path d={'M'+(x-10)+' 72V108M'+(x+10)+' 108V72'} stroke="var(--red)" stroke-width="2.1" fill="none"/><path d={'M'+(x-10)+' 164V194M'+(x+10)+' 194V164'} stroke="var(--red)" stroke-width="2.1" fill="none"/></g>)}
+      <path d="M132 214H241M472 189V88M421 44H300M82 79V169" stroke="var(--curve)" stroke-width="3" marker-end="url(#tf-cancel-a)" fill="none"/>
+      <text x="277" y="32" text-anchor="middle" class="figure-title">只有外边界留下来</text>
+      <text x="277" y="244" text-anchor="middle" class="tick">小面片的共用边：一次正向，一次反向 → 抵消</text>
+    </svg>
+    <figcaption>沿每块面片逆时针积分，把结果相加。公共边会被走两次，而且方向相反，因此贡献精确抵消；不是“内部的场恰好为零”。</figcaption>
+  </>}
+  {kind === 'forms' && <>
+    <div class="figure-top"><h3>点、线、面、体：到底在测量什么？</h3><span>图 8 · 形式次数</span></div>
+    <svg viewBox="0 0 560 212" role="img" aria-label="0形式在点求值，1形式测量有向线段，2形式测量平行四边形有向面积，3形式测量平行六面体有向体积">
+      <circle cx="65" cy="96" r="6" fill="var(--curve)"/><text x="65" y="54" class="figure-title" text-anchor="middle">点</text><text x="65" y="165" class="tick" text-anchor="middle">0-形式</text>
+      <path d="M153 98H226" stroke="var(--curve)" stroke-width="4"/><path d="M216 91L227 98L216 105Z" fill="var(--curve)"/><text x="192" y="54" class="figure-title" text-anchor="middle">线</text><text x="192" y="165" class="tick" text-anchor="middle">1-形式</text>
+      <path d="M273 110L342 110L371 74L302 74Z" fill="var(--green)" fill-opacity=".22" stroke="var(--green)" stroke-width="2.5"/><text x="322" y="54" class="figure-title" text-anchor="middle">面</text><text x="322" y="165" class="tick" text-anchor="middle">2-形式</text>
+      <path d="M433 87L491 87L515 70L457 70Z M433 87V136L491 136L515 119V70 M491 87V136 M433 136L457 119L515 119" fill="none" stroke="var(--curve)" stroke-width="2"/>
+      <path d="M433 87L491 87L515 70L457 70Z" fill="var(--curve)" fill-opacity=".15"/><text x="470" y="54" class="figure-title" text-anchor="middle">体</text><text x="470" y="165" class="tick" text-anchor="middle">3-形式</text>
+      <text x="280" y="199" text-anchor="middle" class="tick">次数 = 测量规则接受的方向向量数，不是楔积符号个数</text>
+    </svg>
+    <figcaption>积分要求“形式的次数”与“积分区域的维度”相同：1-形式沿曲线积，2-形式在曲面积，3-形式在体积内积。</figcaption>
+  </>}
+  {kind === 'charge' && <>
+    <div class="figure-top"><h3>场线向外散开，散度就一定大于零吗？</h3><span>图 9 · 点电荷外部</span></div>
+    <svg viewBox="0 0 560 277" role="img" aria-label="带正电点电荷产生径向向外电场，较大的封闭圆包围电荷，右侧远处小方框不包围电荷，净通量为零">
+      <defs><marker id="tf-charge-a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L7 3L0 6Z" fill="var(--curve)"/></marker></defs>
+      <circle cx="164" cy="133" r="93" stroke="var(--green)" stroke-width="2" stroke-dasharray="6 5" fill="var(--box)"/>
+      {Array.from({length:12},(_,i)=>i*Math.PI/6).map(t=><path d={'M'+(164+24*Math.cos(t))+' '+(133+24*Math.sin(t))+'L'+(164+118*Math.cos(t))+' '+(133+118*Math.sin(t))} fill="none" stroke="var(--curve)" stroke-width="1.7" marker-end="url(#tf-charge-a)"/>)}
+      <circle cx="164" cy="133" r="13" fill="var(--red)"/><text x="164" y="139" text-anchor="middle" fill="white" font-size="19">+</text>
+      <rect x="347" y="100" width="88" height="72" fill="var(--green)" fill-opacity=".08" stroke="var(--green)" stroke-width="2.5"/>
+      <path d="M305 111L393 106L480 97M305 142L393 135L480 124M305 181L393 171L480 158" stroke="var(--curve)" stroke-width="1.7" fill="none" marker-end="url(#tf-charge-a)"/>
+      <text x="352" y="205" class="legend">小盒子不含电荷</text>
+      <text x="352" y="226" class="legend">净通量为零</text>
+      <text x="36" y="260" class="tick">大曲面包住电荷 → 正通量；小盒子不包住电荷 → 零净通量。</text>
+    </svg>
+    <figcaption>这里的小盒子与左边大圆是两个单独选取的积分区域；示意图用二维截面展示三维空间中的封闭曲面。穿过小盒子的场线可以是弯曲、发散的，但进入和流出的总通量相等。</figcaption>
+  </>}
+</figure>
+<style>
+.teaching-figure{max-width:760px;padding:15px 18px;margin-top:28px;margin-bottom:29px}
+.figure-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.figure-top h3{font-size:1.02rem;line-height:1.4;margin:0}
+.figure-top span{font-size:.7rem;color:var(--muted);white-space:nowrap}
+.teaching-figure svg{width:100%;height:auto;display:block;margin:10px auto 2px;max-height:355px}
+.teaching-figure figcaption{color:var(--muted);line-height:1.8;font-size:.76rem;margin:8px 0 2px}
+.figure-title{font-size:14px;fill:var(--fg);font-weight:600}
+.figure-point{font-size:15px;fill:var(--fg);font-weight:600}
+.tick{font-size:12px;fill:var(--muted)}
+.legend{font-size:12px;fill:var(--fg)}
+@media(max-width:600px){.teaching-figure{margin-left:10px;margin-right:10px;padding:13px 9px}.teaching-figure svg{min-width:0}.figure-top h3{font-size:.96rem}.figure-title{font-size:13px}}
+</style>
