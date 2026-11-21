@@ -1,6 +1,6 @@
 ---
 interface Props {
-  kind: 'field' | 'differential' | 'potential' | 'flux' | 'divergence' | 'curl' | 'cancellation' | 'forms' | 'charge' | 'coupling' | 'wave-shift' | 'gauss-sphere' | 'gauss-cone' | 'volume-cancel' | 'potential-slopes' | 'differential-plane' | 'differential-error' | 'flux-plane' | 'mixed-partials' | 'boundary-square'
+  kind: 'field' | 'differential' | 'potential' | 'flux' | 'divergence' | 'curl' | 'cancellation' | 'forms' | 'charge' | 'coupling' | 'wave-shift' | 'gauss-sphere' | 'gauss-cone' | 'volume-cancel' | 'potential-slopes' | 'differential-plane' | 'flux-plane' | 'mixed-partials' | 'boundary-square'
 }
 const { kind } = Astro.props;
 
@@ -412,29 +412,6 @@ const curveFieldTips=[{u:-.86,v:-.47},{u:-.35,v:.38},{u:.68,v:-.53},{u:.87,v:.4}
       <text x="458" y="293" class="tick">例：Δx=Δy=1</text>
     </svg>
     <figcaption>四个顶点先按切平面方程 z=6+4(x−2)+2(y−1) 计算，再统一作三维斜投影。竖直连线对应真正的 z 方向高度差，而不是斜边长度。灰色参考面取 z=6；两条路线到达同一个 B，因而高度增量完全相同。</figcaption>
-  </>}
-  {kind === 'differential-error' && <>
-    <div class="figure-top"><h3>再把真实曲面放回来：为什么还存在误差？</h3><span>全微分 · 第二步</span></div>
-    <svg viewBox="0 0 690 315" role="img" aria-label="绿色切平面与浅蓝色向上弯曲的函数曲面在A点相切。在水平坐标增量Δx、Δy之后，切平面到达B，真实曲面到达更高的B撇，红色竖向线段代表二阶误差Δx平方。">
-      <text x="19" y="25" class="figure-title">同一个位移：切平面给出 B，函数图像给出 B′</text>
-      <path d="M108 237L309 189L386 235L185 283Z" fill="var(--green)" fill-opacity=".13" stroke="var(--green)" stroke-width="2.3"/>
-      <path d="M108 237Q196 175 309 157L386 202Q270 230 185 283Z" fill="var(--curve)" fill-opacity=".12" stroke="var(--curve)" stroke-width="2.4"/>
-      <path d="M108 237Q208 187 309 157M185 283Q281 224 386 202M148 247Q247 189 344 174" fill="none" stroke="var(--curve)" stroke-width="1.5" stroke-opacity=".62"/>
-      <path d="M108 237L309 189M309 189L386 235" stroke="var(--green)" stroke-width="2.1" fill="none"/>
-      <path d="M309 189V157" stroke="var(--red)" stroke-width="3" stroke-dasharray="5 4"/>
-      <circle cx="108" cy="237" r="5.3" fill="var(--fg)"/><text x="90" y="255" class="figure-point">A</text>
-      <circle cx="309" cy="189" r="5.3" fill="var(--green)"/><text x="286" y="205" class="figure-point">B</text>
-      <circle cx="309" cy="157" r="5.3" fill="var(--red)"/><text x="317" y="150" class="figure-point">B′</text>
-      <text x="323" y="180" class="legend">误差</text>
-      <line x1="418" y1="52" x2="418" y2="272" stroke="var(--border)" stroke-width="1.2"/>
-      <path d="M438 74H465" stroke="var(--green)" stroke-width="3"/><text x="476" y="79" class="legend">绿色：切平面近似</text>
-      <path d="M438 111H465" stroke="var(--curve)" stroke-width="3"/><text x="476" y="116" class="legend">蓝色：真实函数图像</text>
-      <path d="M438 148H465" stroke="var(--red)" stroke-width="2.7" stroke-dasharray="4 4"/><text x="476" y="153" class="legend">红色：B 与 B′ 的高度差</text>
-      <text x="439" y="212" class="figure-point">切平面：4Δx + 2Δy</text>
-      <text x="439" y="238" class="legend">真实值：再加上 (Δx)²</text>
-      <text x="18" y="306" class="tick">示意图对局部高度差作了放大；具体大小由 f(x,y)=x²+2y 的计算决定。</text>
-    </svg>
-    <figcaption>两张面在 A 点相切，但随着位移增大，蓝色真实曲面会偏离绿色切平面。本例的差恰好是 (Δx)²；缩小位移时，这个误差相对于一阶变化变得更小。</figcaption>
   </>}
   {kind === 'flux-plane' && <>
     <div class="figure-top"><h3>磁通量：为什么要比较磁场与面片法向？</h3><span>磁通量 · 平面示意</span></div>
