@@ -1,6 +1,6 @@
 ---
 interface Props {
-  kind: 'field' | 'differential' | 'potential' | 'flux' | 'divergence' | 'curl' | 'cancellation' | 'forms' | 'charge' | 'coupling' | 'wave-shift' | 'gauss-sphere' | 'gauss-cone' | 'volume-cancel' | 'potential-slopes'
+  kind: 'field' | 'differential' | 'potential' | 'flux' | 'divergence' | 'curl' | 'cancellation' | 'forms' | 'charge' | 'coupling' | 'wave-shift' | 'gauss-sphere' | 'gauss-cone' | 'volume-cancel' | 'potential-slopes' | 'differential-plane' | 'differential-error' | 'flux-plane'
 }
 const { kind } = Astro.props;
 ---
@@ -314,6 +314,94 @@ const { kind } = Astro.props;
       <text x="465" y="290" text-anchor="middle" class="figure-point">Eᵧ = −φᵧ</text>
     </svg>
     <figcaption>在二维标量场中，“沿 x 轴读取变化率”与“沿 y 轴读取变化率”其实是分别画出的两张一元函数图像。电势沿一个方向的切线斜率取负号，正好给出电场沿该方向的分量。</figcaption>
+  </>}
+
+  {kind === 'differential-plane' && <>
+    <div class="figure-top"><h3>先只看切平面：两条路为何得到相同高度？</h3><span>全微分 · 第一步</span></div>
+    <svg viewBox="0 0 690 337" role="img" aria-label="绿色倾斜切平面上四点A C B D组成平行四边形，A到C沿x方向一阶高度增加4Δx，C到B沿y方向增加2Δy；反向路径A到D到B也到达同一终点。下方虚线平面提示水平位移。">
+      <defs>
+        <marker id="dp-arr-x" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="var(--curve)"/></marker>
+        <marker id="dp-arr-y" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="var(--green)"/></marker>
+      </defs>
+      <text x="19" y="24" class="figure-title">只保留 A 点处的切平面，不画真实曲面</text>
+      <path d="M174 237L340 278L244 323L78 282Z" fill="var(--soft)" fill-opacity=".55" stroke="var(--muted)" stroke-opacity=".38" stroke-width="1.6" stroke-dasharray="5 5"/>
+      <path d="M174 237L340 177L244 128L78 188Z" fill="var(--green)" fill-opacity=".16" stroke="var(--green)" stroke-width="2.3"/>
+      <path d="M174 237L340 177M174 237L78 188" stroke="var(--muted)" stroke-width="2" stroke-opacity=".4"/>
+      <path d="M174 237L340 177" stroke="var(--curve)" stroke-width="3.5" marker-end="url(#dp-arr-x)"/>
+      <path d="M340 177L244 128" stroke="var(--green)" stroke-width="3.5" marker-end="url(#dp-arr-y)"/>
+      <path d="M174 237L78 188" stroke="var(--green)" stroke-width="2.2" stroke-dasharray="6 4"/>
+      <path d="M78 188L244 128" stroke="var(--curve)" stroke-width="2.2" stroke-dasharray="6 4"/>
+      <path d="M340 278V177M78 282V188M244 323V128" fill="none" stroke="var(--muted)" stroke-width="1.3" stroke-dasharray="4 5"/>
+      <path d="M174 237L340 278M174 237L78 282" fill="none" stroke="var(--muted)" stroke-width="1.3" stroke-dasharray="4 5"/>
+      <text x="295" y="283" class="tick">水平 Δx</text>
+      <text x="35" y="289" class="tick">水平 Δy</text>
+      <circle cx="174" cy="237" r="5" fill="var(--fg)"/><text x="185" y="256" class="figure-point">A</text>
+      <circle cx="340" cy="177" r="5" fill="var(--fg)"/><text x="350" y="183" class="figure-point">C</text>
+      <circle cx="78" cy="188" r="5" fill="var(--fg)"/><text x="58" y="182" class="figure-point">D</text>
+      <circle cx="244" cy="128" r="5" fill="var(--fg)"/><text x="250" y="116" class="figure-point">B</text>
+      <line x1="385" y1="39" x2="385" y2="307" stroke="var(--border)" stroke-width="1.2"/>
+      <text x="409" y="66" class="figure-point">第一条走法：</text>
+      <text x="409" y="95" class="legend">A → C：沿 x 增加 4Δx</text>
+      <text x="409" y="125" class="legend">C → B：沿 y 增加 2Δy</text>
+      <path d="M411 143H650" stroke="var(--border)" stroke-width="1.2"/>
+      <text x="409" y="168" class="figure-point">第二条走法：</text>
+      <text x="409" y="197" class="legend">A → D：沿 y 增加 2Δy</text>
+      <text x="409" y="227" class="legend">D → B：沿 x 增加 4Δx</text>
+      <text x="409" y="277" class="figure-point">终点相同，都到 B</text>
+      <text x="409" y="299" class="legend">高度变化：4Δx + 2Δy</text>
+    </svg>
+    <figcaption>绿色是切平面上的一个平行四边形，虚线只是水平位移的辅助投影。平面上沿同一坐标方向的斜率保持不变，所以两条走法的高度增量相同。此图暂时不讨论真实曲面带来的误差。</figcaption>
+  </>}
+  {kind === 'differential-error' && <>
+    <div class="figure-top"><h3>再把真实曲面放回来：为什么还存在误差？</h3><span>全微分 · 第二步</span></div>
+    <svg viewBox="0 0 690 315" role="img" aria-label="绿色切平面与浅蓝色向上弯曲的函数曲面在A点相切。在水平坐标增量Δx、Δy之后，切平面到达B，真实曲面到达更高的B撇，红色竖向线段代表二阶误差Δx平方。">
+      <text x="19" y="25" class="figure-title">同一个位移：切平面给出 B，函数图像给出 B′</text>
+      <path d="M108 237L309 189L386 235L185 283Z" fill="var(--green)" fill-opacity=".13" stroke="var(--green)" stroke-width="2.3"/>
+      <path d="M108 237Q196 175 309 157L386 202Q270 230 185 283Z" fill="var(--curve)" fill-opacity=".12" stroke="var(--curve)" stroke-width="2.4"/>
+      <path d="M108 237Q208 187 309 157M185 283Q281 224 386 202M148 247Q247 189 344 174" fill="none" stroke="var(--curve)" stroke-width="1.5" stroke-opacity=".62"/>
+      <path d="M108 237L309 189M309 189L386 235" stroke="var(--green)" stroke-width="2.1" fill="none"/>
+      <path d="M309 189V157" stroke="var(--red)" stroke-width="3" stroke-dasharray="5 4"/>
+      <circle cx="108" cy="237" r="5.3" fill="var(--fg)"/><text x="90" y="255" class="figure-point">A</text>
+      <circle cx="309" cy="189" r="5.3" fill="var(--green)"/><text x="286" y="205" class="figure-point">B</text>
+      <circle cx="309" cy="157" r="5.3" fill="var(--red)"/><text x="317" y="150" class="figure-point">B′</text>
+      <text x="323" y="180" class="legend">误差</text>
+      <line x1="418" y1="52" x2="418" y2="272" stroke="var(--border)" stroke-width="1.2"/>
+      <path d="M438 74H465" stroke="var(--green)" stroke-width="3"/><text x="476" y="79" class="legend">绿色：切平面近似</text>
+      <path d="M438 111H465" stroke="var(--curve)" stroke-width="3"/><text x="476" y="116" class="legend">蓝色：真实函数图像</text>
+      <path d="M438 148H465" stroke="var(--red)" stroke-width="2.7" stroke-dasharray="4 4"/><text x="476" y="153" class="legend">红色：B 与 B′ 的高度差</text>
+      <text x="439" y="212" class="figure-point">切平面：4Δx + 2Δy</text>
+      <text x="439" y="238" class="legend">真实值：再加上 (Δx)²</text>
+      <text x="18" y="306" class="tick">示意图对局部高度差作了放大；具体大小由 f(x,y)=x²+2y 的计算决定。</text>
+    </svg>
+    <figcaption>两张面在 A 点相切，但随着位移增大，蓝色真实曲面会偏离绿色切平面。本例的差恰好是 (Δx)²；缩小位移时，这个误差相对于一阶变化变得更小。</figcaption>
+  </>}
+  {kind === 'flux-plane' && <>
+    <div class="figure-top"><h3>先看一块平面：只有垂直穿透的磁场分量起作用</h3><span>磁通量 · 第一步</span></div>
+    <svg viewBox="0 0 690 315" role="img" aria-label="一块倾斜的绿色矩形面片，面积A，其中央发出法向量n帽。蓝色磁场B与n帽之间形成角θ；背景蓝色箭头显示均匀磁场穿过整个区域。">
+      <defs>
+        <marker id="fp-ba" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="var(--curve)"/></marker>
+        <marker id="fp-na" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="var(--green)"/></marker>
+      </defs>
+      <text x="17" y="25" class="figure-title">空间中的同一个磁场，斜着穿过这一块平面</text>
+      {[95,178,261,344].flatMap(x=>[125,234].map(y=><line x1={x} y1={y+35} x2={x+16} y2={y-47} stroke="var(--curve)" stroke-width="1.8" opacity=".28" marker-end="url(#fp-ba)"/>))}
+      <path d="M109 218L298 167L378 227L189 278Z" fill="var(--green)" fill-opacity=".17" stroke="var(--green)" stroke-width="2.7"/>
+      <path d="M110 218L298 167M189 278L378 227" stroke="var(--green)" stroke-width="1.4" stroke-opacity=".45" stroke-dasharray="5 4"/>
+      <circle cx="243" cy="224" r="4.5" fill="var(--fg)"/>
+      <path d="M243 224L295 99" stroke="var(--green)" stroke-width="4" marker-end="url(#fp-na)"/>
+      <path d="M243 224L265 72" stroke="var(--curve)" stroke-width="4" marker-end="url(#fp-ba)"/>
+      <path d="M264 145Q285 148 283 161" stroke="var(--red)" stroke-width="2" fill="none"/>
+      <text x="288" y="146" class="figure-point">θ</text>
+      <text x="297" y="89" class="figure-point">n̂</text>
+      <text x="247" y="59" class="figure-point">B</text>
+      <text x="206" y="260" class="figure-point">面积 A</text>
+      <line x1="419" y1="55" x2="419" y2="277" stroke="var(--border)" stroke-width="1.2"/>
+      <text x="441" y="85" class="figure-point">沿法向的磁场：</text>
+      <text x="441" y="115" class="legend">B cosθ</text>
+      <text x="441" y="171" class="figure-point">穿过整片的磁通量：</text>
+      <text x="441" y="202" class="legend">Φ = B A cosθ</text>
+      <text x="441" y="255" class="tick">平行面片时通量为 0</text>
+    </svg>
+    <figcaption>先在一块平面上理解磁通量：必须给面片选法向，沿法向的磁场分量是 B cosθ。等理解这件事之后，再把曲面切成许多局部小面片，每片单独计算。</figcaption>
   </>}
 
 </figure>
