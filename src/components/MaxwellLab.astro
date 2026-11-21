@@ -4,7 +4,7 @@ const {kind}=Astro.props;
 ---
 <section class="box-explorer maxwell-lab" data-kind={kind} aria-label={kind==='field'?'散度与旋度实验':kind==='capacitor'?'电容器曲面实验':'电磁波传播实验'}>
   {kind==='field' && <>
-    <div class="lab-heading"><h3>在同一个小方框里，测量两件事</h3><span>图 1 · 局部测量</span></div>
+    <div class="lab-heading"><h3>在同一个小方框里，测量两件事</h3><span>局部测量实验</span></div>
     <p class="lab-task">切换三种矢量场。观察箭头，再比较方框边界的净通量与逆时针环量。</p>
     <div class="lab-controls" role="group" aria-label="选择矢量场">
       <button type="button" data-field="source" aria-pressed="true">向外扩张</button>
@@ -16,45 +16,53 @@ const {kind}=Astro.props;
     <p class="lab-footnote">为保持直观，取固定的小方框与线性场；显示的是解析结果，不是依赖箭头采样得到的结论。</p>
   </>}
   {kind==='capacitor' && <>
-    <div class="lab-heading"><h3>同一条回路，两张积分曲面</h3><span>图 2 · 位移电流</span></div>
+    <div class="lab-heading"><h3>同一条回路，两张积分曲面</h3><span>积分曲面实验</span></div>
     <p class="lab-task">边界圆环 C 保持不变。切换计算曲面，看“穿过曲面的电流”为什么会变化。</p>
     <div class="lab-controls" role="group" aria-label="选择积分曲面">
       <button type="button" data-surface="one" aria-pressed="true">S₁：平圆盘</button>
       <button type="button" data-surface="two" aria-pressed="false">S₂：鼓入间隙</button>
     </div>
-    <svg class="lab-svg" viewBox="0 0 520 270" role="img" aria-label="充电电容器侧视剖面：左侧接入导线，极板之间有电场。展示同一回路所围两种曲面。">
-      <defs><marker id="mlarrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#3869b0"/></marker></defs>
-      <path d="M12 127H258" fill="none" stroke="currentColor" stroke-opacity=".48" stroke-width="6"/>
-      <path d="M370 127H505" fill="none" stroke="currentColor" stroke-opacity=".48" stroke-width="6"/>
-      <rect x="257" y="50" width="9" height="154" rx="2" fill="#b7645a"/>
-      <rect x="363" y="50" width="9" height="154" rx="2" fill="#6088af"/>
-      <text x="261" y="37" font-size="14" fill="#b7645a" text-anchor="middle">正极板</text>
-      <text x="368" y="37" font-size="14" fill="#6088af" text-anchor="middle">负极板</text>
-      <path d="M283 85H346M283 126H346M283 167H346" fill="none" stroke="#3869b0" stroke-width="2" marker-end="url(#mlarrow)"/>
-      <text x="311" y="230" font-size="13" fill="currentColor" text-anchor="middle">极板间：E 增强</text>
-      <text x="73" y="110" font-size="14" fill="currentColor">导线电流 I →</text>
-      <ellipse cx="145" cy="127" rx="10" ry="43" fill="none" stroke="#3869b0" stroke-width="3"/>
+    <svg class="lab-svg" viewBox="0 0 640 332" role="img" aria-label="电容器轴向剖面。C 是围绕左侧导线的圆形回路，在图上投影成椭圆；平圆盘 S1 直接截过导线。切换 S2 后，可见曲面绕过左极板的外缘，再伸进两极板之间的真空间隙。两种曲面共用边界 C。">
+      <defs>
+        <marker id="mlarrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="var(--curve)"/></marker>
+        <marker id="mlsurfacearrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="var(--green)"/></marker>
+      </defs>
+      <text x="22" y="22" font-size="13" fill="var(--muted)">轴向剖视：横向是电容器轴线，竖向表示径向距离</text>
+      <path d="M28 165H309M448 165H615" fill="none" stroke="var(--muted)" stroke-width="7" stroke-linecap="round"/>
+      <path d="M309 90V240M448 90V240" fill="none" stroke="var(--muted)" stroke-width="3" stroke-dasharray="3 4"/>
+      <rect x="306" y="89" width="10" height="152" rx="3" fill="#b96955"/>
+      <rect x="442" y="89" width="10" height="152" rx="3" fill="#6088af"/>
+      <text x="310" y="74" font-size="14" fill="#b96955" text-anchor="middle">正极板</text>
+      <text x="447" y="74" font-size="14" fill="#6088af" text-anchor="middle">负极板</text>
+      <path d="M335 126H419M335 166H419M335 205H419" stroke="var(--curve)" stroke-width="2.8" marker-end="url(#mlarrow)"/>
+      <text x="380" y="268" font-size="13" fill="var(--curve)" text-anchor="middle">板间 E(t) 增强 →</text>
+      <path d="M60 148H106" stroke="var(--curve)" stroke-width="2.7" marker-end="url(#mlarrow)"/>
+      <text x="27" y="128" font-size="13" fill="var(--fg)">传导电流 I →</text>
       <g data-s1>
-        <ellipse cx="145" cy="127" rx="10" ry="43" fill="#3869b0" fill-opacity=".19" stroke="#3869b0" stroke-width="3"/>
-        <text x="95" y="200" font-size="15" fill="#3869b0">S₁</text>
-        <path d="M109 189L142 161" fill="none" stroke="#3869b0"/>
+        <ellipse cx="161" cy="165" rx="15" ry="47" fill="var(--curve)" fill-opacity=".22" stroke="var(--curve)" stroke-width="2.9"/>
+        <path d="M162 210L206 255" fill="none" stroke="var(--curve)" stroke-width="1.5"/>
+        <text x="212" y="264" font-size="15" fill="var(--curve)" font-weight="600">S₁：直接切过导线</text>
       </g>
       <g data-s2 style="display:none">
-        <path d="M145 84 C181 36 231 16 298 17 C351 17 350 74 350 127 C350 180 351 237 298 237 C231 238 181 218 145 170" fill="#21814e" fill-opacity=".09" stroke="#21814e" stroke-width="3" stroke-linejoin="round"/>
-        <text x="195" y="248" font-size="15" fill="#21814e">S₂（剖面轮廓）</text>
+        <path d="M161 118 C195 73 230 53 294 52 C355 50 385 70 401 112 C416 151 419 159 420 165 C419 173 416 179 401 218 C385 260 355 280 294 278 C230 277 195 256 161 212 Z" fill="var(--green)" fill-opacity=".06" stroke="var(--green)" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M190 100Q231 66 293 65" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-dasharray="5 5" marker-end="url(#mlsurfacearrow)"/>
+        <path d="M306 56Q374 60 408 137" fill="none" stroke="var(--green)" stroke-width="1.8" stroke-dasharray="5 5" marker-end="url(#mlsurfacearrow)"/>
+        <text x="215" y="299" font-size="14" fill="var(--green)" font-weight="600">S₂：绕板外缘，鼓入极板间</text>
       </g>
-      <text x="145" y="77" font-size="14" fill="#3869b0" text-anchor="middle">C</text>
+      <ellipse cx="161" cy="165" rx="15" ry="47" fill="none" stroke="var(--curve)" stroke-width="3.2"/>
+      <text x="149" y="108" font-size="15" fill="var(--curve)" font-weight="650">C</text>
+      <text x="22" y="318" font-size="12" fill="var(--muted)">C 是固定的圆形回路；切换曲面不会改变 C。绿色线仅代表 S₂ 的剖面母线。</text>
     </svg>
     <p class="lab-feedback" data-result aria-live="polite">S₁ 穿过导线：传导电流为 I；位移电流贡献在理想模型下取 0。</p>
-    <p class="lab-footnote">剖视示意，非严格三维透视。曲面是计算时想象的薄膜，不是装置中的实体；S₂ 绕过左极板边缘后进入板间。两者共有同一条边界 C。</p>
+    <p class="lab-footnote">这是一幅轴向剖面原理图：C 实际是围绕导线的圆环，在视图中投影成椭圆；S₂ 的绿色轮廓是曲面剖面母线，不是剖面中的实体气泡。曲面是数学上选取的薄膜，且绕开左极板后进入板间。两者始终具有同一条边界 C。</p>
   </>}
   {kind==='wave' && <>
-    <div class="lab-heading"><h3>让电场与磁场一起传播</h3><span>图 3 · 真空平面波</span></div>
-    <p class="lab-task">改变时刻，观察两条曲线的波峰怎样沿 +x 移动。蓝色是 y 向电场，绿色是 z 向磁场（幅值已归一化）。</p>
+    <div class="lab-heading"><h3>让电场与磁场一起传播</h3><span>电磁波实验</span></div>
+    <p class="lab-task">改变时刻，观察两组波峰怎样同时向 +x 移动。分别画出 y 向电场 Eᵧ 与 z 向磁场 cB_z 的分量值；它们不是空间中的两条轨迹。</p>
     <svg class="lab-svg" data-wave viewBox="0 0 520 245" role="img" aria-label="电场与磁场沿传播方向的空间分布，两个波形同相向右传播"></svg>
     <div class="lab-slide"><label>时刻 <span data-time>0.0</span></label><input type="range" min="0" max="6.28" step="0.05" value="0" data-phase /><button type="button" data-wave-reset>重置</button></div>
-    <p class="lab-feedback">蓝色 E 与绿色 cB 同相；它们的实际向量方向相互垂直，且都垂直于传播方向。</p>
-    <p class="lab-footnote">两条曲线为了便于比较画在同一平面上，表示的是分量数值，不是三维空间中两条真正重合的轨迹。</p>
+    <p class="lab-feedback">上下两幅图的波峰位置始终一致，表示 Eᵧ 与 cB_z 同相。实际上电场沿 y、磁场沿 z，二者都垂直于传播方向 x。</p>
+    <p class="lab-footnote">两幅图采用相同的水平坐标和时间参数，波形只表示场分量的数值，不表示真实的三维空间轨迹。</p>
   </>}
 </section>
 <style>
@@ -103,13 +111,18 @@ for(const root of document.querySelectorAll<HTMLElement>('.maxwell-lab')){
   const svg=root.querySelector<SVGSVGElement>('[data-wave]')!, slider=root.querySelector<HTMLInputElement>('[data-phase]')!;
   const draw=(phase:number)=>{
    svg.replaceChildren();
-   add(svg,'line',{x1:28,y1:120,x2:502,y2:120,stroke:'var(--border)','stroke-width':1.5});
-   add(svg,'text',{x:493,y:141,'font-size':13,fill:'var(--muted)'},'x →');
-   for(const color of ['var(--curve)','var(--green)'] as const){
-    const pts=Array.from({length:301},(_,i)=>{const x=30+460*i/300,y=120-75*Math.sin(i/300*4*Math.PI-phase);return (i?'L':'M')+x.toFixed(1)+','+y.toFixed(1)}).join(' ');
-    add(svg,'path',{d:pts,stroke:color,'stroke-width':color==='var(--curve)'?4:2,fill:'none',opacity:color==='var(--curve)'?.8:.9,'stroke-dasharray':color==='var(--green)'?'7 5':''});
+   add(svg,'text',{x:28,y:20,'font-size':12,fill:'var(--muted)'},'传播方向：+x →');
+   for(const [i,color,label] of [[0,'var(--curve)','Eᵧ'],[1,'var(--green)','cB_z']] as const){
+    const baseline=75+i*115;
+    add(svg,'line',{x1:35,y1:baseline,x2:504,y2:baseline,stroke:'var(--border)','stroke-width':1.3});
+    add(svg,'text',{x:42,y:baseline-45,'font-size':14,fill:color},label);
+    const pts=Array.from({length:301},(_,j)=>{
+      const x=35+455*j/300, y=baseline-35*Math.sin(j/300*4*Math.PI-phase);
+      return (j?'L':'M')+x.toFixed(1)+','+y.toFixed(1);
+    }).join(' ');
+    add(svg,'path',{d:pts,stroke:color,'stroke-width':2.9,fill:'none'});
+    add(svg,'text',{x:499,y:baseline+17,'font-size':11,fill:'var(--muted)'},'x');
    }
-   add(svg,'text',{x:34,y:24,'font-size':14,fill:'var(--curve)'},'Eᵧ（实线）');add(svg,'text',{x:145,y:24,'font-size':14,fill:'var(--green)'},'cB_z（虚线）');
    root.querySelector<HTMLElement>('[data-time]')!.textContent=phase.toFixed(2);
   };
   slider.addEventListener('input',()=>draw(Number(slider.value)));
