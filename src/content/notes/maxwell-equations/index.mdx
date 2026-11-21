@@ -148,27 +148,27 @@ $$
 
 想想最熟悉的求导符号 $\frac{\mathrm d}{\mathrm dx}$。只写这个符号时，并没有得到一个数；它的意思是“请对后面给我的函数求 $x$ 的导数”。比如：
 
-$
+$$
 \frac{\mathrm d}{\mathrm dx}(x^2)=2x,\qquad
 \frac{\mathrm d}{\mathrm dx}(\sin x)=\cos x.
-$
+$$
 
 左边的 $\frac{\mathrm d}{\mathrm dx}$ 是**操作规则**，$x^2$、$\sin x$ 是被操作的对象，右边才是结果。像这样接收一个对象、按规定操作后给出另一个对象的规则，叫作**算子**。
 
 偏导数符号 $\partial/\partial x$ 也是算子：它接收多元函数，只对 $x$ 求偏导。现在，我们把两个偏导算子排成一个“形式上的向量”：
 
-$
+$$
 \boxed{
 \nabla=\left(\frac{\partial}{\partial x},\frac{\partial}{\partial y}\right).
 }
-$
+$$
 
 这时 $\nabla$ 的两个分量还不是数，而是**两条等待执行的指令**。如果把它作用于标量函数 $f$，就相当于分别执行两条指令，再把结果打包：
 
-$
+$$
 \nabla f
 =\left(\frac{\partial f}{\partial x},\frac{\partial f}{\partial y}\right).
-$
+$$
 
 只有右边才是每个点都有具体分量的**梯度向量场**。这个区别稍后非常有用：同一组求偏导的指令还可以通过点积式或叉积式的组合，得到散度和旋度。
 
@@ -760,15 +760,15 @@ $$
 
 三个向量的有向体积则可由 $\mathrm{d}x\wedge\mathrm{d}y\wedge\mathrm{d}z$ 测量。具体说，如果
 
-$
+$$
 \mathbf u=(u_x,u_y,u_z),\quad
 \mathbf v=(v_x,v_y,v_z),\quad
 \mathbf w=(w_x,w_y,w_z),
-$
+$$
 
 那么测量结果就是一个清楚的**三阶行列式**：
 
-$
+$$
 \boxed{
 (\mathrm{d}x\wedge\mathrm{d}y\wedge\mathrm{d}z)(\mathbf u,\mathbf v,\mathbf w)
 =
@@ -778,7 +778,7 @@ v_x&v_y&v_z\\
 w_x&w_y&w_z
 \end{vmatrix}.
 }
-$
+$$
 
 对照刚才面积的二阶行列式：**两个方向构成有向面积，三个方向构成有向体积。** 这条从线性代数延伸出的规律，比三维叉积与混合积的记法更加统一。
 
@@ -1144,17 +1144,17 @@ $$
 
 高中常用的平行板电容公式可以写成（忽略边缘效应）
 
-$
+$$
 C_{\mathrm{cap}}=\frac{\varepsilon_r A}{4\pi k d},
-$
+$$
 
 这里 $A$ 为极板正对面积，$d$ 为板间距离，$\varepsilon_r$ 为板间材料的**相对介电常数**；真空中 $\varepsilon_r=1$。注意这里的 $k$，正是我们从库仑定律带过来的静电力常量。
 
 还记得前面为了简化高斯定律引入的 $\varepsilon_0$ 吗？由于 $4\pi k=1/\varepsilon_0$，对于**真空**平行板电容器，公式立即简化为
 
-$
+$$
 \boxed{C_{\mathrm{cap}}=\frac{\varepsilon_0 A}{d}.}
-$
+$$
 
 所以采用真空介电常数并非只让一个公式变好看：在电容的计算中，它也自然地出现了。
 
