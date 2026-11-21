@@ -1,7 +1,6 @@
 ---
 import '../../.shared-design/tokens.css';
 import '../../.shared-design/navigation.css';
-import sites from '../../.shared-design/sites.json';
 import '../styles/global.css';
 import 'katex/dist/katex.min.css';
 interface Props { title?: string; description?: string; preview?: boolean }
@@ -24,11 +23,11 @@ const { title = '求知札记', description = '通过可探索的数学与物理
   </head>
   <body>
     <a class="skip-link" href="#main">跳至正文</a>
-    <header class="site-header">
+    <header class="ann-topbar">
+      <a class="ann-home-link" href={import.meta.env.PUBLIC_HOME_URL || "https://www.annouimo.com/"}>个人主页</a>
       <a href="/" class="brand">求知札记<span class="brand-dot" aria-hidden="true">.</span></a>
       <nav class="ann-site-nav" aria-label="主导航">
         <a href="/">讲义</a>
-        {sites.filter(site => site.id !== "learn").map(site => <a href={site.url}>{site.name}</a>)}
         <button class="theme-toggle" type="button" aria-label="切换明暗主题" title="切换明暗主题"><span aria-hidden="true">◐</span></button>
       </nav>
     </header>

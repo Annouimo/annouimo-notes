@@ -8,11 +8,11 @@ const headings = note.getHeadings().filter(h => h.depth === 2);
 ---
 <Base title={frontmatter.title} description={frontmatter.description} preview={isPreview}>
   <article class="lesson">
-    <header class="lesson-header reading-width">
+    <header class="lesson-header reading-width ann-page-heading">
       <a class="back-link" href="/">← 所有讲义</a>
       <p class="eyebrow">{frontmatter.topic} / 可探索的解释</p>
       <h1>{frontmatter.title}</h1>
-      <p class="lesson-description">{frontmatter.description}</p>
+      <p class="lesson-description ann-heading-details">{frontmatter.description}</p>
       <div class="lesson-meta"><span>{frontmatter.date.replaceAll('-', '.')}</span>{frontmatter.draft && <span>制作中 · 完整讲义预览</span>}</div>
     </header>
     <nav class="lesson-toc" aria-label="本篇目录"><details><summary>目录 <span data-current-section></span></summary><div class="toc-links">{headings.map(h => <a href={`#${h.slug}`}>{h.text}</a>)}</div></details></nav>
