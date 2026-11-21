@@ -26,40 +26,44 @@ return <g><circle cx={x} cy={y} r="2" fill="var(--fg)" opacity=".35"/><line x1={
   </>}
   {kind === 'differential' && <>
     <div class="figure-top"><h3>两份变化，为什么可以相加？</h3><span>图 2 · 切平面</span></div>
-    <svg viewBox="0 0 560 314" role="img" aria-label="三维透视：从A沿x方向到C，再沿y方向到切平面上的B；也可沿y到D再沿x到B。形成切平面的平行四边形，并标出曲面真正的点B'与B之间的高阶误差。">
-      <defs><marker id="tf-diff-arr" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#3869b0"/></marker></defs>
-      <text x="18" y="24" class="figure-title">局部放大 f(x,y)=x²+2y，考察 A=(1,1,3)</text>
-      <path d="M148 247L350 280L205 306L41 268Z" fill="var(--box)" stroke="var(--border)" stroke-width="1"/>
-      <path d="M148 247L268 205L204 162L84 204Z" fill="var(--green)" fill-opacity=".14" stroke="var(--green)" stroke-width="2.1"/>
-      <!-- True curved graph patch: quadratic uplift appears along x, while the tangent plane gives first order change. -->
-      <path d="M148 247 Q200 217 268 191 L204 148 Q133 169 84 204 Z" fill="var(--curve)" fill-opacity=".10" stroke="var(--curve)" stroke-width="1.7"/>
-      <path d="M148 247Q209 219 268 191M84 204Q144 169 204 148" stroke="var(--curve)" stroke-width="2" fill="none"/>
-      <line x1="268" y1="205" x2="268" y2="191" stroke="var(--red)" stroke-width="1.8" stroke-dasharray="4 3"/>
-      <circle cx="268" cy="191" r="4.5" fill="var(--red)"/>
-      <text x="276" y="191" class="tick">C′</text>
-
-      <path d="M148 247L268 205M148 247L84 204M84 204L204 162M268 205L204 162" stroke="var(--green)" stroke-width="2"/>
-      <path d="M268 260V205M84 260V204" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/>
-      <text x="274" y="238" class="tick">2Δx</text><text x="36" y="237" class="tick">2Δy</text>
-      <path d="M148 247L268 205" stroke="var(--curve)" stroke-width="3" marker-end="url(#tf-diff-arr)"/>
-      <path d="M148 247L84 204" stroke="var(--red)" stroke-width="3"/>
-      <path d="M204 162V148" stroke="var(--red)" stroke-dasharray="4 3" stroke-width="2"/>
-      <circle cx="148" cy="247" r="5" fill="var(--fg)"/><circle cx="268" cy="205" r="5" fill="var(--curve)"/><circle cx="84" cy="204" r="5" fill="var(--red)"/><circle cx="204" cy="162" r="5" fill="var(--green)"/><circle cx="204" cy="148" r="4.5" fill="var(--red)"/>
-      <text x="154" y="265" class="figure-point">A</text><text x="276" y="209" class="figure-point">C</text><text x="67" y="198" class="figure-point">D</text><text x="211" y="169" class="figure-point">B</text><text x="212" y="139" class="figure-point">B′</text>
-      <path d="M148 247L349 280M148 247L41 268M148 247V94" stroke="var(--border)" stroke-width="1.1" fill="none" stroke-dasharray="4 4"/>
-      <text x="351" y="283" class="tick">x</text><text x="29" y="276" class="tick">y</text><text x="153" y="91" class="tick">z</text>
-      <path d="M308 69H330" stroke="var(--green)" stroke-width="3"/><text x="338" y="73" class="legend">切平面上的平行四边形</text>
-      <path d="M308 85H330" stroke="var(--curve)" stroke-width="2"/><text x="338" y="89" class="legend">函数曲面的弯曲部分</text>
-      <path d="M308 109H330" stroke="var(--curve)" stroke-width="3"/><text x="338" y="113" class="legend">x 方向贡献</text>
-      <path d="M308 135H330" stroke="var(--red)" stroke-width="3"/><text x="338" y="139" class="legend">y 方向贡献</text>
-      <text x="308" y="178" class="legend">A→C→B</text>
-      <text x="308" y="199" class="legend">与 A→D→B</text>
-      <text x="308" y="220" class="legend">具有相同的一阶高度变化</text>
-      <text x="308" y="242" class="tick">Δf ≈ 2Δx + 2Δy</text>
-      <text x="308" y="263" class="tick">B′ 是曲面上的真实点；</text>
-      <text x="308" y="282" class="tick">B 是切平面上的近似点。</text>
-    </svg>
-    <figcaption>图中放大了局部：绿色平行四边形在切平面上，故相邻两条边可按向量加法合成；蓝色弯曲面片对应真实函数图像。曲面上的 B′ 与切平面上的 B 存在小误差。对本例而言，这个误差恰好是 \((\Delta x)^2\)，比位移的一次项更小。</figcaption>
+    <svg viewBox="0 0 640 362" role="img" aria-label="三层图形：下层参考平面z=6，中间绿色切平面平行四边形ABCD，上层浅蓝色真实函数曲面z=x²+2y。标注A=(2,1,6)和点C、D，坐标位移两个分量分别带来4Δx、2Δy的切平面高度增量，B撇在真实曲面上比切平面B高二阶误差。">
+<text x="12" y="22" class="figure-title">f(x,y)=x²+2y；A 对应 (2,1,6)</text>
+<path d="M205 244L313 268L248 308L140 284Z" fill="var(--box)" stroke="var(--muted)" stroke-width="1.4"/>
+<path d="M205 244L313 268M205 244L140 284" fill="none" stroke="var(--muted)" stroke-dasharray="4 3" stroke-width="1.3"/>
+<text x="202" y="331" text-anchor="middle" class="tick">z=6 辅助平面（只看水平位移）</text>
+<text x="318" y="278" class="tick">Δx</text><text x="115" y="292" class="tick">Δy</text>
+<path d="M205 244Q260 226 313 185L248 180Q186 215 140 239Z" fill="var(--curve)" fill-opacity=".10" stroke="var(--curve)" stroke-width="1.6"/>
+{[0,.25,.5,.75,1].map(u=>{
+ const x=205+108*u,y=244-46*u-13*u*u;
+ return <path d={'M '+x+' '+y+' L '+(x-65)+' '+(y-5)} stroke="var(--curve)" stroke-width="1.1" opacity=".42" fill="none"/>;
+})}
+{[0,.25,.5,.75,1].map(v=>{
+ const points=Array.from({length:11},(_,j)=>j/10).map((u,j)=>{
+  const x=205+108*u-65*v,y=244-46*u-5*v-13*u*u;
+  return (j?'L ':'M ')+x+' '+y;
+ }).join(' ');
+ return <path d={points} stroke="var(--curve)" stroke-width="1.1" opacity=".42" fill="none"/>;
+})}
+<path d="M205 244L313 198L248 193L140 239Z" fill="var(--green)" fill-opacity=".16" stroke="var(--green)" stroke-width="2.3"/>
+<path d="M205 244L313 198M205 244L140 239M140 239L248 193M313 198L248 193" stroke="var(--green)" stroke-width="2.1" fill="none"/>
+<path d="M313 268V198M140 284V239" stroke="var(--red)" stroke-width="2" stroke-dasharray="4 4" fill="none"/>
+<text x="322" y="235" class="legend">4Δx</text><text x="103" y="265" class="legend">2Δy</text>
+<path d="M248 193V180" stroke="var(--red)" stroke-width="2.4" stroke-dasharray="3 3"/>
+{[{x:205,y:244,t:'A'},{x:313,y:198,t:'C'},{x:140,y:239,t:'D'},{x:248,y:193,t:'B'},{x:248,y:180,t:'B′'}].map(p=><g><circle cx={p.x} cy={p.y} r="4.4" fill={p.t.includes('′')?'var(--red)':'var(--fg)'}/><text x={p.x+7} y={p.y-8} class="figure-point">{p.t}</text></g>)}
+<g>
+<path d="M379 69H404" stroke="var(--curve)" stroke-width="2.4"/><text x="411" y="73" class="legend">真实函数曲面（浅蓝网格）</text>
+<path d="M379 100H404" stroke="var(--green)" stroke-width="3"/><text x="411" y="104" class="legend">局部切平面（绿色）</text>
+<path d="M379 131H404" stroke="var(--red)" stroke-width="2.4" stroke-dasharray="4 4"/><text x="411" y="135" class="legend">高度差（高阶误差）</text>
+<text x="380" y="176" class="legend">A→C→B 与 A→D→B</text>
+<text x="380" y="202" class="legend">两条路径的一阶高度变化相同</text>
+<text x="380" y="231" class="figure-point">4Δx + 2Δy</text>
+<text x="380" y="265" class="tick">切平面上的点是 B</text>
+<text x="380" y="285" class="tick">曲面上的真实终点是 B′</text>
+<text x="380" y="305" class="tick">相差 Δx²</text>
+</g>
+<text x="11" y="352" class="tick">示意图放大了局部、改变了视觉纵横比例；以正文计算为准。</text>
+</svg>
+    <figcaption>浅蓝网格是原函数曲面，绿色是切平面，底部是 z=6 的辅助平面。注意 B′（真实函数值）与 B（切平面近似）并不重合；它们的高度差是 Δx²。放大观察这个差异，才能看清为什么全微分是局部近似。</figcaption>
   </>}
   {kind === 'potential' && <>
     <div class="figure-top"><h3>沿等势线走，为什么电势不变？</h3><span>图 3 · 电势与梯度</span></div>
