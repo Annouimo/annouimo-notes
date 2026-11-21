@@ -11,7 +11,7 @@ const vCross = (a: Point3, b: Point3): Point3 => ({x:a.y*b.z-a.z*b.y,y:a.z*b.x-a
 const vUnit = (a: Point3): Point3 => { const len=Math.hypot(a.x,a.y,a.z); return vScale(a,1/len); };
 const pathPoints = (points: {x:number;y:number}[], close=false):string =>
   points.map((p,i)=>(i?'L':'M')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ')+(close?' Z':'');
-const diffP = (x:number,y:number,z:number) => ({x:230+155*x-115*y,y:70+94*x+101*y-17*z});
+const diffP = (x:number,y:number,z:number) => ({x:230+155*x-115*y,y:70+85*x+135*y-17*z});
 const dA=diffP(0,0,0),dC=diffP(1,0,4),dD=diffP(0,1,2),dB=diffP(1,1,6);
 const dC0=diffP(1,0,0),dD0=diffP(0,1,0),dB0=diffP(1,1,0);
 const fluxP = (p:Point3) => ({x:185+1.1*p.x-.65*p.y,y:150+.47*p.x+.75*p.y-p.z});
@@ -22,7 +22,7 @@ const fluxB:Point3={x:.5,y:-.3,z:.85};
 const fpCorners=[{x:0,y:0,z:0},fluxU,vAdd(fluxU,fluxV),fluxV].map(fluxP);
 const fpCenter=fluxP(fluxCenter),fpNormalTip=fluxP(vAdd(fluxCenter,vScale(fluxNormal,95)));
 const fpBT=fluxP(vAdd(fluxCenter,vScale(fluxB,105)));
-const fpBG=[{x:55,y:20,z:-15},{x:122,y:100,z:45},{x:165,y:5,z:5}].map(q=>({start:fluxP(q),end:fluxP(vAdd(q,vScale(fluxB,115)))}));
+const fpBG=[{x:55,y:20,z:-15},{x:122,y:100,z:45},{x:0,y:75,z:10}].map(q=>({start:fluxP(q),end:fluxP(vAdd(q,vScale(fluxB,115)))}));
 const curve3=(u:number,v:number):Point3=>({x:100*u,y:80*v,z:23*Math.sin(1.2*u)+13*v*v+18*u*v});
 const curveTanU=(u:number,v:number):Point3=>({x:100,y:0,z:27.6*Math.cos(1.2*u)+18*v});
 const curveTanV=(u:number,v:number):Point3=>({x:0,y:80,z:26*v+18*u});
@@ -49,7 +49,7 @@ const zoomCorners=[
   vAdd(cCenter,vAdd(vScale(curveTanU(cU,cV),-.21),vScale(curveTanV(cU,cV),.27)))
 ].map(zoomP);
 const curveCenter=curveP(cCenter),curveNtip=curveP(vAdd(cCenter,vScale(cNormal,75)));
-const zoomCenter=zoomP(cCenter),zoomNtip=zoomP(vAdd(cCenter,vScale(cNormal,48)));
+const zoomCenter=zoomP(cCenter),zoomNtip=zoomP(vAdd(cCenter,vScale(cNormal,31)));
 const curveFieldTips=[{u:-.86,v:-.47},{u:-.35,v:.38},{u:.68,v:-.53},{u:.87,v:.4}].map(q=>{
   const start=curve3(q.u,q.v);return {p:curveP(start),tip:curveP(vAdd(start,vScale(fluxB,77)))};
 });
@@ -393,7 +393,7 @@ const curveFieldTips=[{u:-.86,v:-.47},{u:-.35,v:.38},{u:.68,v:-.53},{u:.87,v:.4}
       <circle cx={dB0.x} cy={dB0.y} r="3.3" fill="var(--muted)"/>
       <text x={dB0.x+11} y={dB0.y+5} class="tick">B 的水平投影</text>
       <text x="342" y="141" class="tick">4Δx</text>
-      <text x="84" y="174" class="tick">2Δy</text>
+      <text x="81" y="201" class="tick">2Δy</text>
       <text x="291" y="217" class="figure-point">总高度</text>
       <text x="290" y="238" class="legend">4Δx + 2Δy</text>
       <path d="M43 135V70M43 70L39 80M43 70L47 80" fill="none" stroke="var(--fg)" stroke-width="1.8"/>
