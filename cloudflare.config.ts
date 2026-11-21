@@ -12,7 +12,6 @@ export default defineConfig(({ isPreview }) => ({
     assets: { htmlHandling: 'force-trailing-slash', notFoundHandling: '404-page' },
     workersDev: false,
     previewUrls: false,
-    ...(!isPreview ? { domains: [{ hostname: 'learn.annouimo.com', production: true, previews: true }] } : {}),
     observability: { enabled: true, logs: { enabled: true }, traces: { enabled: true } },
   },
 }));
