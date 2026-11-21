@@ -136,11 +136,11 @@ const { kind } = Astro.props;
   {kind === 'cancellation' && <>
     <div class="figure-top"><h3>把小区域拼起来，内部发生了什么？</h3><span>图 7 · 公共边抵消</span></div>
     <svg viewBox="0 0 560 265" role="img" aria-label="把一个大矩形分成三列两行，小矩形分别逆时针走边界；内部公共边被相邻小矩形反向走过，积分相消，最后只剩外边界">
-      <defs><marker id="tf-cancel-a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L7 3L0 6Z" fill="var(--curve)"/></marker></defs>
+      <defs><marker id="tf-cancel-a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L7 3L0 6Z" fill="var(--curve)"/></marker><marker id="tf-cancel-b" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0 0L6 3L0 6Z" fill="var(--red)"/></marker></defs>
       <rect x="82" y="44" width="390" height="170" fill="var(--box)" stroke="var(--curve)" stroke-width="4"/>
       {[212,342].map(x=><line x1={x} y1="44" x2={x} y2="214" stroke="var(--muted)" stroke-opacity=".5" stroke-dasharray="4 3"/>)}
       <line x1="82" y1="129" x2="472" y2="129" stroke="var(--muted)" stroke-opacity=".5" stroke-dasharray="4 3"/>
-      {[212,342].map(x=><g><path d={'M'+(x-10)+' 72V108M'+(x+10)+' 108V72'} stroke="var(--red)" stroke-width="2.1" fill="none"/><path d={'M'+(x-10)+' 164V194M'+(x+10)+' 194V164'} stroke="var(--red)" stroke-width="2.1" fill="none"/></g>)}
+      {[212,342].map(x=><g><path d={'M'+(x-10)+' 72V108'} stroke="var(--red)" stroke-width="2.1" fill="none" marker-end="url(#tf-cancel-b)"/><path d={'M'+(x+10)+' 108V72'} stroke="var(--red)" stroke-width="2.1" fill="none" marker-end="url(#tf-cancel-b)"/><path d={'M'+(x-10)+' 156V194'} stroke="var(--red)" stroke-width="2.1" fill="none" marker-end="url(#tf-cancel-b)"/><path d={'M'+(x+10)+' 194V156'} stroke="var(--red)" stroke-width="2.1" fill="none" marker-end="url(#tf-cancel-b)"/></g>)}
       <path d="M132 214H241M472 189V88M421 44H300M82 79V169" stroke="var(--curve)" stroke-width="3" marker-end="url(#tf-cancel-a)" fill="none"/>
       <text x="277" y="32" text-anchor="middle" class="figure-title">只有外边界留下来</text>
       <text x="277" y="244" text-anchor="middle" class="tick">小面片的共用边：一次正向，一次反向 → 抵消</text>
