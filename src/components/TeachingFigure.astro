@@ -1,6 +1,6 @@
 ---
 interface Props {
-  kind: 'field' | 'differential' | 'potential' | 'flux' | 'divergence' | 'curl' | 'cancellation' | 'forms' | 'charge' | 'coupling' | 'wave-shift' | 'gauss-sphere' | 'gauss-cone' | 'volume-cancel'
+  kind: 'field' | 'differential' | 'potential' | 'flux' | 'divergence' | 'curl' | 'cancellation' | 'forms' | 'charge' | 'coupling' | 'wave-shift' | 'gauss-sphere' | 'gauss-cone' | 'volume-cancel' | 'potential-slopes'
 }
 const { kind } = Astro.props;
 ---
@@ -293,6 +293,27 @@ const { kind } = Astro.props;
       <text x="316" y="295" text-anchor="middle" class="tick">相同的通量贡献，一次取正、一次取负；拼接后只剩外围表面。</text>
     </svg>
     <figcaption>两个不同颜色的箭头表示的是两个盒子各自的**外法向**，不是场本身的两个方向。它们在公共面上相反，因此该面通量相互抵消；其余外表面留下来。</figcaption>
+  </>}
+
+  {kind === 'potential-slopes' && <>
+    <div class="figure-top"><h3>先只沿一个方向看电势—位置图像</h3><span>梯度 · 两个切线斜率</span></div>
+    <svg viewBox="0 0 640 304" role="img" aria-label="左右两张电势对位置坐标的斜直线图，左图固定y研究φ(x)，右图固定x研究φ(y)，并画出在某点的切线斜率与电场分量之间的负号关系。">
+      <defs><marker id="ps-x" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="var(--curve)"/></marker></defs>
+      <text x="150" y="23" text-anchor="middle" class="figure-title">固定 y，只改变 x</text>
+      <text x="467" y="23" text-anchor="middle" class="figure-title">固定 x，只改变 y</text>
+      <path d="M54 245V55M54 245H282M374 245V55M374 245H607" stroke="var(--muted)" stroke-width="1.4" fill="none"/>
+      <text x="22" y="66" class="tick">φ</text><text x="277" y="264" class="tick">x</text>
+      <text x="343" y="66" class="tick">φ</text><text x="604" y="264" class="tick">y</text>
+      <path d="M69 83L260 207" fill="none" stroke="var(--curve)" stroke-width="3.5"/>
+      <path d="M386 115L587 201" fill="none" stroke="var(--green)" stroke-width="3.5"/>
+      <circle cx="166" cy="146" r="5" fill="var(--red)"/><circle cx="484" cy="157" r="5" fill="var(--red)"/>
+      <path d="M166 146L213 146L213 177" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/>
+      <path d="M484 157L530 157L530 177" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/>
+      <text x="166" y="113" text-anchor="middle" class="legend">x 向斜率 φₓ</text><text x="483" y="124" text-anchor="middle" class="legend">y 向斜率 φᵧ</text>
+      <text x="148" y="290" text-anchor="middle" class="figure-point">Eₓ = −φₓ</text>
+      <text x="465" y="290" text-anchor="middle" class="figure-point">Eᵧ = −φᵧ</text>
+    </svg>
+    <figcaption>在二维标量场中，“沿 x 轴读取变化率”与“沿 y 轴读取变化率”其实是分别画出的两张一元函数图像。电势沿一个方向的切线斜率取负号，正好给出电场沿该方向的分量。</figcaption>
   </>}
 
 </figure>
