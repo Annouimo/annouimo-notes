@@ -7,9 +7,9 @@
     "node": ">=24.0.0"
   },
   "scripts": {
-    "dev": "WHY_NOTES_PREVIEW=1 astro dev --ignore-lock",
-    "build": "astro build",
-    "build:preview": "WHY_NOTES_PREVIEW=1 astro build",
+    "dev": "python3 scripts/sync-design.py && WHY_NOTES_PREVIEW=1 astro dev --ignore-lock",
+    "build": "python3 scripts/sync-design.py && astro build",
+    "build:preview": "python3 scripts/sync-design.py && WHY_NOTES_PREVIEW=1 astro build",
     "preview": "astro preview --host 0.0.0.0",
     "check": "astro check && node --test tests/*.test.ts",
     "new:note": "node scripts/new-note.mjs",
